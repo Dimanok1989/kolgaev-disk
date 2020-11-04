@@ -27,13 +27,17 @@ class App extends React.Component {
     }
 
     loginClick = (e) => {
+
         this.setState({ isLogin: !this.state.isLogin });
+        
     }
 
     logined = login => {
+        
         this.setState({
             isLogin: login,
         });
+
     }
 
     /**
