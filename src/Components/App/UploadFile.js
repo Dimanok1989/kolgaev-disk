@@ -179,7 +179,26 @@ class UploadFile extends React.Component {
         this.state.fileCurrent = id; // Установка выбранного файла
         this.state.files[id].status = 1; // Сатус процесса загрузки файла
 
-        await axios.post('disk/uploadFile', formdata).then(({ data }) => {
+        await axios.post('disk/uploadFile', formdata, {
+
+            // Прогресс загрузки файла
+            onUploadProgress: (itemUpload) => {
+
+                console.log(itemUpload)
+
+                // let progress
+
+                // this.fileProgress += ((itemUpload.loaded / itemUpload.total) * 100) / (formdata.size / this.chunk);
+                // this.fileProgress = this.fileProgress > 100 ? 100 : this.fileProgress;
+                // this.filesUploadList[index].progress = this.fileProgress;
+
+                // this.progress = ((this.filesUploaded.length * 100) + this.fileProgress) / this.filesUploadList.length;
+
+                // this.progress = this.progress > 100 ? 100 : this.progress;
+
+            }
+
+        }).then(({ data }) => {
 
             // Данные завершения загрузки
             hash = data;
@@ -187,7 +206,6 @@ class UploadFile extends React.Component {
             // Путь до файла на сервере, требуется для правильной склейки файла в момент
             // смены даты, в противном случае файл разделится по каталогам дат
             this.state.path = this.state.path ? this.state.path : data.path;
-
 
             let chunk = data.size - this.state.files[id].uploaded; // Загруженная часть          
             this.state.uploadedsize += chunk; // Общий размер загруженных файлов

@@ -3,7 +3,7 @@ import React from 'react';
 import axios from './../../Utils/axios';
 import echoerror from './../../Utils/echoerror';
 
-import { Spinner, CardColumns, Card } from 'react-bootstrap';
+import { Spinner, CardColumns, Card, Dropdown } from 'react-bootstrap';
 import Icons from '../../Utils/Icons';
 import FontAwesomeIcon from './../../Utils/FontAwesomeIcon';
 
@@ -21,6 +21,7 @@ class Files extends React.Component {
             cd: "",
             paths: [],
             newFile: null,
+            fileMenu: null,
         }
 
     }
@@ -130,6 +131,98 @@ class Files extends React.Component {
 
     }
 
+    renameFile = e => {
+
+        console.log('rename')
+
+    }
+
+    /**
+     * Открытие контекстного меню правой кнопкой мыши
+     * @param {object} e event 
+     */
+    fileMenu = e => {
+
+        e.preventDefault();
+        this.setState({ fileMenu: e.currentTarget.dataset.file });
+
+        document.body.addEventListener('click', this.fileMenuClose);
+
+        this.hideAllMenu();
+        let elem = document.getElementById(`context-menu-${e.currentTarget.dataset.file}`);
+        elem.style.display = 'block';
+
+        let top = e.clientY,
+            left = e.clientX,
+            screenX = window.innerWidth,
+            screenY = window.innerHeight,
+            w = elem.offsetWidth,
+            h = elem.offsetHeight,
+            par = document.getElementById(`file-row-${e.currentTarget.dataset.file}`).getBoundingClientRect();
+
+        if (w + left > screenX)
+            left = screenX - w - 20;
+
+        if (h + top > screenY)
+            top = screenY - h - 10;
+
+        // console.log({ top, left, screenX, screenY, w, h, par });
+
+        left = left - par.x;
+        top = top - par.y;
+
+        elem.style.top = `${top}px`;
+        elem.style.left = `${left}px`;
+
+    }
+
+    /**
+     * Скрытие всех открытых менюшек файла
+     */
+    hideAllMenu = () => {
+
+        let elems = document.querySelectorAll(`.file-context-menu`);
+        elems.forEach(elem => {
+            elem.style.display = "none";
+        });
+
+    }
+
+    /**
+     * Закрытие меню
+     * @param {object} e event
+     */
+    fileMenuClose = e => {
+
+        this.hideAllMenu();
+        document.body.removeEventListener('click', this.fileMenuClose);
+
+        this.setState({ fileMenu: null });
+
+    }
+
+    /**
+     * Формирование контекстного меню
+     * @param {object} file объект данных файла 
+     */
+    FileMenu = ({ file }) => {
+
+        let className = "py-1 px-3 item-file-menu";
+
+        // Пункт переименовывания файла
+        let rename = <Dropdown.Item className={className} onClick={this.renameFile} data-file={file.id}>
+            <div className="d-inline-block text-left icon-item-menu-file">
+                <FontAwesomeIcon icon={["fas", "pen"]} />
+            </div>
+            <span>Переименовать</span>
+        </Dropdown.Item>
+
+        return <Card className="position-absolute shadow py-1 file-context-menu" id={`context-menu-${file.id}`}>
+            {rename}
+        </Card>
+
+    }
+
     /**
      * Вывод одной строки файла
      * @param {object} file
@@ -148,13 +241,16 @@ class Files extends React.Component {
 
         let onClick = file.is_dir ? this.openFolder : this.selectFile;
 
-        return <Card className="file-row border-0 text-center m-1 p-1" title={name} onClick={onClick} data-folder={file.id}>
+        file.menuShow = this.state.fileMenu == file.id;
+        let menu = <this.FileMenu file={file} />
+
+        return <Card className="file-row border-0 text-center m-1 p-1" title={name} onClick={onClick} data-folder={file.id} onContextMenu={this.fileMenu} data-file={file.id} id={`file-row-${file.id}`}>
             <div className="d-flex justify-content-center align-items-center file-row-icon">
                 <img src={icon} width="46" height="46" />
             </div>
             <div className="file-row-name">{name}</div>
+            {menu}
         </Card>
-
 
     }
 

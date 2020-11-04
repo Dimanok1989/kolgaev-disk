@@ -97,3 +97,12 @@
     50% { opacity: .4; }
     100% { opacity: .8; }
 }
+
+.file-context-menu {
+    display: none;
+    z-index: 10;
+}
+
+.icon-item-menu-file {
+    width: 24px;
+}
