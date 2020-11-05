@@ -1,9 +1,11 @@
 import React from 'react';
 
 import axios from './../../Utils/axios';
-import echoerror from './../../Utils/echoerror';
+// import echoerror from './../../Utils/echoerror';
 
-import { Spinner, CardColumns, Card, Dropdown } from 'react-bootstrap';
+import RenameFile from './RenameFile';
+
+import { Spinner, Card, Dropdown } from 'react-bootstrap';
 import Icons from '../../Utils/Icons';
 import FontAwesomeIcon from './../../Utils/FontAwesomeIcon';
 
@@ -22,6 +24,7 @@ class Files extends React.Component {
             paths: [],
             newFile: null,
             fileMenu: null,
+            renameId: null,
         }
 
     }
@@ -39,7 +42,7 @@ class Files extends React.Component {
     componentDidUpdate = (prevProps) => {
 
         // Отслеживание изменений значения идентификатора пользователя
-        if (prevProps.user != this.props.user) {
+        if (prevProps.user !== this.props.user) {
 
             this.setState({ user: this.props.user });
 
@@ -98,7 +101,7 @@ class Files extends React.Component {
      */
     getUserFiles = (user, folder = null) => {
 
-        let formData = new FormData;
+        let formData = new FormData();
         formData.append('id', user);
 
         // Файлы в папке
@@ -133,7 +136,8 @@ class Files extends React.Component {
 
     renameFile = e => {
 
-        console.log('rename')
+        let renameId = Number(e.currentTarget.dataset.file);
+        this.setState({ renameId });
 
     }
 
@@ -141,7 +145,7 @@ class Files extends React.Component {
      * Открытие контекстного меню правой кнопкой мыши
      * @param {object} e event 
      */
-    fileMenu = e => {
+    fileMenuOpen = e => {
 
         e.preventDefault();
         this.setState({ fileMenu: e.currentTarget.dataset.file });
@@ -205,52 +209,23 @@ class Files extends React.Component {
      * Формирование контекстного меню
      * @param {object} file объект данных файла 
      */
-    FileMenu = ({ file }) => {
+    FileMenu = ({ filedata }) => {
 
-        let className = "py-1 px-3 item-file-menu";
+        let classes = "py-1 px-3 item-file-menu";
 
         // Пункт переименовывания файла
-        let rename = <Dropdown.Item className={className} onClick={this.renameFile} data-file={file.id}>
+        let rename = <Dropdown.Item className={classes} onClick={this.renameFile} data-file={filedata.id}>
             <div className="d-inline-block text-left icon-item-menu-file">
                 <FontAwesomeIcon icon={["fas", "pen"]} />
             </div>
             <span>Переименовать</span>
-        </Dropdown.Item>
+        </Dropdown.Item>;
 
-        return <Card className="position-absolute shadow py-1 file-context-menu" id={`context-menu-${file.id}`}>
-            {rename}
-        </Card>
-
-    }
-
-    /**
-     * Вывод одной строки файла
-     * @param {object} file
-     * @return {object}
-     */
-    FileRowList = ({ file }) => {
-
-        let name = file.name,
-            icon = Icons.file;
-
-        if (!file.is_dir)
-            name += `.${file.ext}`;
-
-        if (file.icon)
-            icon = Icons[file.icon];
-
-        let onClick = file.is_dir ? this.openFolder : this.selectFile;
-
-        file.menuShow = this.state.fileMenu == file.id;
-        let menu = <this.FileMenu file={file} />
-
-        return <Card className="file-row border-0 text-center m-1 p-1" title={name} onClick={onClick} data-folder={file.id} onContextMenu={this.fileMenu} data-file={file.id} id={`file-row-${file.id}`}>
-            <div className="d-flex justify-content-center align-items-center file-row-icon">
-                <img src={icon} width="46" height="46" />
-            </div>
-            <div className="file-row-name">{name}</div>
-            {menu}
-        </Card>
+        return (
+            <Card className="position-absolute shadow py-1 file-context-menu" id={`context-menu-${filedata.id}`}>
+                {rename}
+            </Card>
+        )
 
     }
 
@@ -309,6 +284,60 @@ class Files extends React.Component {
 
     }
 
+    /**
+     * Вывод одной строки файла
+     * @param {object} file
+     * @return {object}
+     */
+    FileRowList = ({ file }) => {
+
+        let name = file.name,
+            icon = Icons.file;
+
+        // Добавление расширения файла к имени
+        if (!file.is_dir)
+            name += `.${file.ext}`;
+
+        if (file.icon)
+            icon = Icons[file.icon];
+
+        let onClick = file.is_dir ? this.openFolder : this.selectFile;
+
+        let classes = "py-1 px-3 item-file-menu";
+
+        // Пункт переименовывания файла
+        let rename = <Dropdown.Item className={classes} onClick={this.renameFile} data-file={file.id}>
+            <div className="d-inline-block text-left icon-item-menu-file">
+                <FontAwesomeIcon icon={["fas", "pen"]} />
+            </div>
+            <span>Переименовать</span>
+        </Dropdown.Item>;
+
+        const menu = (
+            <Card className="position-absolute shadow py-1 file-context-menu" id={`context-menu-${file.id}`}>
+                {rename}
+            </Card>
+        )
+
+        return <div className="position-relative" id={`file-row-block-${file.id}`}>
+
+            <div className="loading-app loading-modal justify-content-center align-items-center position-absolute h-100 loading-file">
+                <Spinner animation="border" />
+            </div>
+
+            <Card className="file-row border-0 text-center m-1 p-1" title={name} onClick={onClick} data-folder={file.id} onContextMenu={this.fileMenuOpen} data-file={file.id} id={`file-row-${file.id}`}>
+                <div className="d-flex justify-content-center align-items-center file-row-icon">
+                    <img src={icon} width="46" height="46" alt={file.name} />
+                </div>
+                <div className="file-row-name">{name}</div>
+            </Card>
+
+            {menu}
+
+        </div>
+
+    }
+
     render() {
 
         if (!this.state.user) {
@@ -360,12 +389,22 @@ class Files extends React.Component {
 
         return (
             <div className="py-3 px-2 flex-grow-1">
+
                 <this.BreadСrumbs paths={this.state.paths} />
+                <RenameFile renameId={this.state.renameId} setNullRenameId={this.setNullRenameId} />
+
                 <div className="d-flex align-content-start flex-wrap">
                     {fileList}
                 </div>
+
             </div>
         )
+
+    }
+
+    setNullRenameId = renameId => {
+
+        this.setState({ renameId });
 
     }
 

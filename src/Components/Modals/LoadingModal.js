@@ -3,9 +3,9 @@ import Spinner from 'react-bootstrap/Spinner'
 
 class LoadingModal extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
+    // constructor(props) {
+    //     super(props);
+    // }
 
     render() {
 

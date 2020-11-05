@@ -62,7 +62,7 @@ class Users extends React.Component {
         }
 
         // Актиыный пользователя
-        let classNames = this.state.select == user.id ? 'font-weight-bold' : '',
+        let classNames = Number(this.state.select) === Number(user.id) ? 'font-weight-bold' : '',
             name = user.name,
             email = null;
 

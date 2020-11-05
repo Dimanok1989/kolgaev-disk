@@ -4,7 +4,7 @@ import Users from './Users';
 import Files from './Files';
 import UploadFile from './UploadFile';
 
-import FontAwesomeIcon from './../../Utils/FontAwesomeIcon';
+// import FontAwesomeIcon from './../../Utils/FontAwesomeIcon';
 
 class Content extends React.Component {
 

@@ -21,7 +21,7 @@ class UploadFile extends React.Component {
             progressfile: 0, // Процесс загрузки одного файла
             path: false, // Рабочий каталог
 
-            chunk: 5242880, // Размер одной загружаемой части файла
+            chunk: 4242880, // Размер одной загружаемой части файла
             offset: 0, // Текущая позиция чтения файла
             folder: null, // Идентификатор текущей папки
             user: null, // Идентификатор текущего файла
@@ -174,29 +174,38 @@ class UploadFile extends React.Component {
     uploadChunk = async formdata => {
 
         let hash = false, // Данные загруженной части
-            id = Number(formdata.index); // Порядковый идентификатор файла
+            id = Number(formdata.index), // Порядковый идентификатор файла
+            files = this.state.files;
 
         this.state.fileCurrent = id; // Установка выбранного файла
-        this.state.files[id].status = 1; // Сатус процесса загрузки файла
+        files[id].status = 1; // Сатус процесса загрузки файла
 
         await axios.post('disk/uploadFile', formdata, {
 
-            // Прогресс загрузки файла
-            onUploadProgress: (itemUpload) => {
+            onUploadProgress: (progressEvent) => {
 
-                console.log(itemUpload)
+                // Общий размер загруженного файла с частью части
+                let uploadedsize = this.state.uploadedsize + progressEvent.loaded,
+                    uploadedfile = this.state.files[id].uploaded + progressEvent.loaded;
 
-                // let progress
+                if (this.state.uploadedsize + this.state.chunk < uploadedsize)
+                    uploadedsize = this.state.uploadedsize + this.state.chunk;
 
-                // this.fileProgress += ((itemUpload.loaded / itemUpload.total) * 100) / (formdata.size / this.chunk);
-                // this.fileProgress = this.fileProgress > 100 ? 100 : this.fileProgress;
-                // this.filesUploadList[index].progress = this.fileProgress;
+                if (this.state.files[id].uploaded + this.state.chunk < uploadedfile)
+                    uploadedfile = this.state.files[id].uploaded + this.state.chunk;
 
-                // this.progress = ((this.filesUploaded.length * 100) + this.fileProgress) / this.filesUploadList.length;
+                // Общий процент
+                let progress = parseInt(Math.round((uploadedsize * 100) / this.state.allsize));
 
-                // this.progress = this.progress > 100 ? 100 : this.progress;
+                // Процент загрузки файла
+                let progressfile = parseInt(Math.round((uploadedfile * 100) / this.state.files[id].size));
 
-            }
+                progress = progress > 100 ? 100 : progress;
+                progressfile = progressfile > 100 ? 100 : progressfile;
+
+                this.setState({ progressfile, progress });
+
+            },
 
         }).then(({ data }) => {
 
@@ -207,38 +216,46 @@ class UploadFile extends React.Component {
             // смены даты, в противном случае файл разделится по каталогам дат
             this.state.path = this.state.path ? this.state.path : data.path;
 
-            let chunk = data.size - this.state.files[id].uploaded; // Загруженная часть          
-            this.state.uploadedsize += chunk; // Общий размер загруженных файлов
+            let chunk = data.size - files[id].uploaded, // Загруженная часть
+                uploadedsize = this.state.uploadedsize;
+
+            this.setState({ uploadedsize: uploadedsize + chunk }); // Общий размер загруженных файлов
 
             // Размер всех загруженных частей файла
-            this.state.files[id].uploaded = data.size;
+            files[id].uploaded = data.size;
 
             // Общий процент
-            let progress = (this.state.uploadedsize * 100) / this.state.allsize;
+            let progress = parseInt(Math.round((this.state.uploadedsize * 100) / this.state.allsize));
 
             // Процент загрузки файла
-            let progressfile = (this.state.files[id].uploaded * 100) / this.state.files[id].size;
+            let progressfile = parseInt(Math.round((files[id].uploaded * 100) / files[id].size));
 
             this.setState({ progressfile, progress });
 
             // Загрузка одно файла завершена
             if (data.file) {
 
-                this.state.files[id].progress = 100; // Процент загружки файла
-                this.state.files[id].status = 3; // Загрузка завершена
+                files[id].progress = 100; // Процент загружки файла
+                files[id].status = 3; // Загрузка завершена
 
                 // Добавление данных файла в общий список файлов
-                this.state.uploaded.push(data.file);
+                let uploaded = this.state.uploaded;
+                uploaded.push(data.file);
+
+                this.setState({ uploaded });
+
                 this.props.pushFileList(data.file);
 
             }
 
         }).catch(error => {
 
-            this.state.files[id].status = 4; // Ошибка загрузки файла
-            this.state.files[id].error = echoerror(error); // Тескт ошибки
+            files[id].status = 4; // Ошибка загрузки файла
+            files[id].error = echoerror(error); // Тескт ошибки
 
         });
+
+        this.setState({ files });
 
         return hash;
 
@@ -253,9 +270,13 @@ class UploadFile extends React.Component {
             // Вывод ошибки чтения файла
             reader.onerror = event => {
 
-                this.state.files[id].status = 4;
-                this.state.files[id].progress = 100;
-                this.state.files[id].error = `Ошибка чтения файла в Вашем браузере (${event.target.error.name})`;
+                let files = this.state.files;
+
+                files[id].status = 4;
+                files[id].progress = 100;
+                files[id].error = `Ошибка чтения файла в Вашем браузере (${event.target.error.name})`;
+
+                this.setState({ files });
 
                 reader.abort();
                 console.error("Failed to read file!\n" + reader.error);

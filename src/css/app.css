@@ -76,7 +76,7 @@
     background-color: #747474;
     border-radius: .25rem .25rem 0 0;
 }
-.modal-header span { color: #ffffff !important; }
+.modal-header button { outline: none; }
 #modal-uploading-files .modal-title {
     z-index: 10;
     color: #fff;
@@ -106,3 +106,5 @@
 .icon-item-menu-file {
     width: 24px;
 }
+
+.loading-file { display: none; }

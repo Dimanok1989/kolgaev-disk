@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Spinner, Modal, Button, ProgressBar } from 'react-bootstrap';
+import { Modal, ProgressBar } from 'react-bootstrap';
 import FontAwesomeIcon from './../../Utils/FontAwesomeIcon';
 
 class UploadModal extends React.Component {
@@ -30,14 +30,15 @@ class UploadModal extends React.Component {
      */
     handleClose = () => {
         this.props.setCloseModal();
-        this.state.openModal = false;
+        this.setState({ openModal: false });
+
     }
 
     /**
      * Открытие модального окна с загрузкой файлов
      */
     handleShow = () => {
-        this.state.openModal = true;
+        this.setState({ openModal: true });
     }
 
     /**
@@ -59,12 +60,12 @@ class UploadModal extends React.Component {
         let progress = null,
             percent = this.props.progressfile;
 
-        if (file.id == this.props.fileCurrent)
+        if (file.id === this.props.fileCurrent)
             progress = <ProgressBar variant="success" now={percent} className="progress-bar-in-file-row" />;
 
         return (
             <div className="my-1 position-relative d-flex justify-content-between align-items-center">
-                <div className="text-truncate"><small>{file.name}</small></div>
+                <div className="text-truncate">{file.name}</div>
                 <div>{icon}</div>
                 {progress}
             </div>
@@ -102,7 +103,7 @@ class UploadModal extends React.Component {
                     id="modal-uploading-files"
                 >
                     <Modal.Header closeButton={closeShow} className="position-relative rounded-top">
-                        <ProgressBar variant={variant} animated={animated} striped={animated} now={percent} className="progress-bar-in-title h-100" />
+                        <ProgressBar variant={variant} animated={false} striped={animated} now={percent} className="progress-bar-in-title h-100" />
                         <Modal.Title>Загрузка файлов {percent}%</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
