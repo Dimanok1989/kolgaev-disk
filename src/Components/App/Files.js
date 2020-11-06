@@ -25,6 +25,8 @@ class Files extends React.Component {
             newFile: null,
             fileMenu: null,
             renameId: null,
+            folder: null,
+            loading: false,
         }
 
     }
@@ -55,7 +57,7 @@ class Files extends React.Component {
         }
 
         // Добавление нового файла
-        if (prevProps.newFile != this.props.newFile) {
+        if (prevProps.newFile !== this.props.newFile) {
 
             let files = this.state.files;
             files.push(this.props.newFile);
@@ -89,6 +91,7 @@ class Files extends React.Component {
         }
 
         window.history.pushState(data, `Файлы ${data.user} в папке ${data.folder}`, url);
+        this.setState({ folder });
 
         this.getUserFiles(this.state.user, folder);
 
@@ -124,7 +127,9 @@ class Files extends React.Component {
                 paths: data.paths,
             });
 
-        }).catch(error => { }).then(() => {
+        }).catch(error => {
+
+        }).then(() => {
 
             this.setState({
                 filesLoad: false,
@@ -229,35 +234,89 @@ class Files extends React.Component {
 
     }
 
+    create = false;
+
+    /**
+     * Метод создания нового каталога
+     * @param {object} e event 
+     */
+    createFolder = e => {
+
+        if (this.create)
+            return false;
+
+        this.create = true;
+        this.setState({ loading: true });
+
+        let formdata = new FormData();
+        formdata.append('cd', this.state.folder);
+
+        axios.post('disk/mkdir', formdata).then(({ data }) => {
+
+            let dirs = this.state.dirs;
+            dirs.push(data.file);
+
+            this.setState({ dirs });
+
+        }).catch(error => {
+
+            document.getElementById('add-new-folder').classList.add('text-danger');
+
+        }).then(() => {
+            this.create = false;
+            this.setState({ loading: false });
+        });
+
+    }
+
     /**
      * Метод вывода хлебных крошек
      * @param {object} paths 
      */
     BreadСrumbs = ({ paths }) => {
 
-        // Главный каталог пользователя
-        if (!paths.length)
-            return <div className="px-2">
-                <strong>Файлы</strong>
-            </div>;
+        let loading = null;
+
+        if (this.state.loading)
+            loading = <FontAwesomeIcon icon={["fas", "spinner"]} className="fa-spin" />
+
+        let addfolder = null;
+        if (localStorage.getItem('user') === this.state.user)
+            addfolder = <div className="cursor-pointer hover ml-2" onClick={this.createFolder}>
+                <FontAwesomeIcon icon={["fas", "folder-plus"]} id="add-new-folder" />
+            </div>
+
+        let right = <div className="panel-header d-flex align-items-center justify-content-end">
+            {loading}
+            {addfolder}
+        </div>
+
+        let left = <div className="px-2">
+            <h5>Файлы</h5>
+        </div>;
 
         let folders = null, // Каталоги для вывода крошек
             last = null, // Текущий откртый каталог
             crumbs = [], // Крошки для вывода
             count = 1; // Счетчик крошек
 
+        if (paths.length)
+            crumbs.push({
+                id: null,
+                name: "Файлы",
+            });
+
         // Сборка данных
         paths.forEach(path => {
 
             // Определение текущего каталога
-            if (count == paths.length) {
+            if (count === paths.length) {
                 last = <div className="px-2">
-                    <strong>{path.name}</strong>
+                    <h5>{path.name}</h5>
                 </div>
             }
-            else {
+            else
                 crumbs.push(path);
-            }
 
             count++;
 
@@ -265,19 +324,21 @@ class Files extends React.Component {
 
         // Вывод крошек
         folders = crumbs.map(crumb => (
-            <button className="btn btn-link btn-sm" type="button" onClick={this.openFolder} data-folder={crumb.id} key={crumb.id}>
-                <span className="mr-1">{crumb.name}</span>
+            <button className="btn btn-link px-2" type="button" onClick={this.openFolder} data-folder={crumb.id} key={crumb.id}>
+                <span className="mr-2">{crumb.name}</span>
                 <FontAwesomeIcon icon={["fas", "angle-right"]} />
             </button>
         ));
 
+        if (crumbs.length)
+            left = <div>{folders}</div>;
+
         return (
             <div>
-                <button className="btn btn-link btn-sm" type="button" onClick={this.openFolder}>
-                    <span className="mr-1">Файлы</span>
-                    <FontAwesomeIcon icon={["fas", "angle-right"]} />
-                </button>
-                {folders}
+                <div className="d-flex justify-content-between align-items-center">
+                    {left}
+                    {right}
+                </div>
                 {last}
             </div>
         )

@@ -108,3 +108,13 @@
 }
 
 .loading-file { display: none; }
+
+#rename-modal .modal-header { border-bottom: none; }
+#rename-modal .modal-footer { border-top: none; }
+
+.cursor-pointer { cursor: pointer; }
+
+.hover { opacity: .7; }
+.hover:hover { opacity: 1; }
+
+.panel-header { font-size: 1.4rem; }

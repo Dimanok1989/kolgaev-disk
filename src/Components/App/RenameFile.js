@@ -89,7 +89,7 @@ class RenameFile extends React.Component {
             <Modal
                 show={this.state.show}
                 onHide={() => this.setState({ show: false })}
-                aria-labelledby="example-modal-sizes-title-sm"
+                id="rename-modal"
                 centered={true}
                 backdrop="static"
             >

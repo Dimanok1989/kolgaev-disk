@@ -29,14 +29,12 @@ class App extends React.Component {
     loginClick = (e) => {
 
         this.setState({ isLogin: !this.state.isLogin });
-        
+
     }
 
     logined = login => {
-        
-        this.setState({
-            isLogin: login,
-        });
+
+        this.setState({ isLogin: login });
 
     }
 
@@ -48,17 +46,15 @@ class App extends React.Component {
 
         axios.post(`auth/user`).then(({ data }) => {
 
-            this.setState({
-                isLogin: true,
-            });
+            this.setState({ isLogin: true });
+
+            localStorage.setItem('user', data.id); // Идентификатор пользователя
 
         }).catch(error => {
 
         }).then(() => {
 
-            this.setState({
-                loading: false,
-            });
+            this.setState({ loading: false });
 
         });
 

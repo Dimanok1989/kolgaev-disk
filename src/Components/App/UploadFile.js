@@ -323,7 +323,7 @@ class UploadFile extends React.Component {
 
     render() {
 
-        let button = this.state.user ? <button className="btn btn-warning rounded-circle" type="button" title="Добавить файл" onClick={this.openInput}>
+        let button = (localStorage.getItem('user') === this.state.user) ? <button className="btn btn-warning rounded-circle" type="button" title="Добавить файл" onClick={this.openInput}>
             <FontAwesomeIcon icon={["fas", "paperclip"]} title="Выбрать файл" />
         </button> : null;
 
