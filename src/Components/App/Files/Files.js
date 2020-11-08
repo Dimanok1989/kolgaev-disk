@@ -1,13 +1,15 @@
 import React from 'react';
+import { withRouter } from "react-router";
 
-import axios from './../../Utils/axios';
+import axios from './../../../Utils/axios';
 // import echoerror from './../../Utils/echoerror';
 
+import FileRow from './FileRow';
 import RenameFile from './RenameFile';
+import Download from './Download';
 
-import { Spinner, Card, Dropdown } from 'react-bootstrap';
-import Icons from '../../Utils/Icons';
-import FontAwesomeIcon from './../../Utils/FontAwesomeIcon';
+import { Spinner } from 'react-bootstrap';
+import FontAwesomeIcon from './../../../Utils/FontAwesomeIcon';
 
 class Files extends React.Component {
 
@@ -16,18 +18,40 @@ class Files extends React.Component {
         super(props);
 
         this.state = {
-            user: null,
-            files: [],
-            dirs: [],
+            user: null, // Идентификатор выбранного плоьзователя
+            files: [], // Список файлов в каталоге
+            dirs: [], // Список папок в каталоге
             filesLoad: true,
             cd: "",
             paths: [],
             newFile: null,
-            fileMenu: null,
-            renameId: null,
+            renameId: null, // Идентификатор файла для смены имени
             folder: null,
             loading: false,
+            search: null,
+            download: null, // Идентификатор файла для скачивания
+            dir: 0, // Идентификатор каталога для скачивания
         }
+
+    }
+
+    componentWillUnmount = () => {
+
+        this.setState({
+            user: null, // Идентификатор выбранного плоьзователя
+            files: [], // Список файлов в каталоге
+            dirs: [], // Список папок в каталоге
+            filesLoad: true,
+            cd: "",
+            paths: [],
+            newFile: null,
+            renameId: null, // Идентификатор файла для смены имени
+            folder: null,
+            loading: false,
+            search: null,
+            download: null, // Идентификатор файла для скачивания
+            dir: 0, // Идентификатор каталога для скачивания
+        });
 
     }
 
@@ -41,18 +65,18 @@ class Files extends React.Component {
 
     }
 
-    componentDidUpdate = (prevProps) => {
+    componentDidUpdate = prevProps => {
 
         // Отслеживание изменений значения идентификатора пользователя
-        if (prevProps.user !== this.props.user) {
+        if (prevProps.user !== this.props.user || prevProps.folder !== this.props.folder) {
 
-            this.setState({ user: this.props.user });
+            let user = this.props.user,
+                folder = this.props.folder;
 
-            // Провека ссылки для папки
-            const query = new URLSearchParams(window.location.search);
+            this.setState({ user, folder });
 
             // Получение списка файлов
-            this.getUserFiles(this.props.user, query.get('folder') || null);
+            this.getUserFiles(user, folder);
 
         }
 
@@ -73,36 +97,49 @@ class Files extends React.Component {
 
     /**
      * Открытие папки с файлами
-     * @param {object} e event 
+     * 
+     * @param {number|null} folder идентификатор каталога 
      */
-    openFolder = e => {
+    openFolder = (folder, search = null) => {
 
-        // Папка к открытию
-        let folder = e.currentTarget.dataset.folder || null,
-            user = this.state.user,
-            data = {},
-            url = `?user=${user}`;
+        if (!search) {
 
-        data.user = user;
+            search = `?user=${this.state.user}`;
 
-        if (folder) {
-            data.folder = folder;
-            url += `&folder=${folder}`;
+            let folderId = folder.currentTarget.dataset.folder || null;
+            if (folderId)
+                search += `&folder=${folderId}`;
+
         }
 
-        window.history.pushState(data, `Файлы ${data.user} в папке ${data.folder}`, url);
-        this.setState({ folder });
-
-        this.getUserFiles(this.state.user, folder);
+        this.props.history.push(search);
+        // this.setState({ folder });
+        // this.getUserFiles(this.state.user, folder);
 
     }
 
     /**
+     * Идентификатор работы функции
+     * 
+     * @var {boolean}
+     */
+    loadingFileList = false;
+
+    /**
      * Загрузка списка файлов одного пользователя
+     * 
      * @param {number} user идентификатор пользователя
      * @param {number|null} folder идентификатор папки с файлами
      */
     getUserFiles = (user, folder = null) => {
+
+        if (this.loadingFileList)
+            return null;
+
+        this.loadingFileList = true;
+
+        // Анимация загрузки
+        this.setState({ filesLoad: true });
 
         let formData = new FormData();
         formData.append('id', user);
@@ -112,11 +149,6 @@ class Files extends React.Component {
             formData.append('folder', folder);
 
         this.props.setFolderId(folder);
-
-        // Анимация загрузки
-        this.setState({
-            filesLoad: true,
-        });
 
         axios.post('disk/getUserFiles', formData).then(({ data }) => {
 
@@ -131,106 +163,16 @@ class Files extends React.Component {
 
         }).then(() => {
 
-            this.setState({
-                filesLoad: false,
-            });
+            this.loadingFileList = false;
+            this.setState({ filesLoad: false });
 
         });
 
     }
 
-    renameFile = e => {
+    renameFile = renameId => {
 
-        let renameId = Number(e.currentTarget.dataset.file);
         this.setState({ renameId });
-
-    }
-
-    /**
-     * Открытие контекстного меню правой кнопкой мыши
-     * @param {object} e event 
-     */
-    fileMenuOpen = e => {
-
-        e.preventDefault();
-        this.setState({ fileMenu: e.currentTarget.dataset.file });
-
-        document.body.addEventListener('click', this.fileMenuClose);
-
-        this.hideAllMenu();
-        let elem = document.getElementById(`context-menu-${e.currentTarget.dataset.file}`);
-        elem.style.display = 'block';
-
-        let top = e.clientY,
-            left = e.clientX,
-            screenX = window.innerWidth,
-            screenY = window.innerHeight,
-            w = elem.offsetWidth,
-            h = elem.offsetHeight,
-            par = document.getElementById(`file-row-${e.currentTarget.dataset.file}`).getBoundingClientRect();
-
-        if (w + left > screenX)
-            left = screenX - w - 20;
-
-        if (h + top > screenY)
-            top = screenY - h - 10;
-
-        // console.log({ top, left, screenX, screenY, w, h, par });
-
-        left = left - par.x;
-        top = top - par.y;
-
-        elem.style.top = `${top}px`;
-        elem.style.left = `${left}px`;
-
-    }
-
-    /**
-     * Скрытие всех открытых менюшек файла
-     */
-    hideAllMenu = () => {
-
-        let elems = document.querySelectorAll(`.file-context-menu`);
-        elems.forEach(elem => {
-            elem.style.display = "none";
-        });
-
-    }
-
-    /**
-     * Закрытие меню
-     * @param {object} e event
-     */
-    fileMenuClose = e => {
-
-        this.hideAllMenu();
-        document.body.removeEventListener('click', this.fileMenuClose);
-
-        this.setState({ fileMenu: null });
-
-    }
-
-    /**
-     * Формирование контекстного меню
-     * @param {object} file объект данных файла 
-     */
-    FileMenu = ({ filedata }) => {
-
-        let classes = "py-1 px-3 item-file-menu";
-
-        // Пункт переименовывания файла
-        let rename = <Dropdown.Item className={classes} onClick={this.renameFile} data-file={filedata.id}>
-            <div className="d-inline-block text-left icon-item-menu-file">
-                <FontAwesomeIcon icon={["fas", "pen"]} />
-            </div>
-            <span>Переименовать</span>
-        </Dropdown.Item>;
-
-        return (
-            <Card className="position-absolute shadow py-1 file-context-menu" id={`context-menu-${filedata.id}`}>
-                {rename}
-            </Card>
-        )
 
     }
 
@@ -238,6 +180,7 @@ class Files extends React.Component {
 
     /**
      * Метод создания нового каталога
+     * 
      * @param {object} e event 
      */
     createFolder = e => {
@@ -270,7 +213,30 @@ class Files extends React.Component {
     }
 
     /**
+     * Метод установки идентификатора файла для скачивания
+     * 
+     * @param {number} id идентификатор файла 
+     * @param {number} dir идентификатор каталога 
+     */
+    downloadFile = (id, dir) => {
+
+        this.props.history.push(`/download/${id}`);
+        // this.setState({ download: id, dir });
+
+    }
+
+    /**
+     * Метод обнуления идентификатора скачиваемого файла при завершении скачивания  
+     */
+    downloaded = id => {
+
+        this.setState({ download: id });
+
+    }
+
+    /**
      * Метод вывода хлебных крошек
+     * 
      * @param {object} paths 
      */
     BreadСrumbs = ({ paths }) => {
@@ -278,15 +244,15 @@ class Files extends React.Component {
         let loading = null;
 
         if (this.state.loading)
-            loading = <FontAwesomeIcon icon={["fas", "spinner"]} className="fa-spin" />
+            loading = <FontAwesomeIcon icon={["fas", "spinner"]} className="fa-spin mr-3" />
 
         let addfolder = null;
-        if (localStorage.getItem('user') === this.state.user)
-            addfolder = <div className="cursor-pointer hover ml-2" onClick={this.createFolder}>
-                <FontAwesomeIcon icon={["fas", "folder-plus"]} id="add-new-folder" />
+        if (Number(localStorage.getItem('user')) === this.state.user)
+            addfolder = <div className="cursor-pointer hover mx-1" onClick={this.createFolder} title="Новая папка">
+                <FontAwesomeIcon icon={["fas", "folder-plus"]} id="add-new-folder" className="text-warning" />
             </div>
 
-        let right = <div className="panel-header d-flex align-items-center justify-content-end">
+        let right = <div className="panel-header d-flex align-items-center justify-content-end px-2">
             {loading}
             {addfolder}
         </div>
@@ -311,7 +277,7 @@ class Files extends React.Component {
 
             // Определение текущего каталога
             if (count === paths.length) {
-                last = <div className="px-2">
+                last = <div className="px-2 mb-2">
                     <h5>{path.name}</h5>
                 </div>
             }
@@ -342,60 +308,6 @@ class Files extends React.Component {
                 {last}
             </div>
         )
-
-    }
-
-    /**
-     * Вывод одной строки файла
-     * @param {object} file
-     * @return {object}
-     */
-    FileRowList = ({ file }) => {
-
-        let name = file.name,
-            icon = Icons.file;
-
-        // Добавление расширения файла к имени
-        if (!file.is_dir)
-            name += `.${file.ext}`;
-
-        if (file.icon)
-            icon = Icons[file.icon];
-
-        let onClick = file.is_dir ? this.openFolder : this.selectFile;
-
-        let classes = "py-1 px-3 item-file-menu";
-
-        // Пункт переименовывания файла
-        let rename = <Dropdown.Item className={classes} onClick={this.renameFile} data-file={file.id}>
-            <div className="d-inline-block text-left icon-item-menu-file">
-                <FontAwesomeIcon icon={["fas", "pen"]} />
-            </div>
-            <span>Переименовать</span>
-        </Dropdown.Item>;
-
-        const menu = (
-            <Card className="position-absolute shadow py-1 file-context-menu" id={`context-menu-${file.id}`}>
-                {rename}
-            </Card>
-        )
-
-        return <div className="position-relative" id={`file-row-block-${file.id}`}>
-
-            <div className="loading-app loading-modal justify-content-center align-items-center position-absolute h-100 loading-file">
-                <Spinner animation="border" />
-            </div>
-
-            <Card className="file-row border-0 text-center m-1 p-1" title={name} onClick={onClick} data-folder={file.id} onContextMenu={this.fileMenuOpen} data-file={file.id} id={`file-row-${file.id}`}>
-                <div className="d-flex justify-content-center align-items-center file-row-icon">
-                    <img src={icon} width="46" height="46" alt={file.name} />
-                </div>
-                <div className="file-row-name">{name}</div>
-            </Card>
-
-            {menu}
-
-        </div>
 
     }
 
@@ -435,7 +347,7 @@ class Files extends React.Component {
 
         // Элементы на страницу
         fileList = files.map(file => (
-            <this.FileRowList file={file} key={file.id} />
+            <FileRow file={file} key={file.id} renameFile={this.renameFile} user={this.state.user} openFolder={this.openFolder} downloadFile={this.downloadFile} />
         ));
 
         if (!files.length) {
@@ -449,10 +361,11 @@ class Files extends React.Component {
         }
 
         return (
-            <div className="py-3 px-2 flex-grow-1">
+            <div className="p-2 flex-grow-1">
 
                 <this.BreadСrumbs paths={this.state.paths} />
                 <RenameFile renameId={this.state.renameId} setNullRenameId={this.setNullRenameId} />
+                <Download id={this.state.download} dir={this.state.dir} downloaded={this.downloaded} />
 
                 <div className="d-flex align-content-start flex-wrap">
                     {fileList}
@@ -471,4 +384,4 @@ class Files extends React.Component {
 
 }
 
-export default Files;
+export default withRouter(Files);

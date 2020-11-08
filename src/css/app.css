@@ -10,8 +10,11 @@
 }
 
 .header-menu, .content-files {
-    max-width: 1200px;
+    max-width: 1230px;
 }
+
+.header-link, .header-link:active { color: #ffffff; }
+.header-link:hover  { color: #eeecec; text-decoration: none; }
 
 .bg-login-block {
     background: url('//api.kolgaev.ru/css/header/header.jpg') no-repeat;
@@ -19,9 +22,9 @@
 }
 
 .userlist-menu {
-    width: 250px;
-    max-width: 250px;
-    min-width: 250px;
+    width: 230px;
+    max-width: 230px;
+    min-width: 230px;
 }
 
 .loading-user {
@@ -41,14 +44,9 @@
     font-size: 13px;
     cursor: pointer;
 }
-
-.file-row:hover {
-    background-color: #f0f0f0;
-}
-
-.file-row-icon {
-    height: 65px;
-}
+.file-row.active { background-color: #f8f8f8; }
+.file-row:hover, .file-row.active-menu { background-color: #f0f0f0; }
+.file-row-icon { height: 65px; }
 
 .file-row-name {
     display: -webkit-box;
@@ -76,7 +74,10 @@
     background-color: #747474;
     border-radius: .25rem .25rem 0 0;
 }
+
 .modal-header button { outline: none; }
+
+#modal-uploading-files .modal-header button { color: #ffffff; }
 #modal-uploading-files .modal-title {
     z-index: 10;
     color: #fff;
@@ -118,3 +119,41 @@
 .hover:hover { opacity: 1; }
 
 .panel-header { font-size: 1.4rem; }
+
+.toasts-downloads {
+    position: fixed;
+    left: 5px;
+    bottom: 5px;
+    min-width: 230px;
+    max-width: 230px;
+}
+
+.progress-download-file {
+    position: absolute;
+    top: 7px;
+    left: 5px;
+    right: 5px;
+    height: 2px;
+}
+
+.btn-user {
+    background-color: #f3f3f3;
+    outline: none !important;
+}
+.btn-user:active, .btn-user:focus {
+    outline: none !important;
+}
+.btn-user:hover {
+    background-color: #ededed;
+}
+
+#download-file-block {
+    max-width: 800px;
+}
+.progress-download {
+    height: 5px;
+}
+
+.alert-for-arhive {
+    max-width: 650px;
+}

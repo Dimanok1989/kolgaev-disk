@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 class Header extends React.Component {
 
@@ -11,8 +12,10 @@ class Header extends React.Component {
             <div className="bg-dark text-light p-3">
                 <div className="header-menu mx-auto d-flex justify-content-between align-items-center">
                     <div className="d-flex">
-                        <div className="font-weight-bold">Kolgaev.ru</div>
-                        <div className="ml-2">Диск</div>
+                        <Link className="header-link" to="/">
+                            <span className="font-weight-bold">Kolgaev.ru</span>
+                            <span className="ml-2">Диск</span>
+                        </Link>
                     </div>
                 </div>
             </div>

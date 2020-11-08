@@ -89,10 +89,6 @@ class UploadModal extends React.Component {
 
         return (
             <div>
-                {/* <Button variant="primary" onClick={this.handleShow}>
-                    O
-                </Button> */}
-
                 <Modal
                     show={show}
                     onHide={this.handleClose}

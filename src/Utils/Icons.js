@@ -17,6 +17,7 @@ import code from './../Icons/code.svg';
 import sevez from './../Icons/sevez.svg';
 import video from './../Icons/video.svg';
 import pdf from './../Icons/pdf.svg';
+import txt from './../Icons/txt.svg';
 
 const icons = {
     folder,
@@ -38,6 +39,7 @@ const icons = {
     sevez,
     video,
     pdf,
+    txt,
 }
 
 export default icons;

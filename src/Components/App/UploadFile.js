@@ -39,11 +39,11 @@ class UploadFile extends React.Component {
     componentDidUpdate = () => {
 
         // Отслеживание изменений значения идентификатора пользователя
-        if (this.state.folder != this.props.folder)
-            this.state.folder = this.props.folder;
+        if (this.state.folder !== this.props.folder)
+            this.setState({ folder: this.props.folder });
 
-        if (this.state.user != this.props.userId)
-            this.state.user = this.props.userId;
+        if (this.state.user !== this.props.userId)
+            this.setState({ user: this.props.userId });
 
     }
 
@@ -126,20 +126,20 @@ class UploadFile extends React.Component {
             hash: false, // Идентификатор созданного файла
         }
 
-        let response = {}, // Объект ответа загрузки части файла
-            chunk = 0; // Размер загружаемой части
+        let response = {}; // Объект ответа загрузки части файла
+        // let chunk = 0; // Размер загружаемой части
 
         while (this.state.offset < formdata.size) {
 
-            chunk = this.state.chunk; // Размер загружаемой части
+            // chunk = this.state.chunk; // Размер загружаемой части
 
             // Определение последней части файла
             if (this.state.offset + this.state.chunk >= formdata.size) {
 
                 formdata.endchunk = true;
 
-                let size = this.state.chunk * Math.floor(formdata.size / this.state.chunk);
-                chunk = this.state.chunk - (formdata.size - size);
+                // let size = this.state.chunk * Math.floor(formdata.size / this.state.chunk);
+                // chunk = this.state.chunk - (formdata.size - size);
 
             }
 
@@ -323,9 +323,9 @@ class UploadFile extends React.Component {
 
     render() {
 
-        let button = (localStorage.getItem('user') === this.state.user) ? <button className="btn btn-warning rounded-circle" type="button" title="Добавить файл" onClick={this.openInput}>
+        let button = <button className="btn btn-warning rounded-circle" type="button" title="Добавить файл" onClick={this.openInput}>
             <FontAwesomeIcon icon={["fas", "paperclip"]} title="Выбрать файл" />
-        </button> : null;
+        </button>
 
         return (
             <div className="position-fixed add-new-file">

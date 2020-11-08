@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Users from './Users';
-import Files from './Files';
+import Files from './Files/Files';
 import UploadFile from './UploadFile';
 
 // import FontAwesomeIcon from './../../Utils/FontAwesomeIcon';
@@ -16,17 +16,39 @@ class Content extends React.Component {
             select: null,
             folder: null,
             newFile: null,
+            search: null,
         }
 
     }
 
     componentDidMount = () => {
 
-        const query = new URLSearchParams(window.location.search);
+        // Преобрвазоание поикового запроса из ссылки в объект
+        const query = new URLSearchParams(this.props.location.search);
 
-        this.setState({
-            select: query.get('user') || null,
-        });
+        // Установка выбранного пользователя
+        this.setState({ select: Number(query.get('user')) || null });
+
+    }
+
+    /**
+     * Обновление свойств в компоненте
+     * 
+     * @param {object} prevProps 
+     */
+    componentDidUpdate = prevProps => {
+
+        // Преобрвазоание поикового запроса из ссылки в объект
+        const query = new URLSearchParams(this.props.location.search);
+        let select =  Number(query.get('user')) || null, // Идентификатор выбранного пользователя
+            folder = Number(query.get('folder')) || null; // Идентификатор открытого каталога
+
+        // Установка выбранного пользователя, если отличается от предыдущих данных
+        if (select !== this.state.select)
+            this.setState({ select });
+
+        if (folder !== this.state.folder)
+            this.setState({ folder });
 
     }
 
@@ -36,24 +58,21 @@ class Content extends React.Component {
      */
     setUserId = user => {
 
-        window.history.pushState({ user }, `Файлы ${user}`, `?user=${user}`);
+        // window.history.pushState({ user }, `Файлы ${user}`, `?user=${user}`);
 
-        this.setState({
-            select: user,
-        });
+        this.setState({ select: user });
 
     }
 
     setFolderId = folder => {
 
-        this.setState({
-            folder,
-        });
+        this.setState({ folder });
 
     }
 
     /**
      * Добавление только что загруженного файла в список всех файлов
+     * 
      * @param {object} file объект данных нового файла 
      */
     pushFileList = file => {
@@ -64,20 +83,29 @@ class Content extends React.Component {
 
     render() {
 
-        if (!this.props.isLogin)
-            return null;
-
         let addFiles = null;
 
-        addFiles = <UploadFile userId={this.state.select} folder={this.state.folder} pushFileList={this.pushFileList} />;
+        if (Number(localStorage.getItem('user')) === this.state.select)
+            addFiles = <UploadFile userId={this.state.select} folder={this.state.folder} pushFileList={this.pushFileList} />;
 
         return (
-            <div className="p-2 mx-auto d-flex justify-content-between content-files">
+            <div className="p-2 mx-auto mt-3 d-flex justify-content-between content-files position-relative">
                 <Users user={this.state.select} setUserId={this.setUserId} />
-                <Files user={this.state.select} setFolderId={this.setFolderId} newFile={this.state.newFile} />
+                <Files user={this.state.select} setFolderId={this.setFolderId} newFile={this.state.newFile} folder={this.state.folder} />
                 {addFiles}
             </div>
         )
+
+    }
+
+    componentWillUnmount = () => {
+
+        this.setState({
+            select: null,
+            folder: null,
+            newFile: null,
+            search: null,
+        });
 
     }
 

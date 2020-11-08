@@ -5,6 +5,8 @@ import { Spinner } from 'react-bootstrap';
 import Login from './App/Login';
 import Header from './App/Header';
 import Content from './App/Content';
+import DownloadPage from './App/Download';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 class App extends React.Component {
 
@@ -70,12 +72,20 @@ class App extends React.Component {
             )
         }
 
+        if (!this.state.isLogin)
+            return <Login isLogin={this.state.isLogin} logined={this.logined} />
+
         return (
-            <div>
-                <Login isLogin={this.state.isLogin} logined={this.logined} />
-                <Header isLogin={this.state.isLogin} />
-                <Content isLogin={this.state.isLogin} />
-            </div>
+            <BrowserRouter>
+                <div>
+                    <Header isLogin={this.state.isLogin} />
+                    <Switch>
+                        <Route path="/download/:id" component={DownloadPage} />
+                        <Route path="/download" component={DownloadPage} />
+                        <Route path="/" component={Content} />
+                    </Switch>
+                </div>
+            </BrowserRouter>
         )
 
     }

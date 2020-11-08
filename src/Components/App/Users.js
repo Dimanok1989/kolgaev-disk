@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 import axios from './../../Utils/axios';
 import echoerror from './../../Utils/echoerror';
@@ -22,6 +23,19 @@ class Users extends React.Component {
     componentDidMount = () => {
 
         this.getUsersList(); // Получение списка пользователей
+
+    }
+
+    componentDidUpdate = prevProps => {
+
+        if (prevProps.select !== this.props.user && this.props.user === null) {
+
+            let usersLi = document.querySelectorAll('.btn-user .user-list-name.font-weight-bold');
+            usersLi.forEach(row => {
+                row.classList.remove('font-weight-bold');
+            })
+
+        }
 
     }
 
@@ -62,9 +76,11 @@ class Users extends React.Component {
         }
 
         // Актиыный пользователя
-        let classNames = Number(this.state.select) === Number(user.id) ? 'font-weight-bold' : '',
+        let classNames = Number(this.state.select) === Number(user.id) ? 'font-weight-bold user-list-name' : 'user-list-name',
             name = user.name,
             email = null;
+
+        // classNames = 'user-list-name';
 
         if (user.surname)
             name += ` ${user.surname}`;
@@ -73,14 +89,17 @@ class Users extends React.Component {
             email = <div><small className="text-muted">{user.email}</small></div>
 
         // Строка одного пользователя
-        return <button
-            className="btn btn-light btn-block text-left"
-            onClick={this.setUserId}
-            data-id={user.id}
-        >
-            <div className={classNames}>{name}</div>
-            {email}
-        </button>
+        return (
+            <NavLink
+                className="btn btn-user btn-block text-left"
+                onClick={this.setUserId}
+                data-id={user.id}
+                to={`?user=${user.id}`}
+            >
+                <div className={classNames}>{name}</div>
+                {email}
+            </NavLink>
+        )
 
     }
 

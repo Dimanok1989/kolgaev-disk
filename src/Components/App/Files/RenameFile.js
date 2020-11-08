@@ -1,6 +1,6 @@
 import React from 'react';
 
-import axios from './../../Utils/axios';
+import axios from './../../../Utils/axios';
 import { Modal, FormControl, Button } from 'react-bootstrap';
 
 class RenameFile extends React.Component {
@@ -45,8 +45,14 @@ class RenameFile extends React.Component {
         formdata.append('id', renameId);
 
         axios.post('disk/getNameFile', formdata).then(({ data }) => {
+
             this.setState({ show: true });
-            document.getElementById('name-file-rename').value = data.name;
+
+            let input = document.getElementById('name-file-rename');
+            input.value = data.name;
+            input.focus();
+            input.select();
+
         }).catch(error => {
             name.classList.add('text-danger');
         }).then(() => {
@@ -83,6 +89,13 @@ class RenameFile extends React.Component {
 
     }
 
+    checkKey = e => {
+
+        if (e.keyCode === 13)
+            this.rename();
+
+    }
+
     render() {
 
         return (
@@ -102,6 +115,7 @@ class RenameFile extends React.Component {
                         aria-label="Имя файла"
                         name="filename"
                         id="name-file-rename"
+                        onKeyUp={this.checkKey}
                     />
                 </Modal.Body>
                 <Modal.Footer>
