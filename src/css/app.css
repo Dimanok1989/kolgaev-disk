@@ -157,3 +157,7 @@
 .alert-for-arhive {
     max-width: 650px;
 }
+
+.limit-progress {
+    height: 5px;
+}

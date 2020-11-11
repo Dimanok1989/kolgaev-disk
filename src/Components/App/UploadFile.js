@@ -4,7 +4,8 @@ import UploadModal from './UploadModal';
 import axios from './../../Utils/axios';
 import echoerror from './../../Utils/echoerror';
 
-import FontAwesomeIcon from './../../Utils/FontAwesomeIcon';
+// import { Button } from 'react-bootstrap';
+// import FontAwesomeIcon from './../../Utils/FontAwesomeIcon';
 
 class UploadFile extends React.Component {
 
@@ -323,9 +324,13 @@ class UploadFile extends React.Component {
 
     render() {
 
-        let button = <button className="btn btn-warning rounded-circle" type="button" title="Добавить файл" onClick={this.openInput}>
-            <FontAwesomeIcon icon={["fas", "paperclip"]} title="Выбрать файл" />
-        </button>
+        // let button = <button className="btn btn-warning rounded-circle" type="button" title="Добавить файл" onClick={this.openInput}>
+        //     <FontAwesomeIcon icon={["fas", "paperclip"]} title="Выбрать файл" />
+        // </button>
+
+        // button = <Button variant="outline-dark" onClick={this.openInput}>
+        //     <FontAwesomeIcon icon={["fas", "upload"]} title="Загрузить файл" />
+        // </Button>
 
         return (
             <div className="position-fixed add-new-file">
@@ -340,8 +345,6 @@ class UploadFile extends React.Component {
                 />
 
                 <input type="file" id="input-upload-files" className="d-none" onChange={this.startUploadFiles} multiple />
-
-                {button}
 
             </div>
         )

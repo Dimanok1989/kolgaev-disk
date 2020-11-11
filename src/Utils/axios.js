@@ -1,8 +1,8 @@
-import axios from "axios"; // Импорт библиотеки axios
+import Axios from "axios"; // Импорт библиотеки axios
 import Cookies from 'js-cookie'; // Импорт библиотеки аботы с куками
 
 // Базовые настройки axios
-let instance = axios.create({
+const axios = Axios.create({
     baseURL: process.env.REACT_APP_API_URL,
     responseType: "json",
     headers: {
@@ -10,14 +10,16 @@ let instance = axios.create({
     },
 });
 
+// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
 // Отслеживание токена
-instance.interceptors.request.use(function (config) {
+axios.interceptors.request.use(function (config) {
 
     const token = Cookies.get('token') || localStorage.getItem('token');
-    config.headers.Authorization = token ? `Bearer ${token}` : null;
+    config.headers.common['Authorization'] = token ? `Bearer ${token}` : null;
 
     return config;
 
 });
 
-export default instance
+export default axios

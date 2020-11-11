@@ -27,9 +27,8 @@ class Login extends React.Component {
      */
     login = () => {
 
-        this.setState({
-            loading: true, // Отображение загрузки
-        });
+        // Отображение загрузки
+        this.setState({ loading: true });
 
         // Данные авторизации из формы
         let form = document.querySelector("form#login-form");
@@ -38,27 +37,24 @@ class Login extends React.Component {
         // Запрос на авторизацию
         axios.post(`auth/login`, formData).then(({ data }) => {
 
-            // Обнуление ошибки
-            this.setState({
-                error: null,
+            this.props.logined(true); // Возврат флага авторизированного пользователя
+
+            // Запись куков на все поддомены
+            Cookies.set('token', data.token, {
+                expires: 365,
+                domain: '.' + window.location.host,
             });
 
-            this.props.logined(true); // Возврат идентификатора авторизированного пользователя
-            Cookies.set('token', data.token, { expires: 365 }); // Куки с токеном
             localStorage.setItem('token', data.token);
+            localStorage.setItem('user', data.user.id);
+
+            window.user = data.user;
 
         }).catch(error => {
 
-            // Вывод ошибки
             this.setState({
                 error: echoerror(error),
-            });
-
-        }).then(() => {
-
-            // Скрытие загрузки
-            this.setState({
-                loading: false,
+                loading: false
             });
 
         });
@@ -68,9 +64,6 @@ class Login extends React.Component {
     loginEnter = e => e.keyCode === 13 ? this.login() : null;
 
     render() {
-
-        if (this.props.isLogin)
-            return null;
 
         let loading = this.state.loading; // Флаг загрузки
 
@@ -83,7 +76,7 @@ class Login extends React.Component {
                     <Card.Body>
                         <Card.Title>Добро пожаловать!</Card.Title>
                         <div className="position-relative mt-3">
-                            <LoadingModal loading={loading}/>
+                            <LoadingModal loading={loading} />
                             <Form id="login-form">
                                 <InputGroup className="mb-2">
                                     <FormControl

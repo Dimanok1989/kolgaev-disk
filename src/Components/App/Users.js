@@ -1,10 +1,13 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import axios from './../../Utils/axios';
 import echoerror from './../../Utils/echoerror';
 
+import { ButtonGroup, Button, ProgressBar } from 'react-bootstrap';
 import FontAwesomeIcon from './../../Utils/FontAwesomeIcon';
+
+import CreateFolder from './Files/CreateFolder';
 
 class Users extends React.Component {
 
@@ -16,6 +19,8 @@ class Users extends React.Component {
             users: [], // Список пользователей
             select: null, // Выбранный пользователь
             error: null, // Ошибка получения списка файлов
+            sizes: {},
+            loading: false,
         }
 
     }
@@ -28,12 +33,12 @@ class Users extends React.Component {
 
     componentDidUpdate = prevProps => {
 
-        if (prevProps.select !== this.props.user && this.props.user === null) {
+        if (prevProps.user !== this.props.user && this.props.user === null) {
 
             let usersLi = document.querySelectorAll('.btn-user .user-list-name.font-weight-bold');
             usersLi.forEach(row => {
                 row.classList.remove('font-weight-bold');
-            })
+            });
 
         }
 
@@ -48,7 +53,10 @@ class Users extends React.Component {
 
         axios.post('disk/getUsersList').then(({ data }) => {
 
-            this.setState({ users: data.users });
+            this.setState({
+                users: data.users,
+                sizes: data.sizes,
+            });
 
             if (this.props.user)
                 this.setState({ select: this.props.user });
@@ -63,6 +71,7 @@ class Users extends React.Component {
 
     /**
      * Метод вывода строки одного пользователя в списке пользователей
+     * 
      * @param {object} user объект данных пользователя 
      * @return {object}
      */
@@ -76,7 +85,7 @@ class Users extends React.Component {
         }
 
         // Актиыный пользователя
-        let classNames = Number(this.state.select) === Number(user.id) ? 'font-weight-bold user-list-name' : 'user-list-name',
+        let classNames = Number(this.props.user) === Number(user.id) ? 'font-weight-bold user-list-name' : 'user-list-name',
             name = user.name,
             email = null;
 
@@ -90,21 +99,22 @@ class Users extends React.Component {
 
         // Строка одного пользователя
         return (
-            <NavLink
-                className="btn btn-user btn-block text-left"
+            <Link
+                className="btn btn-user btn-block text-left my-2"
                 onClick={this.setUserId}
                 data-id={user.id}
                 to={`?user=${user.id}`}
             >
                 <div className={classNames}>{name}</div>
                 {email}
-            </NavLink>
+            </Link>
         )
 
     }
 
     /**
      * Установка идентификатора пользователя для загрузки его файлов
+     * 
      * @param {object} e event
      */
     setUserId = e => {
@@ -115,6 +125,24 @@ class Users extends React.Component {
 
         // Передача идентификатора пользователя в родительский компонент
         this.props.setUserId(e.currentTarget.dataset.id);
+
+    }
+
+    /**
+     * Открытие окна выбора файлов
+     */
+    openInput = e => {
+
+        let elem = document.getElementById('input-upload-files');
+        elem.click();
+
+        e.currentTarget.blur();
+
+    }
+
+    pushNewFolder = dir => {
+
+        this.props.pushNewFolder(dir);
 
     }
 
@@ -155,9 +183,38 @@ class Users extends React.Component {
             <this.UserRow user={user} key={user.id} />
         ));
 
+        let disabled = true;
+        if (Number(localStorage.getItem('user')) === Number(this.state.select))
+            disabled = false;
+
+        let limit = null;
+        if (typeof this.state.sizes.size != "undefined") {
+
+            let limitPercent = (this.state.sizes.size / this.state.sizes.limit) * 100;
+
+            limit = <div className="my-2">
+                <ProgressBar variant="warning" now={limitPercent} className="limit-progress" />
+                <div className="mb-2 text-center">
+                    <small className="text-muted">Свободно {this.state.sizes.freeFormat} из {this.state.sizes.limitFormat}</small>
+                </div>
+            </div>
+
+        }
+
         return (
             <div className="p-2 userlist-menu">
+
+                <ButtonGroup className="w-100">
+                    <CreateFolder disabled={disabled} pushNewFolder={this.pushNewFolder} />
+                    <Button variant="outline-secondary" disabled={disabled} onClick={this.openInput}>
+                        <FontAwesomeIcon icon={["fas", "upload"]} title="Загрузить файл" />
+                    </Button>
+                </ButtonGroup>
+
+                {limit}
+
                 {userlist}
+
             </div>
         )
 

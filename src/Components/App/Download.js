@@ -28,15 +28,6 @@ class Dowbload extends React.Component {
 
     componentWillUnmount = () => {
 
-        this.setState({
-            loading: true,
-            error: null,
-            file: {},
-            progress: 0,
-            download: 0,
-            downloaded: false,
-        });
-
     }
 
     componentDidMount = () => {
@@ -167,7 +158,7 @@ class Dowbload extends React.Component {
 
         return <div className="text-center mt-5 mb-3 mx-auto" id="download-file-block">
 
-            <img src={Icons[file.icon] || Icons.file} width="90" className="mb-2" />
+            <img src={Icons[file.icon] || Icons.file} width="90" className="mb-2" alt={file.icon} />
 
             <div className="font-weight-bold">{file.name}</div>
             <div className="mb-4">{download}{file.sizeformat}</div>

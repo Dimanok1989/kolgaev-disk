@@ -16,6 +16,8 @@ class FileRowList extends React.Component {
 
     }
 
+    componentWillUnmount = () => null;
+
     /**
      * Открытие папки с файлами
      * 

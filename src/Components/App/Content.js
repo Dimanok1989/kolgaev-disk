@@ -16,8 +16,13 @@ class Content extends React.Component {
             select: null,
             folder: null,
             newFile: null,
+            newFolder: null,
             search: null,
         }
+
+    }
+
+    componentWillUnmount = () => {
 
     }
 
@@ -60,7 +65,10 @@ class Content extends React.Component {
 
         // window.history.pushState({ user }, `Файлы ${user}`, `?user=${user}`);
 
-        this.setState({ select: user });
+        this.setState({
+            select: user,
+            folder: null
+        });
 
     }
 
@@ -81,31 +89,26 @@ class Content extends React.Component {
 
     }
 
+    pushNewFolder = dir => {
+
+        this.setState({ newFolder: dir });
+
+    }
+
     render() {
 
         let addFiles = null;
 
-        if (Number(localStorage.getItem('user')) === this.state.select)
+        if (Number(localStorage.getItem('user')) === Number(this.state.select))
             addFiles = <UploadFile userId={this.state.select} folder={this.state.folder} pushFileList={this.pushFileList} />;
 
         return (
             <div className="p-2 mx-auto mt-3 d-flex justify-content-between content-files position-relative">
-                <Users user={this.state.select} setUserId={this.setUserId} />
-                <Files user={this.state.select} setFolderId={this.setFolderId} newFile={this.state.newFile} folder={this.state.folder} />
+                <Users user={this.state.select} setUserId={this.setUserId} pushNewFolder={this.pushNewFolder} />
+                <Files user={this.state.select} setFolderId={this.setFolderId} newFile={this.state.newFile} folder={this.state.folder} newFolder={this.state.newFolder} />
                 {addFiles}
             </div>
         )
-
-    }
-
-    componentWillUnmount = () => {
-
-        this.setState({
-            select: null,
-            folder: null,
-            newFile: null,
-            search: null,
-        });
 
     }
 

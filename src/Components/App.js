@@ -51,6 +51,7 @@ class App extends React.Component {
             this.setState({ isLogin: true });
 
             localStorage.setItem('user', data.id); // Идентификатор пользователя
+            window.user = data;
 
         }).catch(error => {
 
@@ -73,7 +74,7 @@ class App extends React.Component {
         }
 
         if (!this.state.isLogin)
-            return <Login isLogin={this.state.isLogin} logined={this.logined} />
+            return <Login logined={this.logined} />
 
         return (
             <BrowserRouter>
@@ -83,6 +84,7 @@ class App extends React.Component {
                         <Route path="/download/:id" component={DownloadPage} />
                         <Route path="/download" component={DownloadPage} />
                         <Route path="/" component={Content} />
+                        {/* <Route path="*" component={NotFound} /> */}
                     </Switch>
                 </div>
             </BrowserRouter>

@@ -6,7 +6,7 @@ import axios from './../../../Utils/axios';
 
 import FileRow from './FileRow';
 import RenameFile from './RenameFile';
-import Download from './Download';
+// import Download from './Download';
 
 import { Spinner } from 'react-bootstrap';
 import FontAwesomeIcon from './../../../Utils/FontAwesomeIcon';
@@ -25,6 +25,7 @@ class Files extends React.Component {
             cd: "",
             paths: [],
             newFile: null,
+            newFolder: null,
             renameId: null, // Идентификатор файла для смены имени
             folder: null,
             loading: false,
@@ -36,22 +37,6 @@ class Files extends React.Component {
     }
 
     componentWillUnmount = () => {
-
-        this.setState({
-            user: null, // Идентификатор выбранного плоьзователя
-            files: [], // Список файлов в каталоге
-            dirs: [], // Список папок в каталоге
-            filesLoad: true,
-            cd: "",
-            paths: [],
-            newFile: null,
-            renameId: null, // Идентификатор файла для смены имени
-            folder: null,
-            loading: false,
-            search: null,
-            download: null, // Идентификатор файла для скачивания
-            dir: 0, // Идентификатор каталога для скачивания
-        });
 
     }
 
@@ -89,6 +74,19 @@ class Files extends React.Component {
             this.setState({
                 files,
                 newFile: null
+            });
+
+        }
+
+        // Добавление нового файла
+        if (prevProps.newFolder !== this.props.newFolder) {
+
+            let dirs = this.state.dirs;
+            dirs.push(this.props.newFolder);
+
+            this.setState({
+                dirs,
+                newFolder: null
             });
 
         }
@@ -176,42 +174,6 @@ class Files extends React.Component {
 
     }
 
-    create = false;
-
-    /**
-     * Метод создания нового каталога
-     * 
-     * @param {object} e event 
-     */
-    createFolder = e => {
-
-        if (this.create)
-            return false;
-
-        this.create = true;
-        this.setState({ loading: true });
-
-        let formdata = new FormData();
-        formdata.append('cd', this.state.folder);
-
-        axios.post('disk/mkdir', formdata).then(({ data }) => {
-
-            let dirs = this.state.dirs;
-            dirs.push(data.file);
-
-            this.setState({ dirs });
-
-        }).catch(error => {
-
-            document.getElementById('add-new-folder').classList.add('text-danger');
-
-        }).then(() => {
-            this.create = false;
-            this.setState({ loading: false });
-        });
-
-    }
-
     /**
      * Метод установки идентификатора файла для скачивания
      * 
@@ -247,10 +209,10 @@ class Files extends React.Component {
             loading = <FontAwesomeIcon icon={["fas", "spinner"]} className="fa-spin mr-3" />
 
         let addfolder = null;
-        if (Number(localStorage.getItem('user')) === this.state.user)
-            addfolder = <div className="cursor-pointer hover mx-1" onClick={this.createFolder} title="Новая папка">
-                <FontAwesomeIcon icon={["fas", "folder-plus"]} id="add-new-folder" className="text-warning" />
-            </div>
+        // if (Number(localStorage.getItem('user')) === this.state.user)
+        //     addfolder = <div className="cursor-pointer hover mx-1" onClick={this.createFolder} title="Новая папка">
+        //         <FontAwesomeIcon icon={["fas", "folder-plus"]} id="add-new-folder" className="text-warning" />
+        //     </div>
 
         let right = <div className="panel-header d-flex align-items-center justify-content-end px-2">
             {loading}
@@ -365,7 +327,7 @@ class Files extends React.Component {
 
                 <this.BreadСrumbs paths={this.state.paths} />
                 <RenameFile renameId={this.state.renameId} setNullRenameId={this.setNullRenameId} />
-                <Download id={this.state.download} dir={this.state.dir} downloaded={this.downloaded} />
+                {/* <Download id={this.state.download} dir={this.state.dir} downloaded={this.downloaded} /> */}
 
                 <div className="d-flex align-content-start flex-wrap">
                     {fileList}
