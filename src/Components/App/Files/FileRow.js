@@ -139,6 +139,13 @@ class FileRowList extends React.Component {
 
     }
 
+    deleteFile = e => {
+
+        let id = Number(e.currentTarget.dataset.file);
+        this.props.deleteFile(id);
+
+    }
+
     render() {
 
         const file = this.props.file;

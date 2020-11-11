@@ -6,6 +6,7 @@ import axios from './../../../Utils/axios';
 
 import FileRow from './FileRow';
 import RenameFile from './RenameFile';
+import DeleteFile from './DeleteFile';
 // import Download from './Download';
 
 import { Spinner } from 'react-bootstrap';
@@ -32,6 +33,7 @@ class Files extends React.Component {
             search: null,
             download: null, // Идентификатор файла для скачивания
             dir: 0, // Идентификатор каталога для скачивания
+            deleteId: null, // Идентификатор файла для удаления
         }
 
     }
@@ -168,11 +170,41 @@ class Files extends React.Component {
 
     }
 
-    renameFile = renameId => {
+    /**
+     * Установка идентификатора файла для смены имени
+     * 
+     * @param {number} renameId Идентификатор файла
+     */
+    renameFile = renameId => this.setState({ renameId });
 
-        this.setState({ renameId });
+    setNullRenameId = renameId => this.setState({ renameId });
 
-    }
+    /**
+     * Установка идентификатора файла для удаления
+     * 
+     * @param {number} deleteId Идентификатор файла
+     */
+    deleteFile = deleteId => this.setState({ deleteId });
+
+    setNullDeleteId = deleteId => {
+
+        let state = { deleteId: null };
+
+        if (deleteId !== false) {
+
+            let files = this.state.files;
+
+            for (let id in files)
+                if (Number(files[id].id) === Number(deleteId))
+                    delete (files[id]);
+
+            state.files = files;
+
+        }
+
+        this.setState(state);
+
+    };
 
     /**
      * Метод установки идентификатора файла для скачивания
@@ -309,7 +341,7 @@ class Files extends React.Component {
 
         // Элементы на страницу
         fileList = files.map(file => (
-            <FileRow file={file} key={file.id} renameFile={this.renameFile} user={this.state.user} openFolder={this.openFolder} downloadFile={this.downloadFile} />
+            <FileRow file={file} key={file.id} renameFile={this.renameFile} user={this.state.user} openFolder={this.openFolder} downloadFile={this.downloadFile} deleteFile={this.deleteFile} />
         ));
 
         if (!files.length) {
@@ -327,6 +359,7 @@ class Files extends React.Component {
 
                 <this.BreadСrumbs paths={this.state.paths} />
                 <RenameFile renameId={this.state.renameId} setNullRenameId={this.setNullRenameId} />
+                <DeleteFile deleteId={this.state.deleteId} setNullDeleteId={this.setNullDeleteId} />
                 {/* <Download id={this.state.download} dir={this.state.dir} downloaded={this.downloaded} /> */}
 
                 <div className="d-flex align-content-start flex-wrap">
@@ -335,12 +368,6 @@ class Files extends React.Component {
 
             </div>
         )
-
-    }
-
-    setNullRenameId = renameId => {
-
-        this.setState({ renameId });
 
     }
 
