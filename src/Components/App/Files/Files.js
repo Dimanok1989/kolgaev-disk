@@ -38,17 +38,19 @@ class Files extends React.Component {
 
     }
 
-    componentWillUnmount = () => {
-
-    }
-
     componentDidMount() {
 
         if (this.props.user)
-            this.getUserFiles(this.props.user); // Получение списка файлов
+            this.getUserFiles(this.props.user, this.props.folder); // Получение списка файлов
         else if (!this.props.user) {
             this.setState({ filesLoad: false });
         }
+
+        window.socketId = window.Echo.connector.socket.id || null;
+
+        window.Echo
+            .channel('kolgaevru_database_disk')
+            .listen('Disk', ev => this.updateSocket(ev.data));
 
     }
 
@@ -90,6 +92,73 @@ class Files extends React.Component {
                 dirs,
                 newFolder: null
             });
+
+        }
+
+    }
+
+    /**
+     * Метод обвновления данных, полученных из канала вещаний
+     * 
+     * @param {object} data Данные, полученные из канала
+     */
+    updateSocket = data => {
+
+        if (window.socketId === data.socketId)
+            return false;
+
+        if (Number(this.props.user) !== Number(data.user))
+            return false;
+
+        // Обработка создания новой папки
+        if (data.mkdir) {
+
+            let dirs = this.state.dirs;
+            dirs.push(data.mkdir);
+            this.setState({ dirs });
+
+        }
+
+        // Обработка добавления нового файла
+        if (data.new) {
+
+            let files = this.state.files;
+            files.push(data.new);
+            this.setState({ files });
+            
+        }
+
+        // Переименовывание файла
+        if (data.rename) {
+
+            let is_dir = data.rename.is_dir,
+                list = is_dir ? this.state.dirs : this.state.files;
+
+            for (let id in list) {
+
+                if (list[id].id === data.rename.id)
+                    list[id].name = data.rename.name;
+
+            }
+
+            is_dir ? this.setState({ dirs: list }) : this.setState({ files: list })
+
+        }
+
+        // Удаление файла
+        if (data.delete) {
+
+            let is_dir = data.delete.is_dir,
+                list = is_dir ? this.state.dirs : this.state.files;
+
+            for (let id in list) {
+
+                if (list[id].id === data.delete.id)
+                    delete (list[id]);
+
+            }
+
+            is_dir ? this.setState({ dirs: list }) : this.setState({ files: list })
 
         }
 
@@ -192,13 +261,22 @@ class Files extends React.Component {
 
         if (deleteId !== false) {
 
-            let files = this.state.files;
+            let files = this.state.files,
+                dirs = this.state.dirs;
 
-            for (let id in files)
-                if (Number(files[id].id) === Number(deleteId))
+            for (let id in files) {
+                if (Number(files[id].id) === Number(deleteId)) {
                     delete (files[id]);
+                    state.files = files;
+                }
+            }
 
-            state.files = files;
+            for (let id in dirs) {
+                if (Number(dirs[id].id) === Number(deleteId)) {
+                    delete (dirs[id]);
+                    state.dirs = dirs;
+                }
+            }
 
         }
 
@@ -340,8 +418,8 @@ class Files extends React.Component {
             this.state.files.forEach(file => files.push(file));
 
         // Элементы на страницу
-        fileList = files.map(file => (
-            <FileRow file={file} key={file.id} renameFile={this.renameFile} user={this.state.user} openFolder={this.openFolder} downloadFile={this.downloadFile} deleteFile={this.deleteFile} />
+        fileList = files.map((file, key) => (
+            <FileRow file={file} key={key} renameFile={this.renameFile} user={this.state.user} openFolder={this.openFolder} downloadFile={this.downloadFile} deleteFile={this.deleteFile} />
         ));
 
         if (!files.length) {

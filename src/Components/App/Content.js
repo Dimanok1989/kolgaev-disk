@@ -22,17 +22,16 @@ class Content extends React.Component {
 
     }
 
-    componentWillUnmount = () => {
-
-    }
-
     componentDidMount = () => {
 
         // Преобрвазоание поикового запроса из ссылки в объект
         const query = new URLSearchParams(this.props.location.search);
 
         // Установка выбранного пользователя
-        this.setState({ select: Number(query.get('user')) || null });
+        this.setState({
+            select: Number(query.get('user')) || null,
+            folder: Number(query.get('folder')) || null
+        });
 
     }
 
@@ -45,7 +44,7 @@ class Content extends React.Component {
 
         // Преобрвазоание поикового запроса из ссылки в объект
         const query = new URLSearchParams(this.props.location.search);
-        let select =  Number(query.get('user')) || null, // Идентификатор выбранного пользователя
+        let select = Number(query.get('user')) || null, // Идентификатор выбранного пользователя
             folder = Number(query.get('folder')) || null; // Идентификатор открытого каталога
 
         // Установка выбранного пользователя, если отличается от предыдущих данных

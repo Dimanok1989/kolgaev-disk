@@ -1,7 +1,7 @@
 import React from 'react';
 
 import axios from './../../../Utils/axios';
-import { Modal, FormControl, Button } from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap';
 
 class DeleteFile extends React.Component {
 
