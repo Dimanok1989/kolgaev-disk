@@ -161,6 +161,12 @@ class FileRowList extends React.Component {
             icon = Icons[file.icon];
 
         let classes = "py-1 px-3 item-file-menu";
+        file.iconClassName = "file-row-icon-image";
+
+        if (file.thumb_litle) {
+            icon = file.thumb_litle;
+            file.iconClassName = "file-row-icon-thumbnail";
+        }
 
         // Пункт меню скачать
         let download = <Dropdown.Item className={classes} onClick={this.downloadFile} data-file={file.id} data-dir={file.is_dir}>
@@ -197,8 +203,8 @@ class FileRowList extends React.Component {
         let onClick = file.is_dir ? this.openFolder : this.selectFile;
 
         let content = <div>
-            <div className="d-flex justify-content-center align-items-center file-row-icon">
-                <img src={icon} width="46" height="46" alt={file.name} />
+            <div className="mx-auto d-flex justify-content-center align-items-center file-row-icon">
+                <img src={icon} alt={file.name} className={file.iconClassName} />
             </div>
             <div className="file-row-name">{name}</div>
         </div>

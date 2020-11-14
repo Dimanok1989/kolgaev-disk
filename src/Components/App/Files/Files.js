@@ -104,14 +104,36 @@ class Files extends React.Component {
      */
     updateSocket = data => {
 
-        if (window.socketId === data.socketId)
-            return false;
+        // console.log(data);
 
         if (Number(this.props.user) !== Number(data.user))
             return false;
 
+        // Обновление эскиза
+        if (data.thumbnails) {
+
+            let files = this.state.files,
+                file = files.findIndex(item => item.id === data.thumbnails.id);
+
+            if (file >= 0) {
+
+                files[file].thumb_litle = data.thumbnails.litle;
+                files[file].thumb_middle = data.thumbnails.middle;
+
+                this.setState({ files });
+
+            }
+
+        }
+
+        if (window.socketId === data.socketId)
+            return false;
+
         // Обработка создания новой папки
         if (data.mkdir) {
+
+            if (Number(this.props.folder) !== Number(data.mkdir.in_dir))
+                return false;
 
             let dirs = this.state.dirs;
             dirs.push(data.mkdir);
@@ -122,14 +144,20 @@ class Files extends React.Component {
         // Обработка добавления нового файла
         if (data.new) {
 
+            if (Number(this.props.folder) !== Number(data.new.in_dir))
+                return false;
+
             let files = this.state.files;
             files.push(data.new);
             this.setState({ files });
-            
+
         }
 
         // Переименовывание файла
         if (data.rename) {
+
+            if (Number(this.props.folder) !== Number(data.rename.in_dir))
+                return false;
 
             let is_dir = data.rename.is_dir,
                 list = is_dir ? this.state.dirs : this.state.files;
@@ -147,6 +175,9 @@ class Files extends React.Component {
 
         // Удаление файла
         if (data.delete) {
+
+            if (Number(this.props.folder) !== Number(data.rename.in_dir))
+                return false;
 
             let is_dir = data.delete.is_dir,
                 list = is_dir ? this.state.dirs : this.state.files;

@@ -13,7 +13,8 @@ window.io = require('socket.io-client');
 
 window.Echo = new Echo({
     broadcaster: 'socket.io',
-    host: window.location.hostname + ":6001",
+    host: process.env.REACT_APP_SOCKET_IO_URL,
+    path: '/ws/socket.io',
 });
 
 ReactDOM.render(<App />, document.getElementById('root'));
