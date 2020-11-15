@@ -202,6 +202,9 @@ class FileRowList extends React.Component {
 
         let onClick = file.is_dir ? this.openFolder : this.selectFile;
 
+        if (file.thumb_litle)
+            onClick = this.props.showImage
+
         let content = <div>
             <div className="mx-auto d-flex justify-content-center align-items-center file-row-icon">
                 <img src={icon} alt={file.name} className={file.iconClassName} />

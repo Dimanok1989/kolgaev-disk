@@ -7,6 +7,7 @@ import axios from './../../../Utils/axios';
 import FileRow from './FileRow';
 import RenameFile from './RenameFile';
 import DeleteFile from './DeleteFile';
+import ShowImage from './ShowImage';
 // import Download from './Download';
 
 import { Spinner } from 'react-bootstrap';
@@ -34,6 +35,7 @@ class Files extends React.Component {
             download: null, // Идентификатор файла для скачивания
             dir: 0, // Идентификатор каталога для скачивания
             deleteId: null, // Идентификатор файла для удаления
+            showImageId: null, // Идентификатор посматриваемого изобравжения
         }
 
     }
@@ -338,6 +340,69 @@ class Files extends React.Component {
     }
 
     /**
+     * Начало просмотра изображения
+     * 
+     * @param {object} e Event
+     */
+    showImage = e => this.setState({ showImageId: e.currentTarget.dataset.file })
+
+    closeShowImage = () => this.setState({ showImageId: null })
+
+    changeImage = (step, id) => {
+
+        let files = this.state.files,
+            next = null,
+            back = null,
+            first = null,
+            last = null,
+            nextstep = false,
+            backstep = false;
+
+        files.forEach(file => {
+
+            // Првоерка файла только с миниатюрой
+            if (file.thumb_middle) {
+
+                // Первый файл в списке
+                if (!first)
+                    first = file.id;
+
+                // Последний файл в списке
+                last = file.id;
+
+                // Следующий файл для просмотра
+                if (nextstep && next === null)
+                    next = file.id;
+
+                if (Number(file.id) === Number(id)) {
+                    backstep = true;
+                    nextstep = true;
+                }
+
+                // Предыдущий файл
+                if (!backstep)
+                    back = file.id;
+
+            }
+
+        });
+
+        // Если открыта первая фотка
+        if (back === null)
+            back = last;
+
+        // Если открыта последняя фотка
+        if (next === null)
+            next = first;
+
+        if (step === "next")
+            this.setState({ showImageId: next });
+        else if (step === "back")
+            this.setState({ showImageId: back });
+
+    }
+
+    /**
      * Метод вывода хлебных крошек
      * 
      * @param {object} paths 
@@ -450,7 +515,7 @@ class Files extends React.Component {
 
         // Элементы на страницу
         fileList = files.map((file, key) => (
-            <FileRow file={file} key={key} renameFile={this.renameFile} user={this.state.user} openFolder={this.openFolder} downloadFile={this.downloadFile} deleteFile={this.deleteFile} />
+            <FileRow file={file} key={key} renameFile={this.renameFile} user={this.state.user} openFolder={this.openFolder} downloadFile={this.downloadFile} deleteFile={this.deleteFile} showImage={this.showImage} />
         ));
 
         if (!files.length) {
@@ -467,9 +532,12 @@ class Files extends React.Component {
             <div className="p-2 flex-grow-1">
 
                 <this.BreadСrumbs paths={this.state.paths} />
+
                 <RenameFile renameId={this.state.renameId} setNullRenameId={this.setNullRenameId} />
+
                 <DeleteFile deleteId={this.state.deleteId} setNullDeleteId={this.setNullDeleteId} />
-                {/* <Download id={this.state.download} dir={this.state.dir} downloaded={this.downloaded} /> */}
+
+                <ShowImage id={this.state.showImageId} changeImage={this.changeImage} closeShowImage={this.closeShowImage} />
 
                 <div className="d-flex align-content-start flex-wrap">
                     {fileList}
