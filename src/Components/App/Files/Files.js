@@ -24,6 +24,7 @@ class Files extends React.Component {
             files: [], // Список файлов в каталоге
             dirs: [], // Список папок в каталоге
             filesLoad: true,
+            filesLoadAppend: false,
             cd: "",
             paths: [],
             newFile: null,
@@ -40,19 +41,26 @@ class Files extends React.Component {
 
     }
 
+    componentWillUnmount = () => {
+
+        window.removeEventListener('scroll', this.onScrollList);
+
+    }
+
     componentDidMount() {
 
         if (this.props.user)
             this.getUserFiles(this.props.user, this.props.folder); // Получение списка файлов
-        else if (!this.props.user) {
+        else if (!this.props.user)
             this.setState({ filesLoad: false });
-        }
 
         window.socketId = window.Echo.connector.socket.id || null;
 
         window.Echo
             .channel('kolgaevru_database_disk')
             .listen('Disk', ev => this.updateSocket(ev.data));
+
+        window.addEventListener('scroll', this.onScrollList);
 
     }
 
@@ -239,6 +247,8 @@ class Files extends React.Component {
             return null;
 
         this.loadingFileList = true;
+        this.page = 1;
+        this.allfiles = false;
 
         // Анимация загрузки
         this.setState({ filesLoad: true });
@@ -261,6 +271,11 @@ class Files extends React.Component {
                 paths: data.paths,
             });
 
+            if (data.next > data.last)
+                this.allfiles = true;
+
+            this.page = data.next;
+
         }).catch(error => {
 
         }).then(() => {
@@ -269,6 +284,65 @@ class Files extends React.Component {
             this.setState({ filesLoad: false });
 
         });
+
+    }
+
+    page = 1;
+    allfiles = false;
+
+    getFilesForAppend = () => {
+
+        if (this.loadingFileList)
+            return null;
+
+        this.loadingFileList = true;
+        this.setState({ filesLoadAppend: true });
+
+        let formData = new FormData();
+        formData.append('id', this.state.user);
+        formData.append('page', this.page);
+
+        // Файлы в папке
+        if (this.state.folder)
+            formData.append('folder', this.state.folder);
+
+        axios.post('disk/getUserFiles', formData).then(({ data }) => {
+
+            let files = this.state.files,
+                dirs = this.state.dirs;
+
+            data.files.forEach(file => files.push(file));
+            data.dirs.forEach(dir => dirs.push(dir));
+
+            this.setState({
+                files,
+                dirs
+            });
+
+            if (data.next > data.last)
+                this.allfiles = true;
+
+            this.page = data.next;
+
+        }).catch(error => {
+
+        }).then(() => {
+
+            this.loadingFileList = false;
+            this.setState({ filesLoadAppend: false });
+
+        });
+
+    }
+
+    onScrollList = e => {
+
+        let bottomCoord = document.documentElement.getBoundingClientRect().bottom,
+            height = document.documentElement.clientHeight;
+
+        if (height >= bottomCoord && !this.loadingFileList && !this.allfiles) {
+            this.getFilesForAppend();
+        }
 
     }
 
@@ -528,6 +602,10 @@ class Files extends React.Component {
 
         }
 
+        let loadingAppend = this.state.filesLoadAppend ? <div className="text-center mt-2">
+            <Spinner variant="dark" animation="border" />
+        </div> : null;
+
         return (
             <div className="p-2 flex-grow-1">
 
@@ -542,6 +620,8 @@ class Files extends React.Component {
                 <div className="d-flex align-content-start flex-wrap">
                     {fileList}
                 </div>
+
+                {loadingAppend}
 
             </div>
         )
