@@ -23,8 +23,7 @@ class App extends React.Component {
 
     componentDidMount() {
 
-        // Проверка авторизации
-        this.checkLogin();
+        this.checkLogin(); // Проверка авторизации
 
     }
 

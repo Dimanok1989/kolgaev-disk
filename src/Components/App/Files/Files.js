@@ -57,7 +57,7 @@ class Files extends React.Component {
         window.socketId = window.Echo.connector.socket.id || null;
 
         window.Echo
-            .channel('kolgaevru_database_disk')
+            .channel('disk')
             .listen('Disk', ev => this.updateSocket(ev.data));
 
         window.addEventListener('scroll', this.onScrollList);

@@ -111,11 +111,17 @@ class ShowImage extends React.Component {
 
                 {image}
 
-                <Icon icon={['fas', 'times']} className="text-light hover cursor-pointer lite-box-close" onClick={this.closeShowImage} />
+                <div className="d-flex justify-content-center align-items-center hover cursor-pointer lite-box-close" onClick={this.closeShowImage}>
+                    <Icon icon={['fas', 'times']} className="text-light" />
+                </div>
 
-                <Icon icon={['fas', 'chevron-left']} className="text-light hover lite-box-back cursor-pointer" onClick={this.backImage} />
+                <div className="d-flex justify-content-start align-items-center hover lite-box-back cursor-pointer" onClick={this.backImage}>
+                    <Icon icon={['fas', 'chevron-left']} className="text-light" />
+                </div>
 
-                <Icon icon={['fas', 'chevron-right']} className="text-light hover lite-box-next cursor-pointer" onClick={this.nextImage} />
+                <div className="d-flex justify-content-end align-items-center hover lite-box-next cursor-pointer" onClick={this.nextImage}>
+                    <Icon icon={['fas', 'chevron-right']} className="text-light" />
+                </div>
 
             </div>
         )

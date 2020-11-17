@@ -15,6 +15,11 @@ window.Echo = new Echo({
     broadcaster: 'socket.io',
     host: process.env.REACT_APP_SOCKET_IO_URL,
     path: '/ws/socket.io',
+    auth: {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem('token')
+        }
+    },
 });
 
 ReactDOM.render(<App />, document.getElementById('root'));

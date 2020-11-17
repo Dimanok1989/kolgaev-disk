@@ -21,6 +21,7 @@ class Users extends React.Component {
             error: null, // Ошибка получения списка файлов
             sizes: {},
             loading: false,
+            online: [],
         }
 
     }
@@ -31,9 +32,9 @@ class Users extends React.Component {
 
     }
 
-    componentDidUpdate = prevProps => {
+    componentDidUpdate = props => {
 
-        if (prevProps.user !== this.props.user && this.props.user === null) {
+        if (props.user !== this.props.user && this.props.user === null) {
 
             let usersLi = document.querySelectorAll('.btn-user .user-list-name.font-weight-bold');
             usersLi.forEach(row => {
@@ -75,7 +76,7 @@ class Users extends React.Component {
      * @param {object} user объект данных пользователя 
      * @return {object}
      */
-    UserRow = ({ user }) => {
+    UserRow = ({ user, online }) => {
 
         // Вывод пустой строки
         if (!user.name) {
@@ -100,12 +101,13 @@ class Users extends React.Component {
         // Строка одного пользователя
         return (
             <Link
-                className="btn btn-user btn-block text-left my-2"
+                className="btn btn-user btn-block text-left my-2 position-relative"
                 onClick={this.setUserId}
                 data-id={user.id}
                 to={`?user=${user.id}`}
             >
                 <div className={classNames}>{name}</div>
+                {online}
                 {email}
             </Link>
         )
@@ -179,9 +181,12 @@ class Users extends React.Component {
         }
 
         // Список пользователей
-        userlist = this.state.users.map(user => (
-            <this.UserRow user={user} key={user.id} />
-        ));
+        userlist = this.state.users.map(user => {
+
+            let online = this.props.online.indexOf(user.id) < 0 ? null : <div className="online-user"></div>;
+            return <this.UserRow user={user} key={user.id} online={online} />
+            
+        });
 
         let disabled = true;
         if (Number(localStorage.getItem('user')) === Number(this.state.select))
