@@ -276,6 +276,13 @@ class Files extends React.Component {
 
         }).catch(error => {
 
+            this.setState({
+                files: [],
+                dirs: [],
+                cd: "",
+                paths: [],
+            });
+
         }).then(() => {
 
             this.loadingFileList = false;

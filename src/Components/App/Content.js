@@ -46,12 +46,15 @@ class Content extends React.Component {
                 this.setState({ online });
             })
             .leaving(user => {
+                
                 let online = this.state.online,
                     indexOf = online.indexOf(user.id);
+
                 if (indexOf >= 0) {
                     online.splice(indexOf, 1);
                     this.setState({ online });
                 }
+                
             })
             .listen('DiskOnline', (data) => console.log(data))
 
@@ -125,9 +128,13 @@ class Content extends React.Component {
 
         return (
             <div className="p-2 mx-auto mt-3 d-flex justify-content-between content-files position-relative">
+
                 <Users user={this.state.select} setUserId={this.setUserId} pushNewFolder={this.pushNewFolder} online={this.state.online} />
+
                 <Files user={this.state.select} setFolderId={this.setFolderId} newFile={this.state.newFile} folder={this.state.folder} newFolder={this.state.newFolder} />
+
                 {addFiles}
+
             </div>
         )
 

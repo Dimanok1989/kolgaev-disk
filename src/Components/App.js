@@ -2,8 +2,10 @@ import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import axios from '../Utils/axios';
+import echoerror from '../Utils/echoerror';
 
 import Login from './App/Login';
+import BlockAccess from './App/BlockAccess';
 import Header from './App/Header';
 import Content from './App/Content';
 import DownloadPage from './App/Download';
@@ -22,6 +24,8 @@ class App extends React.Component {
         this.state = {
             loading: true,
             isLogin: false,
+            isBlock: false,
+            error: null,
         };
 
     }
@@ -65,20 +69,33 @@ class App extends React.Component {
 
     /**
      * Метод проверки авторизации
+     * 
      * @return {null}
      */
     checkLogin = () => {
 
-        axios.post(`auth/user`).then(({ data }) => {
+        axios.post(`auth/user`, { part: "disk" }).then(({ data }) => {
 
             this.setState({ isLogin: true });
 
-            localStorage.setItem('user', data.id); // Идентификатор пользователя
-            window.user = data;
+            localStorage.setItem('user', data.user.id); // Идентификатор пользователя
+            window.user = data.user;
 
             this.connectEcho();
 
         }).catch(error => {
+
+            let status = error.response.status || null,
+                message = echoerror(error);
+
+            if (status === 403)
+                this.setState({ isBlock: true });
+
+            if (typeof error.response.data == "object")
+                window.user = error.response.data.user || {};
+
+            this.setState({ error: message });
+            console.error(message);
 
         }).then(() => {
 
@@ -97,6 +114,9 @@ class App extends React.Component {
                 </div>
             )
         }
+
+        if (this.state.isBlock)
+            return <BlockAccess />
 
         if (!this.state.isLogin)
             return <Login logined={this.logined} />

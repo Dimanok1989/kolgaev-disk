@@ -33,6 +33,7 @@ class Login extends React.Component {
         // Данные авторизации из формы
         let form = document.querySelector("form#login-form");
         let formData = new FormData(form);
+        formData.append('part', "disk");
 
         // Запрос на авторизацию
         axios.post(`auth/login`, formData).then(({ data }) => {
