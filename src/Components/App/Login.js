@@ -37,8 +37,6 @@ class Login extends React.Component {
         // Запрос на авторизацию
         axios.post(`auth/login`, formData).then(({ data }) => {
 
-            this.props.logined(true); // Возврат флага авторизированного пользователя
-
             // Запись куков на все поддомены
             Cookies.set('token', data.token, {
                 expires: 365,
@@ -49,6 +47,8 @@ class Login extends React.Component {
             localStorage.setItem('user', data.user.id);
 
             window.user = data.user;
+
+            this.props.logined(true); // Возврат флага авторизированного пользователя
 
         }).catch(error => {
 

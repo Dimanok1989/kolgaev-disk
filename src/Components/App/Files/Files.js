@@ -54,8 +54,6 @@ class Files extends React.Component {
         else if (!this.props.user)
             this.setState({ filesLoad: false });
 
-        window.socketId = window.Echo.connector.socket.id || null;
-
         window.Echo
             .channel('disk')
             .listen('Disk', ev => this.updateSocket(ev.data));

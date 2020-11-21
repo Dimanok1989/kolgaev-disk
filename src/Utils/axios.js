@@ -18,8 +18,8 @@ axios.interceptors.request.use(function (config) {
     const token = Cookies.get('token') || localStorage.getItem('token');
     config.headers.common['Authorization'] = token ? `Bearer ${token}` : null;
 
-    if (window.socketId)
-        config.headers.common['Socket-Id'] = window.socketId;
+    if (window.Echo)
+        config.headers.common['X-Socket-Id'] = window.Echo.socketId();
 
     return config;
 

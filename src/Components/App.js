@@ -1,12 +1,17 @@
 import React from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+
 import axios from '../Utils/axios';
-import { Spinner } from 'react-bootstrap';
 
 import Login from './App/Login';
 import Header from './App/Header';
 import Content from './App/Content';
 import DownloadPage from './App/Download';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+
+import { Spinner } from 'react-bootstrap';
+
+import Echo from 'laravel-echo';
+window.io = require('socket.io-client');
 
 class App extends React.Component {
 
@@ -33,9 +38,28 @@ class App extends React.Component {
 
     }
 
-    logined = login => {
+    logined = async login => {
 
+        await this.connectEcho();
         this.setState({ isLogin: login });
+
+    }
+
+    /**
+     * Подключение к серверу широковещения
+     */
+    connectEcho = async () => {
+
+        window.Echo = new Echo({
+            broadcaster: 'socket.io',
+            host: process.env.REACT_APP_SOCKET_IO_URL,
+            path: '/ws/socket.io',
+            auth: {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem('token')
+                }
+            },
+        });
 
     }
 
@@ -51,6 +75,8 @@ class App extends React.Component {
 
             localStorage.setItem('user', data.id); // Идентификатор пользователя
             window.user = data;
+
+            this.connectEcho();
 
         }).catch(error => {
 
