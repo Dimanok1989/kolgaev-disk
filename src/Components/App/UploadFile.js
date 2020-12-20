@@ -204,6 +204,12 @@ class UploadFile extends React.Component {
                 progress = progress > 100 ? 100 : progress;
                 progressfile = progressfile > 100 ? 100 : progressfile;
 
+                if (progress < this.state.progress)
+                    progress = this.state.progress;
+
+                if (progressfile < this.state.progressfile)
+                    progressfile = this.state.progressfile;
+
                 this.setState({ progressfile, progress });
 
             },
@@ -230,6 +236,12 @@ class UploadFile extends React.Component {
 
             // Процент загрузки файла
             let progressfile = parseInt(Math.round((files[id].uploaded * 100) / files[id].size));
+
+            if (progress < this.state.progress)
+                progress = this.state.progress;
+
+            if (progressfile < this.state.progressfile)
+                progressfile = this.state.progressfile;
 
             this.setState({ progressfile, progress });
 

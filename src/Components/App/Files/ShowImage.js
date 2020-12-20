@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter } from "react-router";
 
 import axios from './../../../Utils/axios';
 import echoerror from './../../../Utils/echoerror';
@@ -14,6 +15,7 @@ class ShowImage extends React.Component {
 
         this.state = {
             id: null,
+            folder: null,
             show: false,
             loading: true,
             image: null,
@@ -27,6 +29,14 @@ class ShowImage extends React.Component {
 
     componentDidMount = () => {
 
+        // Преобрвазоание поикового запроса из ссылки в объект
+        const query = new URLSearchParams(this.props.location.search);
+
+        // Установка выбранного пользователя
+        this.setState({
+            folder: Number(query.get('folder')) || null
+        });
+
         // if (this.props.id !== null) {
 
         //     this.showImage(this.props.id);
@@ -35,9 +45,9 @@ class ShowImage extends React.Component {
 
     }
 
-    componentDidUpdate = prevProps => {
+    componentDidUpdate = props => {
 
-        if (prevProps.id !== this.props.id && this.props.id !== null) {
+        if (props.id !== this.props.id && this.props.id !== null) {
 
             this.showImage(this.props.id);
 
@@ -45,13 +55,9 @@ class ShowImage extends React.Component {
 
     }
 
-    showImage = id => {
-
-        let formdata = new FormData();
-        formdata.append('id', id);
+    showImage = (id, step = null) => {
 
         this.setState({
-            id: this.props.id,
             show: true,
             loading: true,
             image: null,
@@ -59,7 +65,13 @@ class ShowImage extends React.Component {
             error: null,
         });
 
-        axios.post('disk/showImage', formdata).then(({ data }) => {
+        axios.post('disk/showImage', {
+            id,
+            step,
+            folder: this.state.folder
+        }).then(({ data }) => {
+
+            this.setState({ id: data.id });
 
             let img = new Image();
             img.src = data.link;
@@ -84,16 +96,28 @@ class ShowImage extends React.Component {
     }
 
     nextImage = () => {
-        this.props.changeImage("next", this.state.id);
+        this.changeImage("next", this.state.id);
+        // this.props.changeImage("next", this.state.id);
     }
 
     backImage = () => {
-        this.props.changeImage("back", this.state.id);
+        this.changeImage("back", this.state.id);
+        // this.props.changeImage("back", this.state.id);
+    }
+
+    changeImage = (step = "next", id = null) => {
+
+        this.showImage(id, step);
+        // console.log(step, id);
+
     }
 
     closeShowImage = () => {
+
         this.setState({ show: false });
+
         this.props.closeShowImage();
+
     }
 
     render() {
@@ -130,4 +154,4 @@ class ShowImage extends React.Component {
 
 }
 
-export default ShowImage;
+export default withRouter(ShowImage);

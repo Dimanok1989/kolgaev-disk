@@ -134,7 +134,7 @@ class Files extends React.Component {
 
         }
 
-        if (window.socketId === data.socketId)
+        if (window.Echo?.socketId() === data.socketId)
             return false;
 
         // Обработка создания новой папки
@@ -184,7 +184,7 @@ class Files extends React.Component {
         // Удаление файла
         if (data.delete) {
 
-            if (Number(this.props.folder) !== Number(data.rename.in_dir))
+            if (Number(this.props.folder) !== Number(data.delete.in_dir))
                 return false;
 
             let is_dir = data.delete.is_dir,
@@ -601,7 +601,7 @@ class Files extends React.Component {
 
             fileList = <div className="py-3 px-2 flex-grow-1">
                 <div className="text-center pt-4">
-                    <span className="font-weight-bold text-muted">Файлов нет</span>
+                    <span className="font-weight-bold text-muted">Файлов еще нет</span>
                 </div>
             </div>
 
@@ -622,7 +622,7 @@ class Files extends React.Component {
 
                 <ShowImage id={this.state.showImageId} changeImage={this.changeImage} closeShowImage={this.closeShowImage} />
 
-                <div className="d-flex align-content-start flex-wrap">
+                <div className="d-flex align-content-start flex-wrap files-list">
                     {fileList}
                 </div>
 

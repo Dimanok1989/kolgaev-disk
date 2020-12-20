@@ -62,10 +62,8 @@ class Content extends React.Component {
 
     /**
      * Обновление свойств в компоненте
-     * 
-     * @param {object} props 
      */
-    componentDidUpdate = props => {
+    componentDidUpdate = () => {
 
         // Преобрвазоание поикового запроса из ссылки в объект
         const query = new URLSearchParams(this.props.location.search);
@@ -83,6 +81,7 @@ class Content extends React.Component {
 
     /**
      * Передача идентификатор выбранного пользователя
+     * 
      * @param {number} user 
      */
     setUserId = user => {
@@ -96,28 +95,26 @@ class Content extends React.Component {
 
     }
 
-    setFolderId = folder => {
-
-        this.setState({ folder });
-
-    }
+    /**
+     * Установка идентификатора открытого каталога
+     * 
+     * @param {number|null} folder Идентификатор каталога
+     */
+    setFolderId = folder => this.setState({ folder });
 
     /**
      * Добавление только что загруженного файла в список всех файлов
      * 
      * @param {object} file объект данных нового файла 
      */
-    pushFileList = file => {
+    pushFileList = file => this.setState({ newFile: file });
 
-        this.setState({ newFile: file });
-
-    }
-
-    pushNewFolder = dir => {
-
-        this.setState({ newFolder: dir });
-
-    }
+    /**
+     * Создание нового каталога
+     * 
+     * @param {object} dir Объект нового каталога 
+     */
+    pushNewFolder = dir => this.setState({ newFolder: dir });
 
     render() {
 

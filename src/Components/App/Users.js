@@ -95,8 +95,8 @@ class Users extends React.Component {
         if (user.surname)
             name += ` ${user.surname}`;
 
-        if (user.email)
-            email = <div><small className="text-muted">{user.email}</small></div>
+        // if (user.email)
+        //     email = <div><small className="text-muted">{user.email}</small></div>
 
         // Строка одного пользователя
         return (
@@ -153,7 +153,7 @@ class Users extends React.Component {
         if (this.state.error) {
 
             return (
-                <div className="p-2 userlist-menu">
+                <div className="p-2 userlist-menu" id="userlist-menu">
                     <div className="px-3 py-2 my-2 bg-light text-danger">
                         <strong className="mr-1">Ошибка</strong>
                         <span>{this.state.error}</span>
@@ -207,7 +207,7 @@ class Users extends React.Component {
         }
 
         return (
-            <div className="p-2 userlist-menu">
+            <div className="p-2 userlist-menu" id="userlist-menu">
 
                 <ButtonGroup className="w-100">
                     <CreateFolder disabled={disabled} pushNewFolder={this.pushNewFolder} />

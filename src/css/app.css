@@ -218,3 +218,31 @@
     width: 3px;
     background: #62c562;
 }
+
+.menu-open {
+    display: none;
+    opacity: .7;
+    cursor: pointer;
+}
+.menu-open:hover {
+    opacity: 1;
+}
+
+@media (max-width: 820px) {
+    .userlist-menu {
+        position: fixed;
+        top: 0;
+        left: -900px;
+        bottom: 0;
+        z-index: 1;
+        transition: .3s;
+        background-color: #f7f9ff;
+        border-right: 1px solid #ededed;
+    }
+    .menu-open {
+        display: block;
+    }
+    .files-list {
+        justify-content: center;
+    }
+}
