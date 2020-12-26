@@ -150,7 +150,9 @@ class Dowbload extends React.Component {
 
         const file = this.state.file;
 
-        let info = file.is_dir === 1 ? <div className="mt-3 mx-auto alert-for-arhive"><small>Внимание! Происходит формирование архива. К сожалению файлы большого объёма могут не запаковаться, если это произошло, то скачайте эти файлы по отдельность. Также из-за этого архив может быть поврежден, чтобы его открыть, воспользутесь приложением <b>7-zip</b></small></div> : null;
+        let info = file.is_dir === 1 ? <div className="mt-3 mx-auto alert-for-arhive">
+            <small>Происходит формирование архива. К сожалению файлы большого объёма могут не запаковаться, если это произошло, то скачайте их по отдельности. Также из-за этого архив может быть поврежден, чтобы его открыть, воспользутесь приложением <b>7-zip</b></small>
+        </div> : null;
 
         let error = file.error ? <div className="text-center text-danger mt-2"><strong>Ошибка</strong> {file.error}</div> : null;
 

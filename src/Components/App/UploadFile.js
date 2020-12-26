@@ -33,6 +33,8 @@ class UploadFile extends React.Component {
 
             openModal: false, // Идентификатор открытия модального окна
 
+            operationId: null,
+
         }
 
     }
@@ -125,6 +127,7 @@ class UploadFile extends React.Component {
             cd: this.state.files[id].folder, // Директория загрузки
             index: id, // Идентификатор файла в списке файлов
             hash: false, // Идентификатор созданного файла
+            operation_id: this.state.operationId, // Идентификатор операции
         }
 
         let response = {}; // Объект ответа загрузки части файла
@@ -243,7 +246,11 @@ class UploadFile extends React.Component {
             if (progressfile < this.state.progressfile)
                 progressfile = this.state.progressfile;
 
-            this.setState({ progressfile, progress });
+            this.setState({
+                progressfile,
+                progress,
+                operationId: data.operation_id || null,
+            });
 
             // Загрузка одно файла завершена
             if (data.file) {

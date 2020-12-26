@@ -246,3 +246,11 @@
         justify-content: center;
     }
 }
+
+.date-title-log {
+    font-size: 130%;
+    font-weight: 100;
+}
+.time-log {
+    font-weight: 100;
+}

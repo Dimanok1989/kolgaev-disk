@@ -8,6 +8,7 @@ import FileRow from './FileRow';
 import RenameFile from './RenameFile';
 import DeleteFile from './DeleteFile';
 import ShowImage from './ShowImage';
+import MainPage from './../MainPage';
 // import Download from './Download';
 
 import { Spinner } from 'react-bootstrap';
@@ -560,16 +561,8 @@ class Files extends React.Component {
 
     render() {
 
-        if (!this.state.user) {
-
-            return (
-                <div className="py-3 px-2 flex-grow-1 text-center text-muted">
-                    <div className="mt-4">Добро пожаловать в файловый менеджер!</div>
-                    <div><small>Чтобы начать, выберите пользователя</small></div>
-                </div>
-            )
-
-        }
+        if (!this.state.user)
+            return <MainPage />
 
         if (this.state.filesLoad) {
 
@@ -607,9 +600,11 @@ class Files extends React.Component {
 
         }
 
-        let loadingAppend = this.state.filesLoadAppend ? <div className="text-center mt-2">
-            <Spinner variant="dark" animation="border" />
-        </div> : null;
+        let loadingAppend = this.state.filesLoadAppend
+            ? <div className="text-center mt-2">
+                <Spinner variant="dark" animation="border" />
+            </div>
+            : null;
 
         return (
             <div className="p-2 flex-grow-1">
