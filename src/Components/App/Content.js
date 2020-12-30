@@ -120,7 +120,7 @@ class Content extends React.Component {
 
         let addFiles = null;
 
-        if (Number(localStorage.getItem('user')) === Number(this.state.select))
+        if (Number(window.user.id) === Number(this.state.select))
             addFiles = <UploadFile userId={this.state.select} folder={this.state.folder} pushFileList={this.pushFileList} />;
 
         return (

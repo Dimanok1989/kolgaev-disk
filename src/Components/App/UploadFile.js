@@ -105,6 +105,7 @@ class UploadFile extends React.Component {
         this.setState({
             fileCurrent: -1,
             files: updateFiles,
+            operationId: null,
         });
 
     }

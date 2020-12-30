@@ -36,6 +36,8 @@ class Users extends React.Component {
 
         if (props.user !== this.props.user && this.props.user === null) {
 
+            this.setState({ select: this.props.user });
+
             let usersLi = document.querySelectorAll('.btn-user .user-list-name.font-weight-bold');
             usersLi.forEach(row => {
                 row.classList.remove('font-weight-bold');
@@ -189,7 +191,7 @@ class Users extends React.Component {
         });
 
         let disabled = true;
-        if (Number(localStorage.getItem('user')) === Number(this.state.select))
+        if (Number(window.user.id) === Number(this.state.select))
             disabled = false;
 
         let limit = null;
