@@ -1,9 +1,14 @@
 import Axios from "axios"; // Импорт библиотеки axios
 import Cookies from 'js-cookie'; // Импорт библиотеки аботы с куками
 
+let baseUrl = process.env.REACT_APP_API_PROTOCOL + "://" + process.env.REACT_APP_API_HOST;
+
+if (process.env.REACT_APP_API_PREFIX)
+    baseUrl += "/" + process.env.REACT_APP_API_PREFIX + "/";
+
 // Базовые настройки axios
 const axios = Axios.create({
-    baseURL: process.env.REACT_APP_API_URL,
+    baseURL: baseUrl,
     responseType: "json",
     headers: {
         'X-Requested-With': 'XMLHttpRequest',

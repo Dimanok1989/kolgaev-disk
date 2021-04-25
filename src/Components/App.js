@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 import axios from '../Utils/axios';
 import echoerror from '../Utils/echoerror';
@@ -56,8 +57,8 @@ class App extends React.Component {
 
         window.Echo = new Echo({
             broadcaster: 'socket.io',
-            host: process.env.REACT_APP_SOCKET_IO_URL,
-            path: '/ws/socket.io',
+            host: process.env.REACT_APP_WS_PROTOCOL + "://" + process.env.REACT_APP_WS_HOST,
+            path: process.env.REACT_APP_WS_PATH ? "/" + process.env.REACT_APP_WS_PATH : "",
             auth: {
                 headers: {
                     Authorization: "Bearer " + localStorage.getItem('token')
@@ -81,6 +82,7 @@ class App extends React.Component {
             localStorage.setItem('user', data.user.id); // Идентификатор пользователя
             window.user = data.user;
 
+            Cookies.set('main_id', data.main_id, { domain: process.env.REACT_APP_COOKIE_HOST })
             this.connectEcho();
 
         }).catch(error => {
