@@ -1,0 +1,13 @@
+.main-content {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+}
+
+.main-menu {
+    width: 180px;
+}
+
+.files-content {
+    flex-grow: 1;
+}
