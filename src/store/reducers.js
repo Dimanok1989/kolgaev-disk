@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
 import { usersReducer } from './users/reducers'
+import { filesReducer } from './files/reducers'
 
 import * as ACTIONS from './actions'
 
@@ -11,6 +12,7 @@ const defaultState = {
 
 export default combineReducers({
     users: usersReducer,
+    files: filesReducer,
     main: (state = defaultState, action) => {
         switch (action.type) {
             case ACTIONS.IS_LOGIN:

@@ -1,11 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import axios from './system/axios';
 
 import { connect } from 'react-redux';
 import { setIsLogin, setIsBlock, setUserData } from './store/actions';
-
-import axios from './system/axios';
 
 import { Loader } from 'semantic-ui-react';
 
