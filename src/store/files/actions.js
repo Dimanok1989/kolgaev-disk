@@ -9,3 +9,9 @@ export const setLoadingFiles = flag => ({
     type: LODING_FILES,
     payload: flag
 });
+
+export const OPEN_FOLDER = "OPEN_FOLDER";
+export const setOpenFolder = id => ({
+    type: OPEN_FOLDER,
+    payload: id
+});

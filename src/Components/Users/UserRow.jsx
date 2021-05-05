@@ -3,6 +3,7 @@ import { withRouter, Link } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import { selectUser } from './../../store/users/actions';
+import { setOpenFolder } from './../../store/files/actions';
 
 function UserRow(props) {
 
@@ -24,7 +25,14 @@ function UserRow(props) {
         return <span className={`user-row-disabled ${className.join(" ")}`}>{name}</span>
     }
 
-    return <Link onClick={() => props.selectUser(user.id)} to={`/user/${user.id}`} className={className.join(" ")}>
+    return <Link
+        onClick={() => {
+            props.selectUser(user.id);
+            props.setOpenFolder(0);
+        }}
+        to={`/user/${user.id}`}
+        className={className.join(" ")}
+    >
         {name}
     </Link>
 
@@ -36,7 +44,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-    selectUser
+    selectUser, setOpenFolder
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(UserRow));

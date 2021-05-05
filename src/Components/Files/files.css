@@ -1,0 +1,62 @@
+.files-list {
+    display: flex;
+    align-self: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-top: .2rem;
+}
+
+.files-list-row {
+    padding: .6rem .5rem;
+    align-items: center;
+    position: relative;
+    margin: .15rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.files-list-row:hover {
+    background: #f7f7ff;
+    border-radius: .25rem;
+    cursor: pointer;
+}
+
+.file-row-icon {
+    width: 80px;
+    height: 80px;
+    position: relative;
+}
+
+.file-row-icon img {
+    max-width: 99%;
+    max-height: 99%;
+}
+
+.file-name-text {
+    width: 90px;
+    height: 30px;
+    line-height: 15px;
+    margin-top: .5rem;
+    font-size: 13px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.files-list-row.files-list-row-empty {
+    padding: 0 .5rem;
+}
+
+.file-list-empty {
+    width: 80px;
+    height: 1px;
+}
+
+.empty-files-list {
+    text-align: center;
+    padding: 1rem .5rem;
+    opacity: .4;
+    font-weight: 600;
+}
