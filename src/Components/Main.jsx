@@ -1,6 +1,6 @@
 import './../css/main.css';
 import MainMenu from './MainMenu';
-import FilesContent from './Files/FilesContent';
+import FilesContent from './Files/Files';
 
 function Main(props) {
 

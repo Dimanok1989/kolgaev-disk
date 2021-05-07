@@ -13,11 +13,15 @@ import FilesList from './FilesList';
 
 function FilesContent(props) {
 
-    const { setFilesList, selectedUser, setLoadingFiles, openFolder, setOpenFolder } = props;
+    const { setFilesList, selectedUser, setLoadingFiles, openFolder, setOpenFolder, files } = props;
     const selected = props?.match?.params?.id || null;
-    
+
     const [loading, setLoading] = React.useState(false);
     const [openedFolderForCheck, setOpenedFolderForCheck] = React.useState(null);
+
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [loadPart, setLoadPart] = React.useState(true);
+    const [allfiles, setAllfiles] = React.useState(false);
 
     const query = new URLSearchParams(props.location.search);
     const openedFolder = Number(query.get('folder')) || null;
@@ -26,41 +30,58 @@ function FilesContent(props) {
         props.selectUser(selected);
 
     React.useEffect(() => {
+
         if (!openedFolderForCheck && openedFolder && !openFolder) {
             setOpenFolder(openedFolder);
             setOpenedFolderForCheck(openedFolder);
         }
+        else if (openedFolder !== openFolder) {
+            setOpenFolder(openedFolder);
+            setAllfiles(false);
+            setFilesList([]);
+            setCurrentPage(1);
+        }
+
     }, [openedFolderForCheck, openedFolder, openFolder, setOpenFolder]);
-    
+
     React.useEffect(() => {
 
-        if (selectedUser) {
+        if (selectedUser && loadPart) {
 
             setLoadingFiles(true);
             setLoading(true);
-            setFilesList([]);
 
             axios.post('disk/getUserFiles', {
                 id: selectedUser,
                 folder: openFolder,
+                page: currentPage,
             }).then(({ data }) => {
 
-                let files = [];
+                // let filesList = Object.assign({}, files);
+                let filesList = [];
 
-                data.dirs.forEach(dir => files.push(dir));
-                data.files.forEach(file => files.push(file));
+                files.forEach(file => filesList.push(file));
 
-                // Добавление пустышек для выравнивания сетки файлов
-                if (files.length) {
-                    for (let i = 0; i < 7; i++) {
-                        files.push({
-                            id: i + "empty",
-                            empty: true,
-                        });
-                    }
+                data.dirs.forEach(dir => filesList.push(dir));
+                data.files.forEach(file => filesList.push(file));
+
+                // // Добавление пустышек для выравнивания сетки файлов
+                // if (filesList.length) {
+                //     for (let i = 0; i < 7; i++) {
+                //         filesList.push({
+                //             id: i + "empty",
+                //             empty: true,
+                //         });
+                //     }
+                // }
+
+                setFilesList(filesList);
+                setCurrentPage(currentPage + 1);
+                setLoadPart(false);
+
+                if (data.next > data.last) {
+                    setAllfiles(true);
                 }
-
-                setFilesList(files);
 
             }).catch(error => {
 
@@ -71,9 +92,43 @@ function FilesContent(props) {
 
         }
 
-    }, [selectedUser, setFilesList, setLoadingFiles, openFolder]);
+    }, [
+        loadPart,
+        currentPage,
+        selectedUser,
+        setFilesList,
+        setLoadingFiles,
+        openFolder,
+        files,
+        allfiles
+    ]);
 
-    const empty = loading 
+    /**
+     * Обработка прокрутки страницы для динамической подгрузки данных
+     */
+    const scrollHandler = e => {
+
+        let scrollHeight = e.target.documentElement.scrollHeight,
+            scrollTop = e.target.documentElement.scrollTop,
+            innerHeight = window.innerHeight;
+
+        let scroll = scrollHeight - (scrollTop + innerHeight);
+
+        if (scroll < 100 && !loadPart && !allfiles) {
+            setLoadPart(true);
+        }
+
+    }
+
+    React.useEffect(() => {
+
+        document.addEventListener('scroll', scrollHandler);
+
+        return () => document.removeEventListener('scroll', scrollHandler);
+
+    }, []);
+
+    const empty = loading
         ? null
         : <div className="empty-files-list">Файлов еще нет</div>
 

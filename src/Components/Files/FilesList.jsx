@@ -5,7 +5,15 @@ import { setOpenFolder } from './../../store/files/actions';
 
 import FileRow from './FileRow';
 
+/**
+ * Вывод списка файлов выбранного пользователя и выбранного каталога
+ * 
+ * @param {object} props 
+ * @return {object}
+ */
 function FilesList(props) {
+
+    const { files } = props;
 
     const clickFile = file => {
 
@@ -19,11 +27,23 @@ function FilesList(props) {
 
     }
 
-    const { files } = props;
+    // Добавление пустышек для выравнивания сетки файлов
+    let filesList = [];
+    for (let i = 0; i < 7; i++) {
+        filesList.push({
+            id: i + "empty",
+            empty: true,
+        });
+    }
+
 
     const list = files.map(file => <FileRow key={file.id} file={file} clickFile={clickFile} />);
+    const empties = filesList.map(file => <FileRow key={file.id} file={file} clickFile={clickFile} />);
 
-    return <div className="files-list">{list}</div>
+    return <div className="files-list">
+        {list}
+        {empties}
+    </div>
 
 }
 
