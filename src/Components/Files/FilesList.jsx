@@ -19,7 +19,7 @@ function FilesList(props) {
 
         if (file.is_dir === 1) {
             props.setOpenFolder(file.id);
-            props.history.push(file.id > 0 ? `?folder=${file.id}` : ``);
+            props.history.push(`?folder=${file.id}`);
         }
         else if (file.thumb_litle) {
             console.log("openPhoto");

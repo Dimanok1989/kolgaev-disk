@@ -15,3 +15,9 @@ export const setOpenFolder = id => ({
     type: OPEN_FOLDER,
     payload: id
 });
+
+export const BREAD_CRUMBS = "BREAD_CRUMBS";
+export const setBreadCrumbs = crumbs => ({
+    type: BREAD_CRUMBS,
+    payload: crumbs
+});

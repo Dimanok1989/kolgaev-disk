@@ -12,6 +12,7 @@ import BlockAccess from './Components/Access/BlockAccess';
 import Main from './Components/Main';
 
 import './App.css';
+import './css/btn.bootstrap.css';
 
 class App extends React.Component {
 

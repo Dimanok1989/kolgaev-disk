@@ -3,13 +3,13 @@ import { withRouter } from 'react-router-dom';
 import axios from './../../system/axios';
 
 import { connect } from 'react-redux';
-import { setFilesList, setLoadingFiles, setOpenFolder } from './../../store/files/actions';
-// import { selectUser } from './../../store/users/actions';
+import { setFilesList, setLoadingFiles, setOpenFolder, setBreadCrumbs } from './../../store/files/actions';
 
 import { Loader } from 'semantic-ui-react';
 
 import './files.css';
 import FilesList from './FilesList';
+import BreadCrumbs from './BreadCrumbs';
 
 /**
  * Инициализация параметров
@@ -20,13 +20,9 @@ import FilesList from './FilesList';
 function Files(props) {
 
     const userId = props.selectedUser;
-    // const setFilesListFn = props.setFilesList;
 
     const [files, setFiles] = React.useState([]);
-    const { setFilesList } = props;
-    // const setFilesList = React.useCallback((files) => {
-    //     setFilesListFn(files);
-    // }, [setFilesListFn]);
+    const { setFilesList, setBreadCrumbs } = props;
 
     const [page, setPage] = React.useState(1);
     const [loading, setLoading] = React.useState(false);
@@ -43,7 +39,7 @@ function Files(props) {
 
     React.useEffect(() => {
         setOpenFolder(openFolderUri);
-    }, [openFolderUri]);
+    }, [openFolderUri, setOpenFolder, userId]);
 
 
     React.useEffect(() => {
@@ -58,7 +54,7 @@ function Files(props) {
         setPage(1);
         setFilesList([]);
 
-    }, [openFolder, userId]);
+    }, [openFolder, userId, setOpenFolder, setFilesList]);
 
 
     React.useEffect(() => {
@@ -95,6 +91,7 @@ function Files(props) {
 
                 setFiles(pageNum === 1 ? filesList : [...files, ...filesList]);
                 setPage(prevState => prevState + 1);
+                setBreadCrumbs(data.paths);
 
                 if (data.next > data.last) {
                     setEndFiles(true);
@@ -108,7 +105,7 @@ function Files(props) {
 
         }
 
-    }, [process, userId, openFolder, setFilesList]);
+    }, [process, userId, openFolder, setFilesList, setBreadCrumbs]);
 
 
     React.useEffect(() => {
@@ -143,6 +140,7 @@ function Files(props) {
         : empty
 
     return <div className="files-content mx-1">
+        <BreadCrumbs loading={loading} />
         {filesList}
         {loading ? <Loader active inline="centered" /> : null}
     </div>
@@ -156,7 +154,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-    setFilesList, setLoadingFiles, setOpenFolder
+    setFilesList, setLoadingFiles, setOpenFolder, setBreadCrumbs
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Files));

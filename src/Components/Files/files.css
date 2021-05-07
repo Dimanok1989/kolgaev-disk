@@ -60,3 +60,12 @@
     opacity: .4;
     font-weight: 600;
 }
+
+.btn-bread, .btn-bread:hover, .btn-bread:focus, .btn-bread:active {
+    outline: none !important;
+    text-decoration: none !important;
+}
+
+.bread-name {
+    font-size: 130%;
+}
