@@ -17,3 +17,8 @@
 .files-content {
     flex-grow: 1;
 }
+
+.hover { opacity: .6; }
+.hover:hover { opacity: 1; }
+
+.cursor-pointer { cursor: pointer; }

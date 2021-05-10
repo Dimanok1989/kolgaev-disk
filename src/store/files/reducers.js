@@ -5,6 +5,7 @@ const defaultState = {
     loadingFiles: false, // Идентификатор загрузки списка файлов
     openFolder: false, // Открытый каталог
     breadCrumbs: [], // Хлебные крошки
+    photo: null, // Идентификатор просматриваемого фото
 };
 
 export const filesReducer = (state = defaultState, action) => {
@@ -22,6 +23,9 @@ export const filesReducer = (state = defaultState, action) => {
 
         case ACTIONS.BREAD_CRUMBS:
             return { ...state, breadCrumbs: action.payload }
+
+        case ACTIONS.SHOW_PHOTO:
+            return { ...state, photo: action.payload }
 
         default:
             return state;

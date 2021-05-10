@@ -21,3 +21,9 @@ export const setBreadCrumbs = crumbs => ({
     type: BREAD_CRUMBS,
     payload: crumbs
 });
+
+export const SHOW_PHOTO = "SHOW_PHOTO";
+export const setShowPhoto = id => ({
+    type: SHOW_PHOTO,
+    payload: id
+});

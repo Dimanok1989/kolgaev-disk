@@ -1,9 +1,10 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { setOpenFolder } from './../../store/files/actions';
+import { setOpenFolder, setShowPhoto } from './../../store/files/actions';
 
 import FileRow from './FileRow';
+import ShowPhoto from './../Photos/ShowPhoto';
 
 /**
  * Вывод списка файлов выбранного пользователя и выбранного каталога
@@ -22,7 +23,7 @@ function FilesList(props) {
             props.history.push(`?folder=${file.id}`);
         }
         else if (file.thumb_litle) {
-            console.log("openPhoto");
+            props.setShowPhoto(file.id);
         }
 
     }
@@ -41,8 +42,12 @@ function FilesList(props) {
     const empties = filesList.map(file => <FileRow key={file.id} file={file} clickFile={clickFile} />);
 
     return <div className="files-list">
+
         {list}
         {empties}
+
+        <ShowPhoto />
+
     </div>
 
 }
@@ -52,7 +57,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-    setOpenFolder
+    setOpenFolder, setShowPhoto
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(FilesList));
