@@ -6,7 +6,7 @@ import { setShowPhoto } from './../../store/files/actions';
 
 import './photo.css';
 
-import { Icon, Loader, Dimmer } from 'semantic-ui-react';
+import { Icon, Loader } from 'semantic-ui-react';
 
 function ShowPhoto(props) {
 
@@ -53,13 +53,13 @@ function ShowPhoto(props) {
     if (!photo)
         return null;
 
-    return <Dimmer active className="lite-box d-flex align-items-center justify-content-center">
+    return <div className="lite-box d-flex align-items-center justify-content-center">
 
         {image ? <img src={image} onLoad={() => setLoading(false)} style={{
             opacity: loading ? 0 : 1,
         }} /> : null}
 
-        {loading ? <Loader active inline="centered" size="medium" /> : null}
+        {loading ? <Loader active inverted indeterminate inline="centered" size="medium" /> : null}
 
         <div className="d-flex justify-content-center align-items-center hover cursor-pointer lite-box-close" onClick={() => {
             props.setShowPhoto(null);
@@ -85,7 +85,7 @@ function ShowPhoto(props) {
             <Icon name="chevron right" className="text-light" />
         </div>}
 
-    </Dimmer>;
+    </div>;
 
 }
 
