@@ -1,6 +1,8 @@
 import React from 'react';
-import * as Icon from './FileIcons'
+import Cookies from 'js-cookie';
+import { Link } from 'react-router-dom';
 
+import * as Icon from './FileIcons'
 import { Dropdown } from 'semantic-ui-react';
 
 /**
@@ -75,6 +77,21 @@ const fileMenuOpen = e => {
 
 }
 
+const Download = file => {
+
+    const link = document.createElement('a');
+    const url = `${process.env.REACT_APP_API_PROTOCOL}://${process.env.REACT_APP_API_HOST}/download`;
+    const main_id = Cookies.get('main_id') || null;
+
+    link.href = `${url}/${file.name}.${file.ext}?file=${file.id}&main_id=${main_id}`;
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+}
+
 function FileRow(props) {
 
     const file = props.file;
@@ -111,7 +128,7 @@ function FileRow(props) {
         </div>
 
         <div id={`context-menu-${file.id}`} className="file-context-menu">
-            <Dropdown.Item icon="download" text="Скачать" />
+            <Dropdown.Item icon="download" text="Скачать" onClick={() => Download(file)} />
             {/* <Dropdown.Item icon="pencil" text="Переименовать" />
             <Dropdown.Item icon="trash" text="Удалить" /> */}
         </div>
