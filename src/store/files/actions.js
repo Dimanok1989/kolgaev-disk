@@ -27,3 +27,9 @@ export const setShowPhoto = id => ({
     type: SHOW_PHOTO,
     payload: id
 });
+
+export const RENAME_FILE = "RENAME_FILE";
+export const setRenameFileId = id => ({
+    type: RENAME_FILE,
+    payload: id
+});

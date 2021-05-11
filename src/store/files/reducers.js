@@ -6,6 +6,7 @@ const defaultState = {
     openFolder: false, // Открытый каталог
     breadCrumbs: [], // Хлебные крошки
     photo: null, // Идентификатор просматриваемого фото
+    rename: null, // Идентификатор файла для смены имени
 };
 
 export const filesReducer = (state = defaultState, action) => {
@@ -26,6 +27,9 @@ export const filesReducer = (state = defaultState, action) => {
 
         case ACTIONS.SHOW_PHOTO:
             return { ...state, photo: action.payload }
+
+        case ACTIONS.RENAME_FILE:
+            return { ...state, rename: action.payload }
 
         default:
             return state;

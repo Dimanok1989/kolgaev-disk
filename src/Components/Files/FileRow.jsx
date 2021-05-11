@@ -1,6 +1,5 @@
 import React from 'react';
 import Cookies from 'js-cookie';
-import { Link } from 'react-router-dom';
 
 import * as Icon from './FileIcons'
 import { Dropdown } from 'semantic-ui-react';
@@ -94,7 +93,7 @@ const Download = file => {
 
 function FileRow(props) {
 
-    const file = props.file;
+    const { file, user, userId, setRenameFileId } = props;
 
     const icon = file.thumb_litle
         ? file.thumb_litle
@@ -129,8 +128,12 @@ function FileRow(props) {
 
         <div id={`context-menu-${file.id}`} className="file-context-menu">
             <Dropdown.Item icon="download" text="Скачать" onClick={() => Download(file)} />
-            {/* <Dropdown.Item icon="pencil" text="Переименовать" />
-            <Dropdown.Item icon="trash" text="Удалить" /> */}
+            {user === userId ? <Dropdown.Item
+                icon="pencil"
+                text="Переименовать"
+                onClick={() => setRenameFileId(file.id)}
+            /> : null}
+            {/* {user === userId ? <Dropdown.Item icon="trash" text="Удалить" /> : null} */}
         </div>
 
     </div>

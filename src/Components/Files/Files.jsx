@@ -10,6 +10,7 @@ import { Loader } from 'semantic-ui-react';
 import './files.css';
 import FilesList from './FilesList';
 import BreadCrumbs from './BreadCrumbs';
+import Rename from './Rename';
 
 /**
  * Инициализация параметров
@@ -143,6 +144,7 @@ function Files(props) {
         <BreadCrumbs loading={loading} />
         {filesList}
         {loading ? <Loader active inline="centered" /> : null}
+        <Rename />
     </div>
 
 }
