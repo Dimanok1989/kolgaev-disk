@@ -1,6 +1,7 @@
 import './../css/main.css';
 import MainMenu from './MainMenu';
 import FilesContent from './Files/Files';
+import UploadsMain from './Uploads/UploadsMain';
 
 function Main(props) {
 
@@ -9,6 +10,7 @@ function Main(props) {
             <MainMenu />
             <FilesContent />
         </div>
+        <UploadsMain />
     </div>
 
 }

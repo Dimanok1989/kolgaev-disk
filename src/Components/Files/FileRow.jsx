@@ -127,7 +127,7 @@ function FileRow(props) {
         </div>
 
         <div id={`context-menu-${file.id}`} className="file-context-menu">
-            <Dropdown.Item icon="download" text="Скачать" onClick={() => Download(file)} />
+            {file.is_dir === 0 ? <Dropdown.Item icon="download" text="Скачать" onClick={() => Download(file)} /> : null}
             {user === userId ? <Dropdown.Item
                 icon="pencil"
                 text="Переименовать"

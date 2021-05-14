@@ -10,6 +10,7 @@ import { Loader } from 'semantic-ui-react';
 
 import BlockAccess from './Components/Access/BlockAccess';
 import Main from './Components/Main';
+import Header from './Components/Header';
 
 import './App.css';
 import './css/btn.bootstrap.css';
@@ -66,6 +67,7 @@ class App extends React.Component {
         }
 
         return <BrowserRouter>
+            <Header />
             <div>
                 <Switch>
                     <Route path="/user/:id" component={Main} />

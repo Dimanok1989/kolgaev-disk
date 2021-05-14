@@ -22,3 +22,8 @@
 .hover:hover { opacity: 1; }
 
 .cursor-pointer { cursor: pointer; }
+
+.main-header {
+    border-bottom: 1px solid rgba(34,36,38,.15);
+    padding: .25rem 1rem;
+}

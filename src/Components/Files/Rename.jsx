@@ -107,7 +107,7 @@ function Rename(props) {
 
             {error && typeof error == "string" ? <Message negative size="mini">{error}</Message> : null}
 
-            <div className="text-right mt-3">
+            <div className="d-flex justify-content-end align-items-center mt-3">
                 <Button positive disabled={loading || error === true} onClick={() => setSave(true)}>Сохранить</Button>
             </div>
 
