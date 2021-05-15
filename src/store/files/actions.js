@@ -39,3 +39,9 @@ export const setShowCreateFolder = show => ({
     type: SHOW_CREATE_FOLDER,
     payload: show
 });
+
+export const FILE_LIST_UPDATE_SOCKET = "FILE_LIST_UPDATE_SOCKET";
+export const fileListUpdateSocket = data => ({
+    type: FILE_LIST_UPDATE_SOCKET,
+    payload: data
+});

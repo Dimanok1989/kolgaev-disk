@@ -3,7 +3,13 @@ import { withRouter } from 'react-router-dom';
 import axios from './../../system/axios';
 
 import { connect } from 'react-redux';
-import { setFilesList, setLoadingFiles, setOpenFolder, setBreadCrumbs } from './../../store/files/actions';
+import {
+    setFilesList,
+    setLoadingFiles,
+    setOpenFolder,
+    setBreadCrumbs,
+    fileListUpdateSocket
+} from './../../store/files/actions';
 
 import { Loader } from 'semantic-ui-react';
 
@@ -37,6 +43,15 @@ function Files(props) {
     const openFolderUri = Number(query.get('folder')) || null;
     const [openFolderUriChecked, setOpenFolderUriChecked] = React.useState(null);
 
+    React.useEffect(() => {
+
+        window.Echo
+            .channel('disk')
+            .listen('Disk', ev => props.fileListUpdateSocket(ev.data));
+
+        return () => window.Echo.leave('disk');
+
+    }, []);    
 
     React.useEffect(() => {
         setOpenFolder(openFolderUri);
@@ -74,7 +89,7 @@ function Files(props) {
             if (openedFolder !== openFolder) {
                 setPage(1);
                 pageNum = 1;
-            }            
+            }
 
             setLoading(true);
             setProcess(false);
@@ -116,13 +131,13 @@ function Files(props) {
             let scrollHeight = e.target.documentElement.scrollHeight,
                 scrollTop = e.target.documentElement.scrollTop,
                 innerHeight = window.innerHeight;
-    
+
             let scroll = scrollHeight - (scrollTop + innerHeight);
-    
+
             if (scroll < 100 && !endFiles && !loading) {
                 setProcess(true);
             }
-    
+
         }
 
         document.addEventListener('scroll', scrollHandler);
@@ -156,7 +171,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-    setFilesList, setLoadingFiles, setOpenFolder, setBreadCrumbs
+    setFilesList, setLoadingFiles, setOpenFolder, setBreadCrumbs, fileListUpdateSocket
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Files));

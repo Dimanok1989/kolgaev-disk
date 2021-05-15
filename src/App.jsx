@@ -5,15 +5,18 @@ import axios from './system/axios';
 
 import { connect } from 'react-redux';
 import { setIsLogin, setIsBlock, setUserData } from './store/actions';
+import Echo from 'laravel-echo';
 
 import { Loader } from 'semantic-ui-react';
+
+import './App.css';
+import './css/btn.bootstrap.css';
 
 import BlockAccess from './Components/Access/BlockAccess';
 import Main from './Components/Main';
 import Header from './Components/Header';
 
-import './App.css';
-import './css/btn.bootstrap.css';
+window.io = require('socket.io-client');
 
 class App extends React.Component {
 
@@ -34,21 +37,42 @@ class App extends React.Component {
 
     }
 
+    /**
+     * Подключение к серверу широковещения
+     */
+     connectEcho = async () => {
+
+        window.Echo = await new Echo({
+            broadcaster: 'socket.io',
+            host: process.env.REACT_APP_WS_PROTOCOL + "://" + process.env.REACT_APP_WS_HOST,
+            path: process.env.REACT_APP_WS_PATH ? "/" + process.env.REACT_APP_WS_PATH : "",
+            auth: {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem('token')
+                }
+            },
+        });
+
+    }
+
     checkUserAuth = () => {
 
-        axios.post(`auth/user`, { part: "disk" }).then(({ data }) => {
+        axios.post(`auth/user`, { part: "disk" }).then(async ({ data }) => {
 
             this.props.setUserData(data.user);
             this.props.setIsLogin(true);
 
             Cookies.set('main_id', data.main_id, { domain: process.env.REACT_APP_COOKIE_HOST });
+            await this.connectEcho();
 
         }).catch(error => {
 
             let status = error?.response?.status || false;
 
-            if (status === 403)
+            if (status === 403 || status === 401)
                 this.props.setIsBlock(true);
+
+            this.props.setIsBlock(true);
 
         }).then(() => {
             this.setState({ loading: false });

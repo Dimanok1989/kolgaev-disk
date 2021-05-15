@@ -21,6 +21,9 @@ function UserRow(props) {
     if (props.selectedUser === user.id || Number(selected) === Number(user.id))
         className.push("selected-user-list");
 
+    if (props.online)
+        className.push('user-online');
+
     if (props.loadingFiles) {
         return <span className={`user-row-disabled ${className.join(" ")}`}>{name}</span>
     }

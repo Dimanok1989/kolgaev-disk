@@ -1,7 +1,8 @@
 .users-list-row {
+    position: relative;
     display: block;
     margin: .3rem 0;
-    padding: .4rem .5rem;
+    padding: .4rem .6rem;
     border: 1px solid var(--border-color);
     border-radius: .25rem;
     background: #ffffff;
@@ -26,4 +27,15 @@
 
 .user-row-disabled {
     cursor: default;
+}
+
+.users-list-row.user-online:after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 3px;
+    background: #21ba45;
 }

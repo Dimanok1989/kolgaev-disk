@@ -10,8 +10,7 @@ import UserRow from './UserRow';
 
 function UsersList(props) {
 
-    const setUsersList = props.setUsersList;
-    const selectUser = props.selectUser;
+    const { setUsersList, selectUser, online } = props;
 
     const [error, setError] = React.useState(false);
 
@@ -38,7 +37,11 @@ function UsersList(props) {
 
     }, [setUsersList]);
 
-    const users = props.usersList.map(user => <UserRow key={user.id} row={user} />);
+    const users = props.usersList.map(user => <UserRow
+        key={user.id}
+        row={user}
+        online={online.indexOf(user.id) >= 0 ? true : false}
+    />);
 
     if (error)
         return <div>{error}</div>
@@ -50,6 +53,7 @@ function UsersList(props) {
 const mapStateToProps = state => ({
     usersList: state.users.usersList,
     userId: state.users.selectedUser,
+    online: state.users.online,
 });
 
 const mapDispatchToProps = {
