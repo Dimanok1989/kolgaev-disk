@@ -68,7 +68,7 @@ class App extends React.Component {
 
         return <BrowserRouter>
             <Header />
-            <div>
+            <div className="content-body">
                 <Switch>
                     <Route path="/user/:id" component={Main} />
                     <Route path="/" component={Main} />

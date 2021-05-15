@@ -6,6 +6,7 @@
     bottom: 0;
     z-index: 100;
     background: #000000d9;
+    z-index: 1000;
 }
 
 .lite-box img {

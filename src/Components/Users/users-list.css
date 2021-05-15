@@ -2,7 +2,7 @@
     display: block;
     margin: .3rem 0;
     padding: .4rem .5rem;
-    border: 1px solid rgba(34,36,38,.15);
+    border: 1px solid var(--border-color);
     border-radius: .25rem;
     background: #ffffff;
     color: rgba(0,0,0,.5);

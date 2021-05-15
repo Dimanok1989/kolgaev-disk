@@ -2,13 +2,19 @@ import React from 'react';
 import axios from './../../system/axios';
 
 import { connect } from 'react-redux';
-import { setRenameFileId, setFilesList } from './../../store/files/actions';
+import { setShowCreateFolder, setFilesList } from './../../store/files/actions';
 
-import { Button, Input, Modal, Message } from 'semantic-ui-react'
+import { Button, Input, Modal, Message } from 'semantic-ui-react';
 
-function Rename(props) {
+/**
+ * Инициализация параметров
+ * 
+ * @param {object} props 
+ * @return {object}
+ */
+function CreateFolder(props) {
 
-    const { files, rename, setRenameFileId, setFilesList } = props;
+    const { selectedUser, openFolder, files, createFolder, setShowCreateFolder, setFilesList } = props;
     const inputRef = React.useRef(null);
 
     const [loading, setLoading] = React.useState(false);
@@ -17,35 +23,20 @@ function Rename(props) {
 
     const [save, setSave] = React.useState(false);
 
+    const changeName = e => setFileName(e.currentTarget.value);
+
     React.useEffect(() => {
 
-        if (rename) {
+        if (createFolder) {
 
-            setLoading(true);
+            setLoading(false);
             setError(false);
-            setFileName("");
-
-            axios.post('disk/getNameFile', {
-                id: rename,
-            }).then(({ data }) => {
-
-                setLoading(false);
-                setError(false);
-                setFileName(data.name);
-                inputRef.current.focus();
-
-            }).catch(error => {
-
-                setLoading(false);
-                setError(true);
-
-            });
+            setFileName("Новая папка");
+            inputRef.current.focus();
 
         }
 
-    }, [rename]);
-
-    const changeName = e => setFileName(e.currentTarget.value);
+    }, [createFolder]);
 
     React.useEffect(() => {
 
@@ -53,30 +44,26 @@ function Rename(props) {
 
             setLoading(true);
 
-            const formdata = new FormData();
-            formdata.append('id', rename);
-            formdata.append('name', fileName);
-
-            axios.post('disk/rename', formdata).then(({ data }) => {
+            axios.post('disk/mkdir', {
+                name: fileName,
+                cd: openFolder,
+                user: selectedUser,
+            }).then(({ data }) => {
 
                 const list = [];
+                list.unshift(data.file);
                 files.forEach(file => {
-
-                    if (file.id === rename)
-                        file.name = data.onlyName;
-
                     list.push(file);
                 });
 
                 setFilesList(list);
-                setRenameFileId(null);
+                setShowCreateFolder(false);
                 
             }).catch(error => {
                 setLoading(false);
                 setError(axios.getError(error));
                 inputRef.current.focus();
             });
-
 
         }
 
@@ -86,11 +73,11 @@ function Rename(props) {
 
     return <Modal
         size="tiny"
-        open={rename ? true : false}
+        open={createFolder}
         closeIcon
-        onClose={() => setRenameFileId(null)}
+        onClose={() => setShowCreateFolder(null)}
     >
-        <Modal.Header>Переименовать</Modal.Header>
+        <Modal.Header>Новый каталог</Modal.Header>
         <Modal.Content>
 
             <Input
@@ -107,22 +94,24 @@ function Rename(props) {
             {error && typeof error == "string" ? <Message negative size="mini">{error}</Message> : null}
 
             <div className="d-flex justify-content-end align-items-center mt-3">
-                <Button positive disabled={loading || error === true} onClick={() => setSave(true)}>Сохранить</Button>
+                <Button positive disabled={loading} onClick={() => setSave(true)}>Создать</Button>
             </div>
 
         </Modal.Content>
 
-    </Modal>;
+    </Modal>
 
 }
 
 const mapStateToProps = state => ({
-    rename: state.files.rename,
+    selectedUser: state.users.selectedUser,
+    openFolder: state.files.openFolder,
     files: state.files.filesList,
+    createFolder: state.files.createFolder,
 });
 
 const mapDispatchToProps = {
-    setRenameFileId, setFilesList
+    setShowCreateFolder, setFilesList
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Rename);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateFolder);

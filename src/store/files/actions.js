@@ -33,3 +33,9 @@ export const setRenameFileId = id => ({
     type: RENAME_FILE,
     payload: id
 });
+
+export const SHOW_CREATE_FOLDER = "SHOW_CREATE_FOLDER";
+export const setShowCreateFolder = show => ({
+    type: SHOW_CREATE_FOLDER,
+    payload: show
+});

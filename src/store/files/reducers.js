@@ -7,6 +7,7 @@ const defaultState = {
     breadCrumbs: [], // Хлебные крошки
     photo: null, // Идентификатор просматриваемого фото
     rename: null, // Идентификатор файла для смены имени
+    createFolder: false, // Открытие модального окна создания нового каталога
 };
 
 export const filesReducer = (state = defaultState, action) => {
@@ -30,6 +31,9 @@ export const filesReducer = (state = defaultState, action) => {
 
         case ACTIONS.RENAME_FILE:
             return { ...state, rename: action.payload }
+
+        case ACTIONS.SHOW_CREATE_FOLDER:
+            return { ...state, createFolder: action.payload }
 
         default:
             return state;
