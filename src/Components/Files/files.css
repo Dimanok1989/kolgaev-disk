@@ -96,3 +96,38 @@
     border-radius: .25rem;
     cursor: pointer;
 }
+
+.create-archive-process {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.progress-bar-create-archive {
+    margin: 0 !important;
+}
+.progress-bar-create-archive .bar {
+    border-radius: 0 !important;
+}
+
+.message-create-process {
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    top: 2px;
+    text-align: center;
+    font-weight: 700;
+}
+
+.create-complete-close {
+    position: absolute;
+    top: 3px;
+    right: 5px;
+    opacity: .6;
+    cursor: pointer;
+    z-index: 10;
+}
+.create-complete-close:hover {
+    opacity: 1;
+}

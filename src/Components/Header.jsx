@@ -34,8 +34,6 @@ function UploadsMain(props) {
         const bg = document.getElementById('main-menu-bg');
         bg.style.display = "none";
 
-        console.log("close");
-
         menu.removeEventListener('click', closeMenu);
         bg.removeEventListener('click', closeMenu);
 

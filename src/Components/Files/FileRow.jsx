@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 
 import * as Icon from './FileIcons'
 import { Dropdown } from 'semantic-ui-react';
+import { faCommentsDollar } from '@fortawesome/free-solid-svg-icons';
 
 /**
  * Закрытие меню
@@ -76,7 +77,10 @@ const fileMenuOpen = e => {
 
 }
 
-const Download = file => {
+const downloadFile = file => {
+
+    if (file.is_dir === 1)
+        return null;
 
     const link = document.createElement('a');
     const url = `${process.env.REACT_APP_API_PROTOCOL}://${process.env.REACT_APP_API_HOST}/download`;
@@ -93,7 +97,7 @@ const Download = file => {
 
 function FileRow(props) {
 
-    const { file, user, userId, setRenameFileId, showDeleteFile } = props;
+    const { file, user, userId, setRenameFileId, showDeleteFile, downloadArchive } = props;
 
     const icon = file.thumb_litle
         ? file.thumb_litle
@@ -127,7 +131,7 @@ function FileRow(props) {
         </div>
 
         <div id={`context-menu-${file.id}`} className="file-context-menu">
-            {file.is_dir === 0 ? <Dropdown.Item icon="download" text="Скачать" onClick={() => Download(file)} /> : null}
+            <Dropdown.Item icon="download" text="Скачать" onClick={() => file.is_dir === 1 ? downloadArchive(file) : downloadFile(file)} />
             {user === userId ? <Dropdown.Item
                 icon="pencil"
                 text="Переименовать"
