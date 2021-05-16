@@ -13,14 +13,56 @@ function UploadsMain(props) {
 
     const { selectUser, user, userId, uploadProcess, setShowCreateFolder } = props;
 
+    const openMenu = () => {
+
+        const menu = document.getElementById('main-menu');
+        menu.style.left = 0;
+
+        const bg = document.getElementById('main-menu-bg');
+        bg.style.display = "block";
+
+        menu.addEventListener('click', closeMenu);
+        bg.addEventListener('click', closeMenu);
+
+    }
+
+    const closeMenu = () => {
+        
+        const menu = document.getElementById('main-menu');
+        menu.style.left = '-200px';
+
+        const bg = document.getElementById('main-menu-bg');
+        bg.style.display = "none";
+
+        console.log("close");
+
+        menu.removeEventListener('click', closeMenu);
+        bg.removeEventListener('click', closeMenu);
+
+    }
+
     return <div className="main-header">
+
+        <div className="main-menu-bg" id="main-menu-bg"></div>
+
         <div className="header-content d-flex justify-content-between align-items-center">
 
-            <Link to="/" className="header-main-link" onClick={() => selectUser(null)}>
-                <img src="/favicon.ico" alt="Главная страница" />
-                <b>Kolgaev.ru</b>
-                <span>Диск</span>
-            </Link>
+            <div className="d-flex align-items-center">
+
+                <Icon
+                    name="bars"
+                    className="show-menu"
+                    size="large"
+                    onClick={openMenu}
+                />
+
+                <Link to="/" className="header-main-link" onClick={() => selectUser(null)}>
+                    <img src="/favicon.ico" alt="Главная страница" />
+                    <b>Kolgaev.ru</b>
+                    <span>Диск</span>
+                </Link>
+
+            </div>
 
             <div>
                 <Button.Group icon basic size="tiny">

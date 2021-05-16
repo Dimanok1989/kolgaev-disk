@@ -1,8 +1,17 @@
+import React from 'react';
+
 import UsersList from './Users/UsersList'
 
 function MainMenu() {
 
-    return <div className="main-menu mx-1">
+    React.useEffect(() => {
+
+        const block = document.getElementById('main-menu');
+        block.style.top = `${block.getBoundingClientRect().top}px`;
+
+    }, []);
+
+    return <div className="main-menu" id="main-menu">
         <UsersList />
     </div>
 
