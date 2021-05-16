@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { setOpenFolder, setShowPhoto, setRenameFileId } from './../../store/files/actions';
+import { setOpenFolder, setShowPhoto, setRenameFileId, showDeleteFile } from './../../store/files/actions';
 
 import FileRow from './FileRow';
 import ShowPhoto from './../Photos/ShowPhoto';
@@ -44,6 +44,7 @@ function FilesList(props) {
         user={props.user.id}
         userId={props.userId}
         setRenameFileId={props.setRenameFileId}
+        showDeleteFile={props.showDeleteFile}
     />);
     const empties = filesList.map(file => <FileRow key={file.id} file={file} />);
 
@@ -65,7 +66,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-    setOpenFolder, setShowPhoto, setRenameFileId
+    setOpenFolder, setShowPhoto, setRenameFileId, showDeleteFile
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(FilesList));

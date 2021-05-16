@@ -8,6 +8,7 @@ const defaultState = {
     photo: null, // Идентификатор просматриваемого фото
     rename: null, // Идентификатор файла для смены имени
     createFolder: false, // Открытие модального окна создания нового каталога
+    showDelete: false, // Открытие модального окна удаления файла
 };
 
 export const filesReducer = (state = defaultState, action) => {
@@ -34,6 +35,9 @@ export const filesReducer = (state = defaultState, action) => {
 
         case ACTIONS.SHOW_CREATE_FOLDER:
             return { ...state, createFolder: action.payload }
+
+        case ACTIONS.SHOW_DELTE_FILE:
+            return { ...state, showDelete: action.payload }
 
         case ACTIONS.FILE_LIST_UPDATE_SOCKET:
 

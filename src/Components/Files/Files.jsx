@@ -17,6 +17,7 @@ import './files.css';
 import FilesList from './FilesList';
 import BreadCrumbs from './BreadCrumbs';
 import Rename from './Rename';
+import DeleteFile from './DeleteFile';
 
 /**
  * Инициализация параметров
@@ -29,7 +30,7 @@ function Files(props) {
     const userId = props.selectedUser;
 
     const [files, setFiles] = React.useState([]);
-    const { setFilesList, setBreadCrumbs } = props;
+    const { setFilesList, setBreadCrumbs, showDeleteFile } = props;
 
     const [page, setPage] = React.useState(1);
     const [loading, setLoading] = React.useState(false);
@@ -156,10 +157,15 @@ function Files(props) {
         : empty
 
     return <div className="files-content mx-1">
+
         <BreadCrumbs loading={loading} />
+
         {filesList}
         {loading ? <Loader active inline="centered" /> : null}
+
         <Rename />
+        <DeleteFile />
+
     </div>
 
 }

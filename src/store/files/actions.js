@@ -45,3 +45,9 @@ export const fileListUpdateSocket = data => ({
     type: FILE_LIST_UPDATE_SOCKET,
     payload: data
 });
+
+export const SHOW_DELTE_FILE = "SHOW_DELTE_FILE";
+export const showDeleteFile = data => ({
+    type: SHOW_DELTE_FILE,
+    payload: data
+});

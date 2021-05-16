@@ -93,7 +93,7 @@ const Download = file => {
 
 function FileRow(props) {
 
-    const { file, user, userId, setRenameFileId } = props;
+    const { file, user, userId, setRenameFileId, showDeleteFile } = props;
 
     const icon = file.thumb_litle
         ? file.thumb_litle
@@ -133,7 +133,11 @@ function FileRow(props) {
                 text="Переименовать"
                 onClick={() => setRenameFileId(file.id)}
             /> : null}
-            {/* {user === userId ? <Dropdown.Item icon="trash" text="Удалить" /> : null} */}
+            {user === userId ? <Dropdown.Item
+                icon="trash"
+                text="Удалить"
+                onClick={() => showDeleteFile(file)}
+            /> : null}
         </div>
 
     </div>

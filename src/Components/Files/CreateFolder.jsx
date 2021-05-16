@@ -75,6 +75,7 @@ function CreateFolder(props) {
         size="tiny"
         open={createFolder}
         closeIcon
+        centered={false}
         onClose={() => setShowCreateFolder(null)}
     >
         <Modal.Header>Новый каталог</Modal.Header>

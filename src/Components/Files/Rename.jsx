@@ -88,6 +88,7 @@ function Rename(props) {
         size="tiny"
         open={rename ? true : false}
         closeIcon
+        centered={false}
         onClose={() => setRenameFileId(null)}
     >
         <Modal.Header>Переименовать</Modal.Header>
