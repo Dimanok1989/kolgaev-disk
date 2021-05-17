@@ -9,6 +9,9 @@ const defaultState = {
     rename: null, // Идентификатор файла для смены имени
     createFolder: false, // Открытие модального окна создания нового каталога
     showDelete: false, // Открытие модального окна удаления файла
+    createArchiveProcess: null, // Процесс создания архива
+    createArchiveComplete: null, // Звршения процесса создания архива
+    downloadArchive: null,
 };
 
 export const filesReducer = (state = defaultState, action) => {
@@ -44,8 +47,6 @@ export const filesReducer = (state = defaultState, action) => {
             let files = [...state.filesList],
                 data = action.payload;
 
-            console.log(action.payload);
-
             if (data.thumbnails && Number(state.openFolder) === Number(data?.in_dir)) {
 
                 let file = files.findIndex(item => item.id === data.thumbnails.id);
@@ -54,7 +55,7 @@ export const filesReducer = (state = defaultState, action) => {
                     files[file].thumb_middle = data.thumbnails.middle;
                 }
                 return { ...state, filesList: files }
-                
+
             }
 
             if (data.mkdir && Number(state.openFolder) === Number(data?.mkdir?.in_dir)) {
@@ -75,7 +76,20 @@ export const filesReducer = (state = defaultState, action) => {
                 return { ...state, filesList: files }
             }
 
+            if (data.archive && window._userId === data.archive?.user_id) {
+                return { ...state, createArchiveComplete: data }
+            }
+
             return state;
+
+        case ACTIONS.CREATE_ARCHIVE_PROCESS:
+            return { ...state, createArchiveProcess: action.payload }
+
+        case ACTIONS.CREATE_ARCHIVE_COMPLETE:
+            return { ...state, createArchiveComplete: action.payload }
+
+        case ACTIONS.START_DOWNLOAD_ARCHIVE:
+            return { ...state, downloadArchive: action.payload }
 
         default:
             return state;

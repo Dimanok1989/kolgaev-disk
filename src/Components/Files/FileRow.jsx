@@ -3,7 +3,6 @@ import Cookies from 'js-cookie';
 
 import * as Icon from './FileIcons'
 import { Dropdown } from 'semantic-ui-react';
-import { faCommentsDollar } from '@fortawesome/free-solid-svg-icons';
 
 /**
  * Закрытие меню
@@ -97,7 +96,7 @@ const downloadFile = file => {
 
 function FileRow(props) {
 
-    const { file, user, userId, setRenameFileId, showDeleteFile, downloadArchive } = props;
+    const { file, user, userId, setRenameFileId, showDeleteFile, downloadArchive, createArchiveProcess } = props;
 
     const icon = file.thumb_litle
         ? file.thumb_litle
@@ -131,17 +130,38 @@ function FileRow(props) {
         </div>
 
         <div id={`context-menu-${file.id}`} className="file-context-menu">
-            <Dropdown.Item icon="download" text="Скачать" onClick={() => file.is_dir === 1 ? downloadArchive(file) : downloadFile(file)} />
-            {user === userId ? <Dropdown.Item
-                icon="pencil"
-                text="Переименовать"
-                onClick={() => setRenameFileId(file.id)}
-            /> : null}
-            {user === userId ? <Dropdown.Item
-                icon="trash"
-                text="Удалить"
-                onClick={() => showDeleteFile(file)}
-            /> : null}
+            {file.is_dir === 1 && !createArchiveProcess
+                ? <Dropdown.Item
+                    icon="download"
+                    text="Скачать"
+                    onClick={() => downloadArchive(file)}
+                />
+                : null
+            }
+            {file.is_dir === 0
+                ? <Dropdown.Item
+                    icon="download"
+                    text="Скачать"
+                    onClick={() => downloadFile(file)}
+                />
+                : null
+            }
+            {user === userId
+                ? <Dropdown.Item
+                    icon="pencil"
+                    text="Переименовать"
+                    onClick={() => setRenameFileId(file.id)}
+                />
+                : null
+            }
+            {user === userId
+                ? <Dropdown.Item
+                    icon="trash"
+                    text="Удалить"
+                    onClick={() => showDeleteFile(file)}
+                />
+                : null
+            }
         </div>
 
     </div>

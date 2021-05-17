@@ -62,6 +62,8 @@ class App extends React.Component {
             this.props.setUserData(data.user);
             this.props.setIsLogin(true);
 
+            window._userId = data.user.id;
+
             Cookies.set('main_id', data.main_id, { domain: process.env.REACT_APP_COOKIE_HOST });
             await this.connectEcho();
 

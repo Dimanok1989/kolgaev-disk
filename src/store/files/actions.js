@@ -51,3 +51,21 @@ export const showDeleteFile = data => ({
     type: SHOW_DELTE_FILE,
     payload: data
 });
+
+export const CREATE_ARCHIVE_PROCESS = "CREATE_ARCHIVE_PROCESS";
+export const setCreateArchiveProcess = process => ({
+    type: CREATE_ARCHIVE_PROCESS,
+    payload: process
+});
+
+export const CREATE_ARCHIVE_COMPLETE = "CREATE_ARCHIVE_COMPLETE";
+export const setCreateArchiveCompete = complete => ({
+    type: CREATE_ARCHIVE_COMPLETE,
+    payload: complete
+});
+
+export const START_DOWNLOAD_ARCHIVE = "START_DOWNLOAD_ARCHIVE";
+export const setDownloadArchive = data => ({
+    type: START_DOWNLOAD_ARCHIVE,
+    payload: data
+});

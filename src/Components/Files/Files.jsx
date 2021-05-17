@@ -43,13 +43,12 @@ function Files(props) {
     const query = new URLSearchParams(props.location.search);
     const openFolderUri = Number(query.get('folder')) || null;
     const [openFolderUriChecked, setOpenFolderUriChecked] = React.useState(null);
-    const [archiveComplete, setArchiveComplete] = React.useState(null);
 
     React.useEffect(() => {
 
         window.Echo
             .channel('disk')
-            .listen('Disk', ev => ev?.data?.archive ? setArchiveComplete(ev.data) : props.fileListUpdateSocket(ev.data));
+            .listen('Disk', ev => props.fileListUpdateSocket(ev.data));
 
         return () => window.Echo.leave('disk');
 
@@ -154,7 +153,7 @@ function Files(props) {
         : <div className="empty-files-list">Файлов еще нет</div>
 
     const filesList = props.files.length
-        ? <FilesList archiveComplete={archiveComplete} setArchiveComplete={setArchiveComplete} />
+        ? <FilesList />
         : empty
 
     return <div className="files-content mx-1">

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { setOnlineUsers, setOnlineUserJoining, setOnlineUserLeaving } from './../store/users/actions'
+import { setOnlineUsers, setOnlineUserJoining, setOnlineUserLeaving } from './../store/users/actions';
 
 import './../css/main.css';
 
@@ -7,6 +7,7 @@ import MainMenu from './MainMenu';
 import FilesContent from './Files/Files';
 import UploadsMain from './Uploads/UploadsMain';
 import CreateFolder from './Files/CreateFolder';
+import CreateArchive from './Files/CreateArchive';
 
 function Main(props) {
 
@@ -27,6 +28,8 @@ function Main(props) {
         <UploadsMain />
         <CreateFolder />
 
+        <CreateArchive />
+
     </div>
 
 }
@@ -34,7 +37,9 @@ function Main(props) {
 const mapStateToProps = state => ({});
 
 const mapDispatchToProps = {
-    setOnlineUsers, setOnlineUserJoining, setOnlineUserLeaving
+    setOnlineUsers,
+    setOnlineUserJoining,
+    setOnlineUserLeaving,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);
