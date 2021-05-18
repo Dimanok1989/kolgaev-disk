@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import { selectUser } from './../store/users/actions';
-import { setShowCreateFolder } from './../store/files/actions';
+import { setShowCreateFolder, setFilesList, setOpenFolder } from './../store/files/actions';
 
 import { Button, Icon, Popup } from 'semantic-ui-react';
 
@@ -54,7 +54,11 @@ function UploadsMain(props) {
                     onClick={openMenu}
                 />
 
-                <Link to="/" className="header-main-link" onClick={() => selectUser(null)}>
+                <Link to="/" className="header-main-link" onClick={() => {
+                    selectUser(null);
+                    props.setFilesList([]);
+                    props.setOpenFolder(null);
+                }}>
                     <img src="/favicon.ico" alt="Главная страница" />
                     <b>Kolgaev.ru</b>
                     <span>Диск</span>
@@ -95,7 +99,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-    selectUser, setShowCreateFolder
+    selectUser, setShowCreateFolder, setFilesList, setOpenFolder
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(UploadsMain);

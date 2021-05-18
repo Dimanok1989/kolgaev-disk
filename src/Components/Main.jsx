@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { setOnlineUsers, setOnlineUserJoining, setOnlineUserLeaving } from './../store/users/actions';
 
 import './../css/main.css';
@@ -8,10 +9,15 @@ import FilesContent from './Files/Files';
 import UploadsMain from './Uploads/UploadsMain';
 import CreateFolder from './Files/CreateFolder';
 import CreateArchive from './Files/CreateArchive';
+import MainPage from './App/MainPage';
 
 function Main(props) {
 
     const { setOnlineUsers, setOnlineUserJoining, setOnlineUserLeaving } = props;
+
+    const content = props?.match?.params?.id
+        ? <FilesContent />
+        : <MainPage />
 
     window.Echo.join('App.Disk')
         .here(users => setOnlineUsers(users))
@@ -22,7 +28,7 @@ function Main(props) {
 
         <div className="main-content py-3">
             <MainMenu />
-            <FilesContent />
+            {content}
         </div>
 
         <UploadsMain />
@@ -42,4 +48,4 @@ const mapDispatchToProps = {
     setOnlineUserLeaving,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main));

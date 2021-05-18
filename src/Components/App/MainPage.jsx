@@ -27,11 +27,11 @@ function MainPage(props) {
         let comment = null;
 
         if (row.type === "mkdir")
-            comment = <span>создал каталог <Link to={`?user=${row.user_id}&folder=${row.file_id}`}><b>{row.file}</b></Link></span>
+            comment = <span>создал каталог <Link to={`/user/${row.user_id}?folder=${row.file_id}`}><b>{row.file}</b></Link></span>
         else if (row.type === "upload")
             comment = <span>загрузил файл <b>{row.file}</b></span>
         else if (row.type === "uploads")
-            comment = <span>загрузил <b>{row.count}</b> файлов в каталог <Link to={`?user=${row.user_id}&folder=${row.file_id}`}><b>{row.file}</b></Link></span>
+            comment = <span>загрузил <b>{row.count}</b> файлов в каталог <Link to={`/user/${row.user_id}?folder=${row.file_id}`}><b>{row.file}</b></Link></span>
 
         return <div key={k}>
 
