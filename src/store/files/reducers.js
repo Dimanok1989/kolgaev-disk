@@ -81,6 +81,31 @@ export const filesReducer = (state = defaultState, action) => {
                 return { ...state, createArchiveComplete: data }
             }
 
+            if (data.hide && window._userId === data.hide?.user) {
+
+                for (let id in files) {
+                    if (files[id].id === data.hide.id)
+                        files[id].hiden = data.hide.hiden;
+                }
+
+                return { ...state, filesList: files }
+
+            }
+            else if (data.hide && window._userId !== data.hide?.user) {
+
+                let file = files.findIndex(item => item.id === data.hide.id);
+
+                if (data.hide.hiden === 1) {
+                    if (file >= 0)
+                        files.splice(file, 1);
+                }
+                else if (file < 0) {
+                    files.push(data.hide);
+                }
+
+                return { ...state, filesList: files }
+            }
+
             return state;
 
         case ACTIONS.CREATE_ARCHIVE_PROCESS:

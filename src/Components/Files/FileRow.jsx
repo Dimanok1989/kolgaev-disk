@@ -2,8 +2,8 @@ import React from 'react';
 import Cookies from 'js-cookie';
 import { connect } from 'react-redux';
 
-import * as Icon from './FileIcons'
-import { Dropdown, Loader } from 'semantic-ui-react';
+import * as Icons from './FileIcons'
+import { Dropdown, Loader, Icon } from 'semantic-ui-react';
 
 /**
  * Закрытие меню
@@ -99,11 +99,12 @@ function FileRow(props) {
 
     const { file, user, userId, setRenameFileId, showDeleteFile, loadingFile } = props;
     const { downloadArchive, createArchiveProcess } = props;
-    const { audio, setAudioPlay, played, visual } = props;
+    const { audio } = props;
+    const { setHide } = props;
 
     const icon = file.thumb_litle
         ? file.thumb_litle
-        : Icon[file.icon] ?? Icon.file;
+        : Icons[file.icon] ?? Icons.file;
 
     if (file.empty) {
         return <div className="files-list-row files-list-row-empty">
@@ -125,8 +126,16 @@ function FileRow(props) {
         >
 
             <div className="d-flex justify-content-center align-items-center file-row-icon">
+
                 <img src={icon} alt={`file_${file.id}`} />
+
                 <div className="audio-visualisation" id={`audio-visualisation-${file.id}`} style={{ display: audio === file.id ? 'flex' : 'none'}}></div>
+
+                {file.hiden === 1
+                    ? <div className="hiden-file"><Icon name="hide" size="large" /></div>
+                    : null
+                }
+
             </div>
 
             <div className="file-name-text">{name}</div>
@@ -155,6 +164,14 @@ function FileRow(props) {
                     icon="pencil"
                     text="Переименовать"
                     onClick={() => setRenameFileId(file.id)}
+                />
+                : null
+            }
+            {user === userId
+                ? <Dropdown.Item
+                    icon={file.hiden === 1 ? "eye" : "hide"}
+                    text={file.hiden === 1 ? "Общий доступ" : "Скрытый файл"}
+                    onClick={() => setHide(file)}
                 />
                 : null
             }

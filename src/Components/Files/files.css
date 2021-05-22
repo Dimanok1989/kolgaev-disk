@@ -143,3 +143,10 @@
     justify-content: center;
     background-color: #ffffff9a;
 }
+
+.hiden-file {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    opacity: .6;
+}
