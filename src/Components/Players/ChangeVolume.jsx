@@ -11,12 +11,9 @@ function ChangeVolume(props) {
     const [afterMuted, setAfterMudet] = React.useState(player.volume);
     const [volume, setVolume] = React.useState(player.volume);
 
-    React.useEffect(() => {
+    // React.useEffect(() => {
 
-
-        console.log(block);
-
-    }, []);
+    // }, []);
 
     React.useEffect(() => {
 
@@ -42,7 +39,7 @@ function ChangeVolume(props) {
 
     }
 
-    return <div className="change-volume" ref={block}>
+    return <div className="change-volume no-mobile" ref={block}>
 
         <div id="change-volume-rang" className="change-volume-rang">
 

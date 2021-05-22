@@ -248,7 +248,7 @@ function AudioPlayerControl(props) {
 
         <canvas id="audio-visualisation" className="audio-visualisation-canvas" width="40" height="20"></canvas>
 
-        <div className={`audio-control`}>
+        <div className="audio-control">
             <Icon name="step backward" onClick={back} />
             <Icon name={paused ? "play" : "pause"} onClick={() => paused ? play() : stop()} />
             <Icon name="step forward" onClick={() => setChange("next")} />
@@ -258,11 +258,11 @@ function AudioPlayerControl(props) {
             }
         </div>
 
-        <div className="audio-name">{fileInfo?.name || ""}</div>
+        <div className="audio-name no-mobile">{fileInfo?.name || ""}</div>
 
-        <div className="audio-timer" id="audio-timer" ref={timer}></div>
+        <div className="audio-timer no-mobile" id="audio-timer" ref={timer}></div>
 
-        <div className="audio-progress-bg" onClick={setTime} ref={progress}>
+        <div className="audio-progress-bg no-mobile" onClick={setTime} ref={progress}>
             <div className="audio-progress-load" ref={load}></div>
             <div className="audio-progress-bar" ref={bar}></div>
         </div>

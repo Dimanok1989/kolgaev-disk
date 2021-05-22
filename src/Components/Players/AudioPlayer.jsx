@@ -10,10 +10,12 @@ import AudioPlayerControl from './AudioPlayerControl';
 
 function AudioPlayer(props) {
 
-    const { audio, setAudioPlay, setLoadingFile, folder, setAudioPlayed, setAudioPlayer } = props;
+    const { audio, setAudioPlay, setLoadingFile, setAudioPlayed, setAudioPlayer } = props;
+
     const [url, setUrl] = React.useState(null);
     const [fileInfo, setFileInfo] = React.useState(null);
     const [change, setChange] = React.useState(null);
+    const [dir, setDir] = React.useState(null);
 
     React.useEffect(() => {
 
@@ -27,6 +29,7 @@ function AudioPlayer(props) {
             axios.post('disk/playAudio', { audio }).then(({ data }) => {
                 setUrl(data.url);
                 setFileInfo(data.audio);
+                setDir(data.audio.in_dir);
             }).catch(error => {
 
             }).then(() => {
@@ -48,7 +51,7 @@ function AudioPlayer(props) {
 
             setAudioPlayed(false);
 
-            axios.post('disk/playAudioChange', { audio, change, folder }).then(({ data }) => {
+            axios.post('disk/playAudioChange', { audio, change, folder: dir }).then(({ data }) => {
                 setAudioPlay(data.id);
             }).catch(error => {
                 setChange(null);
@@ -75,7 +78,6 @@ function AudioPlayer(props) {
 
 const mapStateToProps = state => ({
     audio: state.players.audio,
-    folder: state.files.openFolder,
 });
 
 const mapDispatchToProps = {

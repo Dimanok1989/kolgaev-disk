@@ -61,8 +61,8 @@ function UploadsMain(props) {
                     props.setOpenFolder(null);
                 }}>
                     <img src="/favicon.ico" alt="Главная страница" />
-                    <b>Kolgaev.ru</b>
-                    <span>Диск</span>
+                    <b className="no-mobile">Kolgaev.ru</b>
+                    <span className="no-mobile">Диск</span>
                 </Link>
 
             </div>

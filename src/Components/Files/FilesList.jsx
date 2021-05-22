@@ -22,7 +22,7 @@ import ShowPhoto from './../Photos/ShowPhoto';
  */
 function FilesList(props) {
 
-    const { files, setDownloadArchive, createArchiveProcess, setAudioPlay } = props;
+    const { files, setDownloadArchive, createArchiveProcess, setAudioPlay, loadingFile } = props;
 
     const clickFile = file => {
 
@@ -32,6 +32,9 @@ function FilesList(props) {
         }
         else if (file.thumb_litle) {
             props.setShowPhoto(file.id);
+        }
+        else if (String(file.mime_type).indexOf("audio/") >= 0 && !loadingFile) {
+            setAudioPlay(file.id);
         }
 
     }
@@ -80,6 +83,7 @@ const mapStateToProps = state => ({
     user: state.main.user,
     userId: state.users.selectedUser,
     createArchiveProcess: state.files.createArchiveProcess,
+    loadingFile: state.files.loadingFile,
 });
 
 const mapDispatchToProps = {

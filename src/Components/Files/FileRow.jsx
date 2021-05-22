@@ -120,7 +120,6 @@ function FileRow(props) {
             className="files-list-row"
             title={name}
             onClick={() => props.clickFile(file)}
-            onDoubleClick={() => String(file.mime_type).indexOf("audio/") >= 0 ? setAudioPlay(file.id) : null}
             onContextMenu={fileMenuOpen}
             data-file={file.id}
         >
