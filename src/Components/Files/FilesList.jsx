@@ -2,7 +2,14 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 
 import { connect } from 'react-redux';
-import { setOpenFolder, setShowPhoto, setRenameFileId, showDeleteFile, setDownloadArchive } from './../../store/files/actions';
+import {
+    setOpenFolder,
+    setShowPhoto,
+    setRenameFileId,
+    showDeleteFile,
+    setDownloadArchive
+} from './../../store/files/actions';
+import { setAudioPlay } from './../../store/players/actions';
 
 import FileRow from './FileRow';
 import ShowPhoto from './../Photos/ShowPhoto';
@@ -15,7 +22,7 @@ import ShowPhoto from './../Photos/ShowPhoto';
  */
 function FilesList(props) {
 
-    const { files, setDownloadArchive, createArchiveProcess } = props;
+    const { files, setDownloadArchive, createArchiveProcess, setAudioPlay } = props;
 
     const clickFile = file => {
 
@@ -39,15 +46,21 @@ function FilesList(props) {
     }
 
     const list = files.map(file => <FileRow
+
         key={file.id}
+
         file={file}
-        clickFile={clickFile}
         user={props.user.id}
         userId={props.userId}
+
+        clickFile={clickFile}
+
         setRenameFileId={props.setRenameFileId}
         showDeleteFile={props.showDeleteFile}
         createArchiveProcess={createArchiveProcess}
         downloadArchive={setDownloadArchive}
+        setAudioPlay={setAudioPlay}
+
     />);
     const empties = filesList.map(file => <FileRow key={file.id} file={file} />);
 
@@ -70,7 +83,12 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-    setOpenFolder, setShowPhoto, setRenameFileId, showDeleteFile, setDownloadArchive
+    setOpenFolder,
+    setShowPhoto,
+    setRenameFileId,
+    showDeleteFile,
+    setDownloadArchive,
+    setAudioPlay
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(FilesList));

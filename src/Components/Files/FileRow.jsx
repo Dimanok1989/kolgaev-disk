@@ -1,8 +1,9 @@
 import React from 'react';
 import Cookies from 'js-cookie';
+import { connect } from 'react-redux';
 
 import * as Icon from './FileIcons'
-import { Dropdown } from 'semantic-ui-react';
+import { Dropdown, Loader } from 'semantic-ui-react';
 
 /**
  * Закрытие меню
@@ -96,7 +97,9 @@ const downloadFile = file => {
 
 function FileRow(props) {
 
-    const { file, user, userId, setRenameFileId, showDeleteFile, downloadArchive, createArchiveProcess } = props;
+    const { file, user, userId, setRenameFileId, showDeleteFile, loadingFile } = props;
+    const { downloadArchive, createArchiveProcess } = props;
+    const { audio, setAudioPlay, played, visual } = props;
 
     const icon = file.thumb_litle
         ? file.thumb_litle
@@ -117,12 +120,14 @@ function FileRow(props) {
             className="files-list-row"
             title={name}
             onClick={() => props.clickFile(file)}
+            onDoubleClick={() => String(file.mime_type).indexOf("audio/") >= 0 ? setAudioPlay(file.id) : null}
             onContextMenu={fileMenuOpen}
             data-file={file.id}
         >
 
             <div className="d-flex justify-content-center align-items-center file-row-icon">
                 <img src={icon} alt={`file_${file.id}`} />
+                <div className="audio-visualisation" id={`audio-visualisation-${file.id}`} style={{ display: audio === file.id ? 'flex' : 'none'}}></div>
             </div>
 
             <div className="file-name-text">{name}</div>
@@ -164,8 +169,20 @@ function FileRow(props) {
             }
         </div>
 
+        {loadingFile === file.id
+            ? <div className="file-row-loading"><Loader active inline /></div>
+            : null
+        }
+
     </div>
 
 }
 
-export default FileRow;
+const mapStateToProps = state => ({
+    loadingFile: state.files.loadingFile,
+    audio: state.players.audio,
+    played: state.players.played,
+    visual: state.players.visual,
+});
+
+export default connect(mapStateToProps)(FileRow);

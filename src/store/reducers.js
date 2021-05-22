@@ -1,9 +1,10 @@
-import { combineReducers } from 'redux'
-import { usersReducer } from './users/reducers'
-import { filesReducer } from './files/reducers'
-import { uploadsReducer } from './uploads/reducers'
+import { combineReducers } from 'redux';
+import { usersReducer } from './users/reducers';
+import { filesReducer } from './files/reducers';
+import { uploadsReducer } from './uploads/reducers';
+import { playersReducer } from './players/reducers';
 
-import * as ACTIONS from './actions'
+import * as ACTIONS from './actions';
 
 const defaultState = {
     isLogin: false, // Идентификатор авторизации
@@ -15,6 +16,7 @@ export default combineReducers({
     users: usersReducer,
     files: filesReducer,
     uploads: uploadsReducer,
+    players: playersReducer,
     main: (state = defaultState, action) => {
         switch (action.type) {
             case ACTIONS.IS_LOGIN:

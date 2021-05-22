@@ -8,6 +8,7 @@ import { setShowCreateFolder, setFilesList, setOpenFolder } from './../store/fil
 import { Button, Icon, Popup } from 'semantic-ui-react';
 
 import { openInput } from './Uploads/UploadsMain';
+import AudioPlayer from './Players/AudioPlayer';
 
 function UploadsMain(props) {
 
@@ -66,7 +67,10 @@ function UploadsMain(props) {
 
             </div>
 
-            <div>
+            <div className="d-flex align-items-center">
+
+                <AudioPlayer />
+
                 <Button.Group icon basic size="tiny">
                     <Popup
                         content="Создать папку"
@@ -88,6 +92,7 @@ function UploadsMain(props) {
             </div>
 
         </div>
+
     </div>
 
 }

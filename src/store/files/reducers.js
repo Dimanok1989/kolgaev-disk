@@ -12,6 +12,7 @@ const defaultState = {
     createArchiveProcess: null, // Процесс создания архива
     createArchiveComplete: null, // Звршения процесса создания архива
     downloadArchive: null,
+    loadingFile: null,
 };
 
 export const filesReducer = (state = defaultState, action) => {
@@ -90,6 +91,9 @@ export const filesReducer = (state = defaultState, action) => {
 
         case ACTIONS.START_DOWNLOAD_ARCHIVE:
             return { ...state, downloadArchive: action.payload }
+
+        case ACTIONS.LOADING_FILE_DATA:
+            return { ...state, loadingFile: action.payload }
 
         default:
             return state;

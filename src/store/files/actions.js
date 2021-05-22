@@ -69,3 +69,9 @@ export const setDownloadArchive = data => ({
     type: START_DOWNLOAD_ARCHIVE,
     payload: data
 });
+
+export const LOADING_FILE_DATA = "LOADING_FILE_DATA";
+export const setLoadingFile = loading => ({
+    type: LOADING_FILE_DATA,
+    payload: loading
+});
