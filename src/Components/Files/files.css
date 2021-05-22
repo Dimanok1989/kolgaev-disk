@@ -146,7 +146,14 @@
 
 .hiden-file {
     position: absolute;
-    bottom: 0;
-    right: 0;
-    opacity: .6;
+    bottom: -2px;
+    right: -2px;
+    opacity: 1;
+    padding: .1rem .25rem;
+    border-radius: .25rem;
+    border: 1px solid var(--border-color);
+    background-color: rgba(255, 255, 255, 0.7);
+}
+.hiden-file .icon {
+    margin: 0 !important;
 }

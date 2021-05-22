@@ -67,12 +67,12 @@ function DeleteFile(props) {
     >
         <Header icon>
             <Icon name="trash" />
-            <span>Уадение</span>
+            <span>Удаление</span>
         </Header>
 
         <Modal.Content>
 
-            <div className="text-center">Вы действительно хотите удалить файл?</div>
+            <div className="text-center">Вы действительно хотите удалить {file.is_dir === 0 ? 'файл' : 'каталог'}?</div>
             <div className="mt-3 text-center"><b>{file.name}{file.is_dir === 0 ? `.${file.ext}` : null}</b></div>
 
         </Modal.Content>

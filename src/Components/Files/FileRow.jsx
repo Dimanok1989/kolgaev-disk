@@ -132,7 +132,7 @@ function FileRow(props) {
                 <div className="audio-visualisation" id={`audio-visualisation-${file.id}`} style={{ display: audio === file.id ? 'flex' : 'none'}}></div>
 
                 {file.hiden === 1
-                    ? <div className="hiden-file"><Icon name="hide" size="large" /></div>
+                    ? <div className="hiden-file" title="Скрыт от общего доступа"><Icon name="hide" /></div>
                     : null
                 }
 
@@ -170,7 +170,7 @@ function FileRow(props) {
             {user === userId
                 ? <Dropdown.Item
                     icon={file.hiden === 1 ? "eye" : "hide"}
-                    text={file.hiden === 1 ? "Общий доступ" : "Скрытый файл"}
+                    text={file.hiden === 1 ? "Общий доступ" : `Cкрыть ${file.is_dir === 0 ? 'файл' : 'каталог'}`}
                     onClick={() => setHide(file)}
                 />
                 : null
