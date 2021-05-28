@@ -3,6 +3,7 @@ import { usersReducer } from './users/reducers';
 import { filesReducer } from './files/reducers';
 import { uploadsReducer } from './uploads/reducers';
 import { playersReducer } from './players/reducers';
+import { chatReducer } from './chat/reducers';
 
 import * as ACTIONS from './actions';
 
@@ -17,6 +18,7 @@ export default combineReducers({
     files: filesReducer,
     uploads: uploadsReducer,
     players: playersReducer,
+    chat: chatReducer,
     main: (state = defaultState, action) => {
         switch (action.type) {
             case ACTIONS.IS_LOGIN:

@@ -9,7 +9,7 @@ import FilesContent from './Files/Files';
 import UploadsMain from './Uploads/UploadsMain';
 import CreateFolder from './Files/CreateFolder';
 import CreateArchive from './Files/CreateArchive';
-import MainPage from './App/MainPage';
+import MainChat from './Chat/MainChat';
 
 function Main(props) {
 
@@ -17,7 +17,7 @@ function Main(props) {
 
     const content = props?.match?.params?.id
         ? <FilesContent />
-        : <MainPage />
+        : <MainChat />
 
     window.Echo.join('App.Disk')
         .here(users => setOnlineUsers(users))

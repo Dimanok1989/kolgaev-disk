@@ -52,7 +52,7 @@ function Files(props) {
 
         return () => window.Echo.leave('disk');
 
-    }, []);    
+    }, []);
 
     React.useEffect(() => {
         setOpenFolder(openFolderUri);
