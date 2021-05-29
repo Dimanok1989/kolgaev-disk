@@ -5,6 +5,7 @@ import { setMessagesList } from './../../store/chat/actions';
 import axios from './../../system/axios';
 
 import { Icon, Loader } from 'semantic-ui-react';
+import { getMessageText } from './MessageText';
 
 function Messages(props) {
 
@@ -16,6 +17,10 @@ function Messages(props) {
     const [process, setProcess] = React.useState(true);
     const [page, setPage] = React.useState(1);
     const [endMessages, setEndMessages] = React.useState(false);
+
+    React.useEffect(() => {
+        return () => setMessagesList([]);
+    }, []);
 
     React.useEffect(() => {
 
@@ -102,7 +107,10 @@ function Messages(props) {
             else if (msg.status === "sent")
                 icon = "check";
 
-            let message = msg.message ? msg.message.split('\n') : [];
+            // let message = msg.message ? msg.message.split('\n') : [];
+            // message.map((item, index) => {
+            //     return (index === 0) ? item : [<br key={index} />, item]
+            // });
 
             return <div key={i} className={classList.join(" ")}>
 
@@ -124,9 +132,7 @@ function Messages(props) {
                         : null
                     }
 
-                    <div className="message-text">{message.map((item, index) => {
-                        return (index === 0) ? item : [<br key={index} />, item]
-                    })}</div>
+                    <div className="message-text">{getMessageText(msg.message)}</div>
 
                     <div className="message-date">
                         <small>{msg.date}</small>

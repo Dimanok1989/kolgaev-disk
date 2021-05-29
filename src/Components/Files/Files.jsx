@@ -34,6 +34,7 @@ function Files(props) {
 
     const [page, setPage] = React.useState(1);
     const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState(false);
     const [process, setProcess] = React.useState(false);
     const [endFiles, setEndFiles] = React.useState(false);
 
@@ -114,8 +115,10 @@ function Files(props) {
                     setEndFiles(true);
                 }
 
-            }).catch(error => {
+                setError(false);
 
+            }).catch(error => {
+                setError(axios.getError(error));
             }).finally(() => {
                 setLoading(false);
             });
@@ -150,7 +153,9 @@ function Files(props) {
 
     const empty = loading
         ? null
-        : <div className="empty-files-list">Файлов еще нет</div>
+        : error
+            ? <div className="empty-files-list text-danger">{error}</div>
+            : <div className="empty-files-list">Файлов еще нет</div>
 
     const filesList = props.files.length
         ? <FilesList />
