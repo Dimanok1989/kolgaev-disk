@@ -69,7 +69,7 @@ function FilesList(props) {
             props.setOpenFolder(file.id);
             props.history.push(`?folder=${file.id}`);
         }
-        else if (file.thumb_litle) {
+        else if (file.thumb_litle || String(file.mime_type).indexOf("video/") >= 0) {
             props.setShowPhoto(file.id);
         }
         else if (String(file.mime_type).indexOf("audio/") >= 0 && !loadingFile) {

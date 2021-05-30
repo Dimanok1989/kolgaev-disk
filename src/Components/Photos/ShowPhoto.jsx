@@ -7,13 +7,17 @@ import { setShowPhoto } from './../../store/files/actions';
 import './photo.css';
 
 import { Icon, Loader } from 'semantic-ui-react';
+import VideoPlayer from './../Players/VideoPlayer';
 
 function ShowPhoto(props) {
 
     // const [locading, setLoading] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState(false);
     const [image, setImage] = React.useState(null);
+    const [video, setVideo] = React.useState(null);
     const [idPhoto, setIdPhoto] = React.useState(null);
+    const [fileInfo, setFileInfo] = React.useState({});
 
     const { photo, openFolder } = props;
 
@@ -23,6 +27,8 @@ function ShowPhoto(props) {
 
             setLoading(true);
             setImage(null);
+            setVideo(null);
+            setError(false);
 
             let id, step;
 
@@ -40,9 +46,21 @@ function ShowPhoto(props) {
                 step,
                 folder: openFolder
             }).then(({ data }) => {
-                setImage(data.link);
+
+                if (data.video) {
+                    setVideo(data.video);
+                }
+                else {
+                    setImage(data.link);
+                }
+
                 setIdPhoto(data.id);
+                setFileInfo({
+                    ...data
+                });
+
             }).catch(error => {
+                setError(axios.getError(error));
                 setLoading(false);
             });
 
@@ -55,11 +73,24 @@ function ShowPhoto(props) {
 
     return <div className="lite-box d-flex align-items-center justify-content-center">
 
-        {image ? <img src={image} onLoad={() => setLoading(false)} style={{
-            opacity: loading ? 0 : 1,
-        }} /> : null}
+        {image
+            ? <img src={image} onLoad={() => setLoading(false)} style={{
+                opacity: loading ? 0 : 1,
+            }} />
+            : null
+        }
 
-        {loading ? <Loader active inverted indeterminate inline="centered" size="medium" /> : null}
+        {video
+            ? <VideoPlayer url={video} fileInfo={fileInfo} setLoading={setLoading} />
+            : null
+        }
+
+        {loading
+            ? <Loader active inverted indeterminate inline="centered" size="medium" />
+            : error
+                ? <div className="show-image-error">{error}</div>
+                : null
+        }
 
         <div className="d-flex justify-content-center align-items-center hover cursor-pointer lite-box-close" onClick={() => {
             props.setShowPhoto(null);

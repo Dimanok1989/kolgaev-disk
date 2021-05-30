@@ -5,7 +5,7 @@ import ChangeVolume from './ChangeVolume';
 
 const player = new Audio();
 
-const getTimer = duration => {
+export const getTimer = (duration, revers = true) => {
 
     let hours = Math.floor(duration / 60 / 60);
     let minutes = Math.floor(duration / 60) - (hours * 60);
@@ -19,7 +19,7 @@ const getTimer = duration => {
     format.push(minutes.toString().padStart(2, '0'));
     format.push(seconds.toString().padStart(2, '0'));
 
-    return (duration > 0 ? '-' : '') + format.join(':');
+    return (duration > 0 ? (revers ? '-' : '') : '') + format.join(':');
 
 }
 

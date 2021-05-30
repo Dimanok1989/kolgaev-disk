@@ -46,3 +46,8 @@
 
 .lite-box-back { left: 10px; }
 .lite-box-next { right: 10px; }
+
+.show-image-error {
+    color: #ff5959;
+    font-weight: 700;
+}
