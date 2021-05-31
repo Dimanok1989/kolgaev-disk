@@ -9,7 +9,7 @@ let timeOutHide;
 
 function VideoPlayer(props) {
 
-    const { url, fileInfo } = props;
+    const { url, fileInfo, setError } = props;
     const setLoadingMain = props.setLoading;
 
     const [player, setPlayer] = React.useState(null);
@@ -178,6 +178,28 @@ function VideoPlayer(props) {
                 setPlayed(false);
                 player.currentTime = 0;
                 bar.current.style.width = 0;
+            }
+
+            player.onerror = e => {
+
+                let message = "";
+
+                if (player.error.message !== "")
+                    message = player.error.message;
+                else if (player.error.code === 1)
+                    message = "Извлечение связанного ресурса было прервано запросом пользователя";
+                else if (player.error.code === 2)
+                    message = "Произошла какая-то сетевая ошибка, которая помешала успешному извлечению носителя, несмотря на то, что он был ранее доступен";
+                else if (player.error.code === 3)
+                    message = "Несмотря на то, что ранее ресурс был определён, как используемый, при попытке декодировать медиаресурс произошла ошибка";
+                else if (player.error.code === 4)
+                    message = "Связанный объект ресурса или поставщика мультимедиа был признан неподходящим";
+                else
+                    message = "Неизвестная ошибка";
+
+                setLoadingMain(false);
+                setError(message);
+
             }
 
             player.volume = lastVolume;

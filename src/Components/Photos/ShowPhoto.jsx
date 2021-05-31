@@ -81,7 +81,12 @@ function ShowPhoto(props) {
         }
 
         {video
-            ? <VideoPlayer url={video} fileInfo={fileInfo} setLoading={setLoading} />
+            ? <VideoPlayer
+                url={video}
+                fileInfo={fileInfo}
+                setLoading={setLoading}
+                setError={setError}
+            />
             : null
         }
 

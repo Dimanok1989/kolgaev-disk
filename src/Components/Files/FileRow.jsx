@@ -131,6 +131,13 @@ function FileRow(props) {
 
                 <div className="audio-visualisation" id={`audio-visualisation-${file.id}`} style={{ display: audio === file.id ? 'flex' : 'none'}}></div>
 
+                {file.icon === "video" && file.thumb_litle
+                    ? <div className="video-play-start">
+                        <span><Icon name="play" /></span>
+                    </div>
+                    : null
+                }
+
                 {file.hiden === 1
                     ? <div className="hiden-file" title="Скрыт от общего доступа"><Icon name="hide" /></div>
                     : null

@@ -157,3 +157,23 @@
 .hiden-file .icon {
     margin: 0 !important;
 }
+
+.video-play-start {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    background-color: #00000085;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+}
+.video-play-start .icon {
+    margin-right: -3px !important;
+    color: #ffffff;
+    opacity: .6;
+}
+
+.files-list-row:hover .video-play-start .icon {
+    opacity: 1;
+}
