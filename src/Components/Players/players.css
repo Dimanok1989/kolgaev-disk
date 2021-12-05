@@ -106,12 +106,38 @@
     border-radius: 50%;
     background: #dcdaffcc;
     z-index: 1;
+    -webkit-animation: bubble_out .6s ease-in-out infinite both;
+    animation: bubble_out .6s ease-in-out infinite both;
 }
 
 .audio-visualisation-canvas {
     position: absolute;
     left: -45px;
     z-index: 1;
+}
+
+@-webkit-keyframes bubble_out {
+    0%,to {
+        -webkit-transform: scale(.66);
+        transform: scale(.66)
+    }
+
+    50% {
+        -webkit-transform: scale(1);
+        transform: scale(1)
+    }
+}
+
+@keyframes bubble_out {
+    0%,to {
+        -webkit-transform: scale(.66);
+        transform: scale(.66)
+    }
+
+    50% {
+        -webkit-transform: scale(1);
+        transform: scale(1)
+    }
 }
 
 .change-volume {
