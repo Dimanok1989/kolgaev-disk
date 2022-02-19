@@ -1,6 +1,6 @@
 {
   "name": "disk.kolgaev.ru",
-  "version": "0.2.0",
+  "version": "1.1.0",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
@@ -24,6 +24,7 @@
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.3",
     "socket.io-client": "^2.4.0",
+    "typescript": "^3.9.10",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
