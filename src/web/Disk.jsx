@@ -5,6 +5,7 @@ import { axios } from "../system";
 import { useActions } from "../hooks/useActions";
 import Router from "./Router";
 import { useSelector } from "react-redux";
+import Header from "./Header";
 
 const Disk = () => {
 
@@ -19,8 +20,9 @@ const Disk = () => {
 
         axios.post('disk').then(({ data }) => {
             setIsLogin(true);
+            setError(null);
         }).catch(e => {
-            setError(axios.getError(e));
+            axios.setError(e, setError);
         }).then(() => {
             setLoading(false);
         });
@@ -48,7 +50,14 @@ const Disk = () => {
 
     return <BrowserRouter>
 
-        <Router />
+        <div className="d-flex flex-column">
+
+            <Header />
+
+            <div><Router /></div>
+            
+        </div>
+
 
     </BrowserRouter>
 

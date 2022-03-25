@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig, AxiosInstance, AxiosError } from "axios";
 
 interface Axios extends AxiosInstance {
     getError?: any
+    setError?: any
 }
 
 const instance: Axios = axios.create({
@@ -30,6 +31,11 @@ instance.getError = (error: AxiosError) => {
         // Something happened in setting up the request that triggered an Error
         return error.message;
     }
+}
+
+instance.setError = (error: AxiosError, sets: any) => {
+    if (typeof sets == "function")
+        sets(instance.getError(error));
 }
 
 instance.interceptors.request.use((config: AxiosRequestConfig) => {
