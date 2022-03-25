@@ -1,11 +1,11 @@
-import { combineReducers } from 'redux';
-import { usersReducer } from './users/reducers';
-import { filesReducer } from './files/reducers';
-import { uploadsReducer } from './uploads/reducers';
-import { playersReducer } from './players/reducers';
-import { chatReducer } from './chat/reducers';
-
-import * as ACTIONS from './actions';
+import { combineReducers } from "redux";
+import * as ACTIONS from "./actions";
+import { usersReducer } from "./users/reducers";
+// import { filesReducer } from "./files/reducers";
+import { uploadsReducer } from "./uploads/reducers";
+import { playersReducer } from "./players/reducers";
+import { chatReducer } from "./chat/reducers";
+import { folderReducer } from "./folder/reducers";
 
 const defaultState = {
     isLogin: false, // Идентификатор авторизации
@@ -14,11 +14,12 @@ const defaultState = {
 };
 
 export default combineReducers({
+    chat: chatReducer,
     users: usersReducer,
-    files: filesReducer,
+    folder: folderReducer,
+    // files: filesReducer,
     uploads: uploadsReducer,
     players: playersReducer,
-    chat: chatReducer,
     main: (state = defaultState, action) => {
         switch (action.type) {
             case ACTIONS.IS_LOGIN:
