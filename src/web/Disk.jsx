@@ -6,6 +6,7 @@ import { useActions } from "../hooks/useActions";
 import Router from "./Router";
 import { useSelector } from "react-redux";
 import Header from "./Header";
+import "./disk.css";
 
 const Disk = () => {
 
@@ -14,11 +15,11 @@ const Disk = () => {
     const { setIsLogin } = useActions();
     const store = useSelector(state => state.main);
 
-    console.log(store)
+    // console.log(store)
 
     useEffect(() => {
 
-        axios.post('disk').then(({ data }) => {
+        axios.get('disk').then(({ data }) => {
             setIsLogin(true);
             setError(null);
         }).catch(e => {
@@ -50,11 +51,13 @@ const Disk = () => {
 
     return <BrowserRouter>
 
-        <div className="d-flex flex-column">
+        <div className="d-flex flex-column" id="content">
 
             <Header />
 
-            <div><Router /></div>
+            <div className="flex-grow-1 position-relative d-flex">
+                <Router />
+            </div>
             
         </div>
 

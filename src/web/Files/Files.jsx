@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Loader, Message } from "semantic-ui-react";
+import { Icon, Loader, Message } from "semantic-ui-react";
 import { useActions } from "../../hooks/useActions";
-import axios from "../../system/axios";
+import { axios } from "../../system";
+import Dropzone from "./DropzoneS";
 
 const Files = () => {
 
-    const folder = useSelector(store => store.folder);
+    const { files } = useSelector(store => store.folder);
     const { setFiles } = useActions();
 
     const [loading, setLoading] = useState(true);
@@ -17,11 +18,9 @@ const Files = () => {
 
         setLoading(true);
 
-        axios.post('disk/files/index', { ...param }).then(({ data }) => {
+        axios.get('disk/files', { ...param }).then(({ data }) => {
 
             setError(null);
-
-            
 
         }).catch(e => {
             setError(axios.getError(e));
@@ -36,17 +35,28 @@ const Files = () => {
         // eslint-disable-next-line
     }, []);
 
-    return <div>
+    return <>
 
-        {loading && <Loader inline="centered" active className="mt-4" />}
+        {!error && !loading && <Dropzone />}
 
-        {!loading && <div className="body-content">
+        <div>
 
-            {error && <Message error content={error} className="mt-3" />}
+            {loading && <Loader inline="centered" active className="mt-4" />}
 
-        </div>}
+            {!loading && <div className="body-content">
 
-    </div>
+                {error && <Message error content={error} className="mt-3" />}
+
+                {typeof files == "object" && files.length === 0 && <div className="text-center my-5 opacity-60">
+                    <div><b>Файлов еще нет</b></div>
+                    <small>Перетащите сюда файл или используйте кнопку <Icon name="upload" fitted /></small>
+                </div>}
+
+            </div>}
+
+        </div>
+
+    </>
 
 }
 

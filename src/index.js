@@ -3,7 +3,8 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import store from "./store/store";
 import "semantic-ui-css/semantic.min.css";
-import "bootstrap/dist/css/bootstrap-grid.min.css";
+// import "bootstrap/dist/css/bootstrap-grid.min.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import App from "./web";
 // import reportWebVitals from './reportWebVitals';
 

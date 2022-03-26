@@ -1,0 +1,35 @@
+.drag-enter {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2000;
+    background: rgba(0, 0, 0, .7);
+}
+
+.drag-enter:after {
+    content: "";
+    position: fixed;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    border: 5px dashed rgba(255, 255, 255, .7);
+    border-radius: .25rem;
+}
+
+.drag-enter:before {
+    content: "Перетащите файлы сюда";
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    z-index: 2001;
+    color: #ffffff;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
