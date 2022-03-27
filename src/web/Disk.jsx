@@ -51,7 +51,7 @@ const Disk = () => {
 
     return <BrowserRouter>
 
-        <div className="d-flex flex-column" id="content">
+        <div className="d-flex flex-column bg-light" id="content">
 
             <Header />
 

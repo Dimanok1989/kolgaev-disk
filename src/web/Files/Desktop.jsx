@@ -1,5 +1,7 @@
 import React from "react";
 import { useDropzone } from "../Dropzone";
+import Uploads from "../Uploads";
+import Files from "./Files";
 
 const Desktop = () => {
 
@@ -8,9 +10,13 @@ const Desktop = () => {
         // block: desktop.current,
     });
 
-    return <div className="bg-light" id="desktop">
+    return <div id="desktop">
 
         <DragEnter />
+
+        <Files />
+
+        <Uploads />
 
     </div>
 

@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { Icon, Loader, Message } from "semantic-ui-react";
 import { useActions } from "../../hooks/useActions";
 import { axios } from "../../system";
-import Dropzone from "./DropzoneS";
 
 const Files = () => {
 
@@ -35,28 +34,22 @@ const Files = () => {
         // eslint-disable-next-line
     }, []);
 
-    return <>
+    return <div>
 
-        {!error && !loading && <Dropzone />}
+        {loading && <Loader inline="centered" active className="mt-4" />}
 
-        <div>
+        {!loading && <div className="body-content">
 
-            {loading && <Loader inline="centered" active className="mt-4" />}
+            {error && <Message error content={error} className="mt-3" />}
 
-            {!loading && <div className="body-content">
-
-                {error && <Message error content={error} className="mt-3" />}
-
-                {typeof files == "object" && files.length === 0 && <div className="text-center my-5 opacity-60">
-                    <div><b>Файлов еще нет</b></div>
-                    <small>Перетащите сюда файл или используйте кнопку <Icon name="upload" fitted /></small>
-                </div>}
-
+            {typeof files == "object" && files.length === 0 && <div className="text-center my-5 opacity-60">
+                <div><b>Файлов еще нет</b></div>
+                <small>Перетащите сюда файл или используйте кнопку <Icon name="upload" fitted /></small>
             </div>}
 
-        </div>
+        </div>}
 
-    </>
+    </div>
 
 }
 

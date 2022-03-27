@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useActions } from "../../hooks/useActions";
 import DragEnter from "./DragEnter";
 import "./dropzone.css";
 
@@ -9,6 +10,8 @@ export const useDropzone = (props = {}) => {
         showDragEnter,
     } = props;
 
+    const { setUploadFiles } = useActions();
+
     const area = document.getElementById(root || "root");
     const [dragEnter, setDragEnter] = React.useState(false);
 
@@ -16,10 +19,7 @@ export const useDropzone = (props = {}) => {
         event.preventDefault();
         event.stopPropagation();
 
-        let dt = event.dataTransfer
-        let files = dt.files
-
-        console.log(files, event);
+        setUploadFiles(event.dataTransfer?.files || []);
         setDragEnter(false);
     }, []);
 
@@ -27,15 +27,12 @@ export const useDropzone = (props = {}) => {
         event.preventDefault();
         event.stopPropagation();
 
-        console.log(event);
         setDragEnter(true);
     }, []);
 
     const onDragLeave = React.useCallback((event) => {
         event.preventDefault();
         event.stopPropagation();
-
-        console.log(event);
     }, []);
 
     const onDragOver = React.useCallback((event) => {
