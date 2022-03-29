@@ -5,6 +5,7 @@ import store from "./store/store";
 import "semantic-ui-css/semantic.min.css";
 import "bootstrap/dist/css/bootstrap-grid.min.css";
 import "bootstrap/dist/css/bootstrap-utilities.min.css";
+import "./css/bootstrap-chunks.css";
 // import "bootstrap/dist/css/bootstrap.min.css";
 import App from "./web";
 // import reportWebVitals from './reportWebVitals';
