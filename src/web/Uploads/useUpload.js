@@ -1,13 +1,30 @@
 import React from "react";
 import moment from "moment";
 import { axios } from "../../system";
+import UploadProgress from "./UploadPrgress";
 
 /** @var {number} Размер части файла для загрузки */
 const CHUNK_SIZE = 5 * 1024 * 1024;
 
 const useUpload = (props = {}) => {
 
-    const { uploaded } = props;
+    const { uploaded, files } = props;
+
+    const [size, setSize] = React.useState(0);
+    const [upload, setUpload] = React.useState({});
+
+    React.useEffect(() => {
+        if (typeof files == "object" && files.length > 0) {
+
+            let size = 0;
+
+            files.forEach((file) => {
+                size += file.size;
+            });
+
+            setSize(size);
+        }
+    }, [files]);
 
     const getChunk = React.useCallback(async (file) => {
 
@@ -51,13 +68,19 @@ const useUpload = (props = {}) => {
 
     }, []);
 
-    const uploadFile = React.useCallback(async (file) => {
+    const uploadFile = React.useCallback(async (file, step = null) => {
 
         let chunk, response;
 
         file.id = null;
         file.uploadSize = 0;
         file.chunkSize = 0;
+
+        setUpload(p => {
+            let prev = { ...p }
+            prev[step] = file;
+            return prev;
+        });
 
         while (file.uploadSize < file.size) {
 
@@ -79,6 +102,19 @@ const useUpload = (props = {}) => {
             file.chunkSize += CHUNK_SIZE;
             file.uploadSize = response.size;
             file.id = response.file.id;
+
+            setUpload(p => {
+
+                let prev = { ...p };
+                let uploadSize = 0;
+                prev[step].uploadSize = response.size;
+
+                for (let i in prev) {
+                    uploadSize += prev[i].uploadSize;
+                }
+
+                return prev;
+            });
         }
 
         if (typeof uploaded == "function") {
@@ -88,7 +124,12 @@ const useUpload = (props = {}) => {
     }, []);
 
     return {
-        uploadFile
+        uploadFile,
+        UploadProgress: () => <UploadProgress
+            files={files}
+            size={size}
+            upload={upload}
+        />
     }
 
 }
