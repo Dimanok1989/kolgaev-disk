@@ -71,3 +71,57 @@
     0% { opacity: .3; width: 0; }
     100% { opacity: 0; width: 100%; }
 }
+
+.files-desktop {
+    padding-top: 2rem;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-self: flex-start;
+    align-self: flex-start;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+    width: 100%;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
+.file-row, .file-row-empty {
+    width: 90px;
+}
+
+.file-row {
+    margin: .25rem;
+    padding: 1rem .5rem .5rem;
+    border-radius: .5rem;
+    cursor: default;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-self: flex-start;
+    align-items: center;
+}
+.file-row:hover {
+    background-color: var(--bs-gray-200);
+}
+
+.file-row-icon {
+    width: 74px;
+    height: 74px;
+    background: silver;
+}
+
+.file-row-name {
+    height: 43px;
+    overflow: hidden;
+    margin-top: .5rem;
+}
+.file-row-name > span {
+    font: 13px / 14px "Arial", sans-serif;
+    display: inline-block;
+    word-break: break-all;
+    white-space: pre-line;
+}

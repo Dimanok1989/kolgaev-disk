@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { Icon, Loader, Message } from "semantic-ui-react";
 import { useActions } from "../../hooks/useActions";
 import { axios } from "../../system";
+import FileRow from "./FileRow";
 
 const Files = () => {
 
@@ -18,9 +19,8 @@ const Files = () => {
         setLoading(true);
 
         axios.get('disk/files', { ...param }).then(({ data }) => {
-
             setError(null);
-
+            setFiles(data.page > 1 ? [...files, ...data.files] : data.files);
         }).catch(e => {
             setError(axios.getError(e));
         }).then(() => {
@@ -42,9 +42,20 @@ const Files = () => {
 
             {error && <Message error content={error} className="mt-3" />}
 
-            {typeof files == "object" && files.length === 0 && <div className="text-center my-5 opacity-60">
+            {!error && typeof files == "object" && files.length === 0 && <div className="text-center my-5 opacity-60">
                 <div><b>Файлов еще нет</b></div>
                 <small>Перетащите сюда файл или используйте кнопку <Icon name="upload" fitted /></small>
+            </div>}
+
+            {!error && typeof files == "object" && files.length > 0 && <div className="files-desktop">
+
+                {files.map(file => <FileRow
+                    key={file.id}
+                    row={file}
+                />)}
+
+                {Array.from({ length: 20 }, (v, k) => k).map((e, i) => <div key={`empty_${i}`} className="file-row-empty" />)}
+
             </div>}
 
         </div>}

@@ -1,4 +1,5 @@
 import Files from "./Files";
+import FileRow from "./FileRow";
 
 export function formatSize(length) {
 
@@ -15,7 +16,8 @@ export function formatSize(length) {
 
 
 export {
-    Files
+    Files,
+    FileRow,
 }
 
 export default Files;

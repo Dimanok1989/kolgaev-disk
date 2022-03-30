@@ -15,7 +15,7 @@ const Disk = () => {
     const { setIsLogin } = useActions();
     const store = useSelector(state => state.main);
 
-    // console.log(store)
+    console.log(store)
 
     useEffect(() => {
 
