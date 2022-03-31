@@ -1,14 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
+import { withRouter } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Icon, Loader, Message } from "semantic-ui-react";
 import { useActions } from "../../hooks/useActions";
 import { axios } from "../../system";
 import FileRow from "./FileRow";
 
-const Files = () => {
+const Files = props => {
 
     const { files } = useSelector(store => store.folder);
     const { setFiles } = useActions();
+    const { folder } = props.match?.params;
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -18,7 +20,12 @@ const Files = () => {
 
         setLoading(true);
 
-        axios.get('disk/files', { ...param }).then(({ data }) => {
+        axios.get('disk/files', {
+            params: {
+                ...param,
+                dir: folder
+            }
+        }).then(({ data }) => {
             setError(null);
             setFiles(data.page > 1 ? [...files, ...data.files] : data.files);
         }).catch(e => {
@@ -27,12 +34,12 @@ const Files = () => {
             setLoading(false);
         });
 
-    }, []);
+    }, [folder]);
 
     useEffect(() => {
         getFiles({ page: 1 });
         // eslint-disable-next-line
-    }, []);
+    }, [folder]);
 
     return <div>
 
@@ -51,6 +58,7 @@ const Files = () => {
 
                 {files.map(file => <FileRow
                     key={file.id}
+                    {...props}
                     row={file}
                 />)}
 
@@ -64,4 +72,4 @@ const Files = () => {
 
 }
 
-export default Files;
+export default withRouter(Files);

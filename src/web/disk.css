@@ -11,6 +11,8 @@
     flex-grow: 1;
 }
 
+.cursor-pointer { cursor: pointer !important; }
+
 .opacity-0 { opacity: 0; }
 .opacity-10 { opacity: .1; }
 .opacity-20 { opacity: .2; }
@@ -90,7 +92,7 @@
 }
 
 .file-row, .file-row-empty {
-    width: 90px;
+    width: 100px;
 }
 
 .file-row {
@@ -111,13 +113,12 @@
 .file-row-icon {
     width: 74px;
     height: 74px;
-    background: silver;
 }
 
 .file-row-name {
     height: 43px;
     overflow: hidden;
-    margin-top: .5rem;
+    margin: .8rem .25rem 0;
 }
 .file-row-name > span {
     font: 13px / 14px "Arial", sans-serif;
