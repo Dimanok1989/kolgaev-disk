@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useActions } from "../../hooks/useActions";
 import DragEnter from "./DragEnter";
 import "./dropzone.css";

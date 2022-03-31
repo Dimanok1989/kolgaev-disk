@@ -1,7 +1,7 @@
 import React from "react";
 import { useDropzone } from "../Dropzone";
 import Uploads from "../Uploads";
-import Files from "./Files";
+import { Files, CreateFolder } from ".";
 
 const Desktop = () => {
 
@@ -10,6 +10,8 @@ const Desktop = () => {
         // block: desktop.current,
     });
 
+    
+
     return <div id="desktop">
 
         <DragEnter />
@@ -17,6 +19,8 @@ const Desktop = () => {
         <Files />
 
         <Uploads />
+
+        <CreateFolder />
 
     </div>
 

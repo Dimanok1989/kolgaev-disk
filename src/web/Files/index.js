@@ -1,5 +1,6 @@
 import Files from "./Files";
 import FileRow from "./FileRow";
+import CreateFolder from "./CreateFolder";
 
 export function formatSize(length) {
 
@@ -18,6 +19,7 @@ export function formatSize(length) {
 export {
     Files,
     FileRow,
+    CreateFolder,
 }
 
 export default Files;
