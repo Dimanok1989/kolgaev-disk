@@ -3,28 +3,28 @@ import { axios } from "../../system";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import { formatSize } from "../Files";
+import { withRouter } from "react-router-dom";
 
 /** @var {number} Размер части файла для загрузки */
 const CHUNK_SIZE = 5 * 1024 * 1024;
 
-const Uploads = () => {
+const Uploads = props => {
 
     const { uploads } = useSelector(store => store.folder);
+    const folder = props.match?.params?.folder;
 
     const [files, setFiles] = React.useState([]);
     const [step, setStep] = React.useState(null);
 
     const [size, setSize] = React.useState(0);
     const [uploadSize, setUploadSize] = React.useState(0);
-    const [uploaded, setUploaded] = React.useState([]);
-    const [percent, setPercent] = React.useState(30);
+    const [uploaded, setUploaded] = React.useState({});
+    const [percent, setPercent] = React.useState(0);
     const [errors, setErrors] = React.useState({});
 
     const getChunk = React.useCallback(async (file, step = null) => {
 
         return new Promise(resolve => {
-
-            console.log(file);
 
             const reader = new FileReader();
 
@@ -85,6 +85,7 @@ const Uploads = () => {
                 type: file.type,
                 date: moment(file.lastModified).format("YYYY-MM-DD HH:mm:ss"),
                 chunk,
+                dir: folder,
             });
 
             if (!response?.file) {
@@ -100,7 +101,7 @@ const Uploads = () => {
         }
 
         setStep(step => step + 1);
-    }, []);
+    }, [folder]);
 
     React.useEffect(() => {
 
@@ -141,7 +142,7 @@ const Uploads = () => {
         } else if (step !== null && typeof files[step] == "undefined") {
             setStep(null);
             setFiles([]);
-            setUploaded([]);
+            setUploaded({});
             setPercent(0);
         }
     }, [step]);
@@ -173,11 +174,13 @@ const Uploads = () => {
             </div>
 
             <div className="d-flex align-items-center px-1 mt-1">
-                <div className="flex-grow-1"></div>
+                <div className="flex-grow-1">
+                    <small><b>{Object.keys(uploaded).length}</b>/<b>{files.length}</b></small>
+                </div>
                 <div>
-                    <span>{(uploadSize > 0 ? formatSize(uploadSize) : 0)}</span>
-                    <span>{' / '}</span>
-                    <span>{(size > 0 ? formatSize(size) : 0)}</span>
+                    <small>{(uploadSize > 0 ? formatSize(uploadSize) : 0)}</small>
+                    <small>{' / '}</small>
+                    <small>{(size > 0 ? formatSize(size) : 0)}</small>
                 </div>
             </div>
 
@@ -187,4 +190,4 @@ const Uploads = () => {
 
 }
 
-export default Uploads;
+export default withRouter(Uploads);

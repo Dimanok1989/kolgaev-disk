@@ -29,7 +29,6 @@ const CreateFolder = ({ match }) => {
 
         list.splice(item, 0, file);
 
-        console.log(item);
         setFiles(list);
 
     }, [files]);

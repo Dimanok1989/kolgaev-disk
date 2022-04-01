@@ -1,6 +1,7 @@
 import * as TYPES from "./types";
 
 const defaultState = {
+    mainFolder: null,
     files: [],
     uploads: [],
     createFolder: false,
@@ -9,6 +10,9 @@ const defaultState = {
 export const folderReducer = (state = defaultState, action) => {
 
     switch (action.type) {
+
+        case TYPES.SET_MAIN_FOLDER:
+            return { ...state, mainFolder: action.payload }
 
         case TYPES.SET_FILES:
             return { ...state, files: action.payload }

@@ -8,13 +8,36 @@ import FileRow from "./FileRow";
 
 const Files = props => {
 
-    const { files } = useSelector(store => store.folder);
+    const { files, mainFolder } = useSelector(store => store.folder);
     const { setFiles } = useActions();
-    const { folder } = props.match?.params;
+    const folder = props.match?.params?.folder || null;
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [page, setPage] = useState(1);
+
+    const pushNewFile = useCallback(({ file, dir }) => {
+
+        if (dir === folder || dir === mainFolder) {
+            
+            let item = 0;
+            let list = [...files];
+
+            for (let i in files) {
+
+                item = i;
+
+                if (files[i].is_dir === false) {
+                    break;
+                }
+            }
+    
+            list.splice(item, 0, file);
+    
+            setFiles(list);
+        }
+
+    }, [files, mainFolder, folder]);
 
     const getFiles = useCallback(param => {
 
@@ -40,6 +63,8 @@ const Files = props => {
         getFiles({ page: 1 });
         // eslint-disable-next-line
     }, [folder]);
+
+    useEffect(() => props.pushFile && pushNewFile(props.pushFile), [props.pushFile]);
 
     return <div>
 
