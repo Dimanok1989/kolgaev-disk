@@ -7,11 +7,32 @@ import { axios } from "../../system";
 
 const CreateFolder = ({ match }) => {
 
-    const { createFolder } = useSelector(state => state.folder);
-    const { setCreateFolder } = useActions();
+    const { createFolder, files } = useSelector(state => state.folder);
+    const { setCreateFolder, setFiles } = useActions();
 
     const [name, setName] = React.useState("");
     const [save, setSave] = React.useState(false);
+
+    const pushNewFolder = React.useCallback((file) => {
+
+        let item = 0;
+        let list = [...files];
+
+        for (let i in files) {
+
+            item = i;
+
+            if (files[i].is_dir === false) {
+                break;
+            }
+        }
+
+        list.splice(item, 0, file);
+
+        console.log(item);
+        setFiles(list);
+
+    }, [files]);
 
     React.useEffect(() => {
 
@@ -29,6 +50,7 @@ const CreateFolder = ({ match }) => {
             axios.post('disk/folder/create', {
                 name, dir: match?.params?.folder
             }).then(({ data }) => {
+                pushNewFolder(data.file);
                 setCreateFolder(false);
             }).catch(e => {
                 setSave(false);
@@ -62,7 +84,6 @@ const CreateFolder = ({ match }) => {
                 value={name}
                 onChange={(e, { value }) => setName(value)}
                 disabled={save}
-                loading={save}
                 ref={ref => ref && ref.focus()}
                 onKeyUp={e => name.length > 0 && e.keyCode === 13 && setSave(true)}
             />
@@ -75,7 +96,8 @@ const CreateFolder = ({ match }) => {
             icon: "save",
             labelPosition: "right",
             disabled: name.length === 0 || save,
-            onClick: () => setSave(true),
+            onClick: () => !save && setSave(true),
+            loading: save,
         }]}
     />
 
