@@ -20,19 +20,24 @@ const Files = props => {
 
         if (dir === folder || dir === mainFolder) {
             
-            let item = 0;
-            let list = [...files];
+            let item = 0,
+                setItem = false,
+                remove = false,
+                list = [...files];
 
             for (let i in files) {
 
-                item = i;
+                if (setItem === false)
+                    item = i;
 
-                if (files[i].is_dir === false) {
-                    break;
-                }
+                if (files[i].is_dir === false)
+                    setItem = true;
+
+                if (files[i].id === file.id)
+                    remove = true;
             }
     
-            list.splice(item, 0, file);
+            list.splice(item, remove ? 1 : 0, file);
     
             setFiles(list);
         }

@@ -85,7 +85,7 @@ const Uploads = props => {
                 type: file.type,
                 date: moment(file.lastModified).format("YYYY-MM-DD HH:mm:ss"),
                 chunk,
-                dir: folder,
+                dir: file.dir,
             });
 
             if (!response?.file) {
@@ -101,7 +101,7 @@ const Uploads = props => {
         }
 
         setStep(step => step + 1);
-    }, [folder]);
+    }, []);
 
     React.useEffect(() => {
 
@@ -112,6 +112,7 @@ const Uploads = props => {
                 let list = [...prev];
 
                 Array.from(uploads).forEach(row => {
+                    row.dir = folder;
                     list.push(row);
                 });
 

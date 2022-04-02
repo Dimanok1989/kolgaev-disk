@@ -8,10 +8,19 @@ const FileRow = props => {
     const push = props.history.push;
     const className = ["file-row"];
 
-    let icon = icons[row.icon] || icons.file;
+    let icon = null;
 
     if (row.thumb_litle_url) {
-        icon = row.thumb_litle_url;
+        icon = <Image
+            src={row.thumb_litle_url}
+            style={{
+                maxWidth: 74,
+                maxHeight: 74
+            }}
+            rounded
+        />
+    } else {
+        icon = <Image src={icons[row.icon] || icons.file} />
     }
 
     if (row.is_dir)
@@ -30,11 +39,7 @@ const FileRow = props => {
         onClick={click}
     >
 
-        <div className="file-row-icon">
-
-            {icon && <Image src={icon} />}
-
-        </div>
+        <div className="file-row-icon">{icon}</div>
 
         <div className="file-row-name" title={row.name}>
             <span>{row.name}</span>
