@@ -10,6 +10,10 @@ const FileRow = props => {
 
     let icon = icons[row.icon] || icons.file;
 
+    if (row.thumb_litle_url) {
+        icon = row.thumb_litle_url;
+    }
+
     if (row.is_dir)
         className.push("cursor-pointer");
 

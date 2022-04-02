@@ -113,6 +113,9 @@
 .file-row-icon {
     width: 74px;
     height: 74px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .file-row-name {

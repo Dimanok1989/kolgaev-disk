@@ -39,6 +39,21 @@ const Files = props => {
 
     }, [files, mainFolder, folder]);
 
+    const pushUpdateFile = useCallback(({ file }) => {
+
+        let list = [...files];
+
+        for (let i in files) {
+            if (files[i].id === file.id) {
+                list[i] = file;
+                break;
+            }
+        }
+
+        setFiles(list);
+
+    }, [files, mainFolder, folder]);
+
     const getFiles = useCallback(param => {
 
         setLoading(true);
@@ -65,6 +80,7 @@ const Files = props => {
     }, [folder]);
 
     useEffect(() => props.pushFile && pushNewFile(props.pushFile), [props.pushFile]);
+    useEffect(() => props.updateFile && pushUpdateFile(props.updateFile), [props.updateFile]);
 
     return <div>
 
