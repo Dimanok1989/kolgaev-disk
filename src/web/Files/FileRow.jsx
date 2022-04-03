@@ -1,10 +1,12 @@
 import React from "react";
 import { Icon, Image } from "semantic-ui-react";
+import { useActions } from "../../hooks/useActions";
 import icons from "../../Icons";
 
 const FileRow = props => {
 
     const { row } = props;
+    const { setShowImage } = useActions();
     const push = props.history.push;
     const className = ["file-row"];
 
@@ -22,6 +24,9 @@ const FileRow = props => {
                 maxHeight: 74
             }}
             rounded
+            onClick={() => {
+                if (row.is_image) return setShowImage(row.link);
+            }}
         />
     } else {
         icon = <Image src={icons[row.icon] || icons.file} />

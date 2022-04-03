@@ -5,6 +5,7 @@ const defaultState = {
     files: [],
     uploads: [],
     createFolder: false,
+    showImage: null,
 }
 
 export const folderReducer = (state = defaultState, action) => {
@@ -22,6 +23,9 @@ export const folderReducer = (state = defaultState, action) => {
 
         case TYPES.SET_CREATE_FOLDER:
             return { ...state, createFolder: action.payload }
+
+        case TYPES.SET_SHOW_IMAGE:
+            return { ...state, showImage: action.payload }
 
         default:
             return state;

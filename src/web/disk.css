@@ -153,3 +153,52 @@
     color: #ffffff;
     z-index: 10;
 }
+
+.views-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000000;
+    opacity: .8;
+    z-index: 2000;
+}
+
+.close-view {
+    position: fixed;
+    top: 0;
+    right: 0;
+    opacity: .4;
+    z-index: 2002;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 4rem;
+    height: 4rem;
+    
+}
+
+.close-view:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.view-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2001;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.view-image-file {
+    max-width: 99%;
+    max-height: 99%;
+}

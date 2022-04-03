@@ -3,6 +3,7 @@ import { useDropzone } from "../Dropzone";
 import Uploads from "../Uploads";
 import { Files, CreateFolder } from ".";
 import { withRouter } from "react-router-dom";
+import Photo from "../Views/Photo";
 
 const Desktop = () => {
 
@@ -38,6 +39,8 @@ const Desktop = () => {
         <Uploads />
 
         <CreateFolder />
+
+        <Photo />
 
     </div>
 
