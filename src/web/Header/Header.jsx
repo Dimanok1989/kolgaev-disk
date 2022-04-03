@@ -1,4 +1,4 @@
-import { Button, Image } from "semantic-ui-react";
+import { Icon, Image } from "semantic-ui-react";
 import { useActions } from "../../hooks/useActions";
 import "./header.css";
 
@@ -26,25 +26,27 @@ const Header = () => {
 
             </div>
 
-            <div className="position-relative d-flex align-items-center">
+            <div className="position-relative d-flex align-items-center" style={{ fontSize: "130%" }}>
 
-                <Button.Group className="position-absolute" basic style={{ right: 0 }}>
-
-                    <Button
-                        icon={{ name: "upload" }}
+                <span className="mx-2">
+                    <Icon
+                        name="upload"
                         title="Загрузить файлы"
+                        fitted
+                        // link
                         disabled
-                        className="p-2"
                     />
+                </span>
 
-                    <Button
-                        icon={{ name: "folder" }}
+                <span className="mx-2">
+                    <Icon
+                        name="folder"
                         title="Создать каталог"
-                        className="p-2"
+                        fitted
+                        link
                         onClick={() => setCreateFolder(true)}
                     />
-
-                </Button.Group>
+                </span>
 
             </div>
 
