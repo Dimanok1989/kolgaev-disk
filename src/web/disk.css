@@ -116,6 +116,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 .file-row-name {
@@ -128,4 +129,27 @@
     display: inline-block;
     word-break: break-all;
     white-space: pre-line;
+}
+
+.play-bg {
+    background-color: rgba(0, 153, 255, 0.5);
+    width: 38px;
+    height: 28px;
+    border-radius: 7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.file-icon-action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    color: #ffffff;
+    z-index: 10;
 }

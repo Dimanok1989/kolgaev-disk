@@ -1,5 +1,5 @@
 import React from "react";
-import { Image } from "semantic-ui-react";
+import { Icon, Image } from "semantic-ui-react";
 import icons from "../../Icons";
 
 const FileRow = props => {
@@ -8,9 +8,13 @@ const FileRow = props => {
     const push = props.history.push;
     const className = ["file-row"];
 
-    let icon = null;
+    let icon = null,
+        type = null;
 
     if (row.thumb_litle_url) {
+
+        type = row.is_video ? "video" : null;
+
         icon = <Image
             src={row.thumb_litle_url}
             style={{
@@ -39,7 +43,19 @@ const FileRow = props => {
         onClick={click}
     >
 
-        <div className="file-row-icon">{icon}</div>
+        <div className="file-row-icon">
+
+            {icon}
+
+            {row.is_video && type === "video" && <div className="file-icon-action">
+                <span className="play-bg">
+                    <span>
+                        <Icon name="play" fitted link />
+                    </span>
+                </span>
+            </div>}
+
+        </div>
 
         <div className="file-row-name" title={row.name}>
             <span>{row.name}</span>

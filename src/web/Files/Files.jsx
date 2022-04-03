@@ -19,26 +19,18 @@ const Files = props => {
     const pushNewFile = useCallback(({ file, dir }) => {
 
         if (dir === folder || dir === mainFolder) {
-            
-            let item = 0,
-                setItem = false,
-                remove = false,
+
+            let append = true,
                 list = [...files];
 
-            for (let i in files) {
+            list.forEach(row => {
+                if (row.id === file.id)
+                    append = false;
+            });
 
-                if (setItem === false)
-                    item = i;
+            if (append)
+                list.push(file);
 
-                if (files[i].is_dir === false)
-                    setItem = true;
-
-                if (files[i].id === file.id)
-                    remove = true;
-            }
-    
-            list.splice(item, remove ? 1 : 0, file);
-    
             setFiles(list);
         }
 
