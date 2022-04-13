@@ -165,23 +165,38 @@
     z-index: 2000;
 }
 
-.close-view {
+.close-view, .change-view {
+    width: 4.5rem;
     position: fixed;
-    top: 0;
-    right: 0;
-    opacity: .4;
-    z-index: 2002;
     color: #ffffff;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 4rem;
-    height: 4rem;
-    
+    z-index: 2002;
+    opacity: .4;
 }
 
-.close-view:hover {
+.close-view {
+    top: 0;
+    right: 0;
+    height: 4.5rem;
+}
+
+.change-view {
+    top: 4.5rem;
+    bottom: 4.5rem;
+}
+
+.change-view.change-next {
+    right: 0;
+}
+
+.change-view.change-back {
+    left: 0;
+}
+
+.close-view:hover, .change-view:hover {
     opacity: 1;
     background: rgba(0, 0, 0, 0.4);
 }

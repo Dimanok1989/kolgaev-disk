@@ -3,14 +3,18 @@ import { useSelector } from "react-redux";
 import { Icon, Image, Loader } from "semantic-ui-react";
 import { useActions } from "../../hooks/useActions";
 import { axios } from "../../system";
+import { withRouter } from "react-router-dom";
 
-const Photo = () => {
+const Photo = props => {
+
+    const folder = props.match?.params?.folder || null;
 
     const { showImage } = useSelector(state => state.folder);
     const { setShowImage } = useActions();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [image, setImage] = useState(null);
+    const [change, setChange] = useState({ next: null, prev: null });
 
     const getImage = useCallback((params = {}) => {
 
@@ -18,10 +22,16 @@ const Photo = () => {
 
         axios.post('disk/view/image', params).then(({ data }) => {
 
+            setChange({
+                next: data.next,
+                prev: data.prev
+            });
+
             axios.get('disk/photo', {
                 responseType: 'arraybuffer',
                 params: {
-                    id: params.id
+                    id: params.id,
+                    folder: data.folder,
                 }
             }).then(({ data }) => {
 
@@ -45,10 +55,10 @@ const Photo = () => {
     }, []);
 
     useEffect(() => {
-        showImage && getImage({ id: showImage });
+        showImage && getImage({ id: showImage, folder });
         showImage === null && setError(null);
         showImage === null && setImage(null);
-    }, [showImage]);
+    }, [showImage, folder]);
 
     if (!showImage)
         return null;
@@ -83,7 +93,27 @@ const Photo = () => {
             className="close-view"
         />
 
+        {!loading && change?.next && <div
+            children={<Icon
+                name="angle right"
+                fitted
+                size="large"
+            />}
+            className="change-view change-next"
+            onClick={() => setShowImage(change.next)}
+        />}
+
+        {!loading && change?.prev && <div
+            children={<Icon
+                name="angle left"
+                fitted
+                size="large"
+            />}
+            className="change-view change-back"
+            onClick={() => setShowImage(change.prev)}
+        />}
+
     </>
 }
 
-export default Photo;
+export default withRouter(Photo);
