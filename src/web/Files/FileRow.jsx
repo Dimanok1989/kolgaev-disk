@@ -10,6 +10,9 @@ const FileRow = props => {
     const push = props.history.push;
     const className = ["file-row"];
 
+    // if (row.is_image)
+    //     className.push('thumb-photo');
+
     let icon = null,
         type = null;
 
@@ -24,22 +27,21 @@ const FileRow = props => {
                 maxHeight: 74
             }}
             rounded
-            onClick={() => {
-                if (row.is_image) return setShowImage(row.link);
-            }}
+            // onClick={() => {
+            //     if (row.is_image) return setShowImage(row.link);
+            // }}
         />
     } else {
         icon = <Image src={icons[row.icon] || icons.file} />
     }
 
-    if (row.is_dir)
+    if (row.is_dir || row.is_image)
         className.push("cursor-pointer");
 
     const click = React.useCallback(() => {
 
-        if (row.is_dir) {
-            return push(`/${row.link}`);
-        }
+        if (row.is_dir) return push(`/${row.link}`);
+        else if (row.is_image) return setShowImage(row.link);
 
     }, [row]);
 

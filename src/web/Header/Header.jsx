@@ -1,8 +1,9 @@
+import { withRouter } from "react-router-dom";
 import { Icon, Image } from "semantic-ui-react";
 import { useActions } from "../../hooks/useActions";
 import "./header.css";
 
-const Header = () => {
+const Header = (props) => {
 
     const { setCreateFolder } = useActions();
 
@@ -10,7 +11,7 @@ const Header = () => {
 
         <div className="header-bar-content d-flex align-items-center">
 
-            <div className="header-link flex-grow-1">
+            <div className="header-link flex-grow-1" onClick={() => props.history.push("/")}>
 
                 <Image
                     src="/logo.svg"
@@ -56,4 +57,4 @@ const Header = () => {
 
 }
 
-export default Header;
+export default withRouter(Header);

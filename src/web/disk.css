@@ -97,7 +97,7 @@
 
 .file-row {
     margin: .25rem;
-    padding: 1rem .5rem .5rem;
+    padding: .5rem .5rem .5rem;
     border-radius: .5rem;
     cursor: default;
     display: flex;
@@ -108,6 +108,9 @@
 }
 .file-row:hover {
     background-color: var(--bs-gray-200);
+}
+.file-row.thumb-photo:hover .image {
+    cursor: pointer;
 }
 
 .file-row-icon {
