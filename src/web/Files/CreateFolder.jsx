@@ -47,7 +47,8 @@ const CreateFolder = ({ match }) => {
         if (save) {
 
             axios.post('disk/folder/create', {
-                name, dir: match?.params?.folder
+                name,
+                dir: match?.params[0],
             }).then(({ data }) => {
                 pushNewFolder(data.file);
                 setCreateFolder(false);

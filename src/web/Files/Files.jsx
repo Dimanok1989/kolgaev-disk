@@ -10,7 +10,10 @@ const Files = props => {
 
     const { files, mainFolder } = useSelector(store => store.folder);
     const { setFiles } = useActions();
-    const folder = props.match?.params?.folder || null;
+    const user = props.match?.params?.user || null;
+    const folder = props.match?.params[0] || null;
+
+    console.log(props)
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

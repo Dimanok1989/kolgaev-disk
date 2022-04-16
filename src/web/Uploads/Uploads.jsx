@@ -11,7 +11,7 @@ const CHUNK_SIZE = 5 * 1024 * 1024;
 const Uploads = props => {
 
     const { uploads } = useSelector(store => store.folder);
-    const folder = props.match?.params?.folder;
+    const folder = props.match?.params[0];
 
     const [files, setFiles] = React.useState([]);
     const [step, setStep] = React.useState(null);

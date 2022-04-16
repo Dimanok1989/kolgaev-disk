@@ -8,6 +8,7 @@ const FileRow = props => {
     const { row } = props;
     const { setShowImage } = useActions();
     const push = props.history.push;
+    const inFolder = props?.match?.params[0] || null;
     const className = ["file-row"];
 
     // if (row.is_image)
@@ -40,7 +41,7 @@ const FileRow = props => {
 
     const click = React.useCallback(() => {
 
-        if (row.is_dir) return push(`/${row.link}`);
+        if (row.is_dir) return push(`${inFolder ? `/${inFolder}` : ""}/${row.link}`);
         else if (row.is_image) return setShowImage(row.link);
 
     }, [row]);
