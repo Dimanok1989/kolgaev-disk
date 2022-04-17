@@ -75,7 +75,7 @@
 }
 
 .files-desktop {
-    padding-top: 2rem;
+    padding-top: 1rem;
     display: -webkit-flex;
     display: flex;
     -webkit-align-self: flex-start;
@@ -219,4 +219,8 @@
 .view-image-file {
     max-width: 99%;
     max-height: 99%;
+}
+
+.breadcrumb a.section {
+    text-decoration: none;
 }

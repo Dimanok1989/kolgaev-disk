@@ -5,6 +5,7 @@ import { Icon, Loader, Message } from "semantic-ui-react";
 import { useActions } from "../../hooks/useActions";
 import { axios } from "../../system";
 import FileRow from "./FileRow";
+import BreadCrumbs from "./BreadCrumbs";
 
 const Files = props => {
 
@@ -13,11 +14,10 @@ const Files = props => {
     const user = props.match?.params?.user || null;
     const folder = props.match?.params[0] || null;
 
-    console.log(props)
-
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [page, setPage] = useState(1);
+    const [breadCrumbs, setBreadCrumbs] = useState([]);
 
     const pushNewFile = useCallback(({ file, dir }) => {
 
@@ -66,6 +66,7 @@ const Files = props => {
         }).then(({ data }) => {
             setError(null);
             setFiles(data.page > 1 ? [...files, ...data.files] : data.files);
+            setBreadCrumbs(data.breadcrumbs);
         }).catch(e => {
             setError(axios.getError(e));
         }).then(() => {
@@ -82,11 +83,13 @@ const Files = props => {
     useEffect(() => props.pushFile && pushNewFile(props.pushFile), [props.pushFile]);
     useEffect(() => props.updateFile && pushUpdateFile(props.updateFile), [props.updateFile]);
 
-    return <div>
+    return <div className="body-content">
+
+        <BreadCrumbs data={breadCrumbs} />
 
         {loading && <Loader inline="centered" active className="mt-4" />}
 
-        {!loading && <div className="body-content">
+        {!loading && <div>
 
             {error && <Message error content={error} className="mt-3" />}
 
