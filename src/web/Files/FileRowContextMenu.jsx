@@ -5,6 +5,7 @@ const FileRowContextMenu = props => {
 
     const { pageX, pageY, setShowMenu } = props;
     const dropdown = React.useRef();
+    const [open, setOpen] = React.useState(false);
 
     const hide = React.useCallback(() => setShowMenu(false));
 
@@ -26,6 +27,7 @@ const FileRowContextMenu = props => {
 
         dropdown.current.ref.current.style.top = (pageY - correctY) + "px";
         dropdown.current.ref.current.style.left = (pageX - correctX) + "px";
+        setOpen(true);
 
         setTimeout(() => document.addEventListener('click', hide), 50);
 
@@ -36,7 +38,7 @@ const FileRowContextMenu = props => {
     }, [pageX, pageY]);
 
     return <Dropdown
-        open={true}
+        open={open}
         value={null}
         icon={false}
         ref={dropdown}
