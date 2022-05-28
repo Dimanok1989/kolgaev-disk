@@ -111,6 +111,7 @@ const Files = props => {
                     {...props}
                     row={file}
                     showMenu={showMenu}
+                    selected={showMenu?.id === file.id}
                     setShowMenu={setShowMenu}
                 />)}
 

@@ -35,21 +35,33 @@ const FileRowContextMenu = props => {
 
     }, [pageX, pageY]);
 
-    const options = [
-        { text: props.id, value: 1, onClick: () => hide() },
-        { text: 'Choice 2', value: 2, onClick: () => hide() },
-    ];
-
     return <Dropdown
         open={true}
-        header={"Меню"}
-        options={options.map((row, i) => ({ ...row, key: i }))}
         value={null}
         icon={false}
         ref={dropdown}
         className="position-fixed"
         style={{ zIndex: "1" }}
-    />
+    >
+        <Dropdown.Menu style={{ borderRadius: "0.5rem" }}>
+            <Dropdown.Item
+                icon="download"
+                content="Скачать"
+                onClick={() => hide()}
+            />
+            <Dropdown.Item
+                icon="pencil"
+                content="Переименовать"
+                onClick={() => hide()}
+            />
+            <Dropdown.Divider className="my-0" />
+            <Dropdown.Item
+                icon="trash"
+                content="Удалить"
+                onClick={() => hide()}
+            />
+        </Dropdown.Menu>
+    </Dropdown>
 
 }
 
