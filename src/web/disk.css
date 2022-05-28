@@ -75,7 +75,6 @@
 }
 
 .files-desktop {
-    padding-top: 1rem;
     display: -webkit-flex;
     display: flex;
     -webkit-align-self: flex-start;
@@ -223,4 +222,14 @@
 
 .breadcrumb a.section {
     text-decoration: none;
+}
+
+.body-content .dropdown .divider.text {
+    display: none;
+}
+
+.body-content .dropdown .menu {
+    position: absolute;
+    top: 0;
+    left: 0;
 }

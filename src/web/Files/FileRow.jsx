@@ -2,17 +2,18 @@ import React from "react";
 import { Icon, Image } from "semantic-ui-react";
 import { useActions } from "../../hooks/useActions";
 import icons from "../../Icons";
+import FileRowContextMenu from "./FileRowContextMenu"
 
 const FileRow = props => {
 
-    const { row } = props;
-    const { setShowImage } = useActions();
     const push = props.history.push;
     const inFolder = props?.match?.params[0] || null;
-    const className = ["file-row"];
+    const className = ["file-row position-relative"];
+    const ref = React.useRef();
 
-    // if (row.is_image)
-    //     className.push('thumb-photo');
+    const { row } = props;
+    const { showMenu, setShowMenu } = props;
+    const { setShowImage } = useActions();
 
     let icon = null,
         type = null;
@@ -28,9 +29,6 @@ const FileRow = props => {
                 maxHeight: 74
             }}
             rounded
-            // onClick={() => {
-            //     if (row.is_image) return setShowImage(row.link);
-            // }}
         />
     } else {
         icon = <Image src={icons[row.icon] || icons.file} />
@@ -39,17 +37,63 @@ const FileRow = props => {
     if (row.is_dir || row.is_image)
         className.push("cursor-pointer");
 
-    const click = React.useCallback(() => {
+    const onClick = React.useCallback(() => {
 
         if (row.is_dir) return push(`${inFolder ? `/${inFolder}` : ""}/${row.link}`);
         else if (row.is_image) return setShowImage(row.link);
 
     }, [row]);
 
+    const onContextMenu = React.useCallback(e => {
+
+        e.preventDefault();
+
+        const data = {
+            id: row.id,
+            file: row,
+            pageX: e.pageX,
+            pageY: e.pageY,
+        }
+
+        setShowMenu(data)
+
+        return;
+
+        const positions = e.currentTarget && e.currentTarget.getBoundingClientRect();
+        const filesContent = document.getElementById('files-content');
+        const filesRect = filesContent && filesContent.getBoundingClientRect();
+
+        console.log({ pageX: e.pageX, pageY: e.pageY, screenY: e.screenY }, e, positions, filesRect);
+
+        if (positions && filesRect) {
+
+            data.offset = {
+                left: e.pageX - ref.current.offsetLeft - ref.current.offsetParent.offsetLeft,
+                top: e.pageY - ref.current.offsetTop - ref.current.offsetParent.offsetTop,
+            }
+
+            console.log(data.offset, ref)
+
+        }
+
+        setShowMenu(data);
+
+    }, [row]);
+
     return <div
         className={className.join(' ')}
-        onClick={click}
+        onClick={onClick}
+        onContextMenu={onContextMenu}
+        id={`file-row-${row.id}`}
+        ref={ref}
     >
+
+        {/* <FileRowContextMenu
+            row={showMenu?.file}
+            offset={showMenu?.offset}
+            open={showMenu?.id === row.id}
+            setShowMenu={setShowMenu}
+        /> */}
 
         <div className="file-row-icon">
 

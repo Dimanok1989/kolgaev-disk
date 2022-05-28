@@ -36,7 +36,7 @@ const BreadCrumbs = props => {
             onClick: data.length === 0 ? null : () => props.history.push(`/`),
             active: data.length === 0,
         }, ...sections]}
-        className="mt-4"
+        className="my-4"
         size="large"
     />
 }

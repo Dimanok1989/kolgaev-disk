@@ -6,18 +6,19 @@ import { useActions } from "../../hooks/useActions";
 import { axios } from "../../system";
 import FileRow from "./FileRow";
 import BreadCrumbs from "./BreadCrumbs";
+import FileRowContextMenu from "./FileRowContextMenu";
 
 const Files = props => {
 
     const { files, mainFolder } = useSelector(store => store.folder);
     const { setFiles } = useActions();
-    const user = props.match?.params?.user || null;
     const folder = props.match?.params[0] || null;
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [page, setPage] = useState(1);
     const [breadCrumbs, setBreadCrumbs] = useState([]);
+    const [showMenu, setShowMenu] = useState(false);
 
     const pushNewFile = useCallback(({ file, dir }) => {
 
@@ -83,7 +84,12 @@ const Files = props => {
     useEffect(() => props.pushFile && pushNewFile(props.pushFile), [props.pushFile]);
     useEffect(() => props.updateFile && pushUpdateFile(props.updateFile), [props.updateFile]);
 
-    return <div className="body-content">
+    return <div className="body-content position-relative" id="files-content">
+
+        {showMenu && <FileRowContextMenu
+            setShowMenu={setShowMenu}
+            {...showMenu}
+        />}
 
         <BreadCrumbs data={breadCrumbs} />
 
@@ -104,6 +110,8 @@ const Files = props => {
                     key={file.id}
                     {...props}
                     row={file}
+                    showMenu={showMenu}
+                    setShowMenu={setShowMenu}
                 />)}
 
                 {Array.from({ length: 20 }, (v, k) => k).map((e, i) => <div key={`empty_${i}`} className="file-row-empty" />)}

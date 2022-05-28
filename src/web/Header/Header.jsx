@@ -1,3 +1,4 @@
+import { useCallback, useRef } from "react";
 import { withRouter } from "react-router-dom";
 import { Icon, Image } from "semantic-ui-react";
 import { useActions } from "../../hooks/useActions";
@@ -5,7 +6,10 @@ import "./header.css";
 
 const Header = (props) => {
 
-    const { setCreateFolder } = useActions();
+    const { setCreateFolder, setUploadFiles } = useActions();
+    const input = useRef();
+
+    const changeFiles = useCallback(e => setUploadFiles(e.target?.files || []), []);
 
     return <div className="header-bar">
 
@@ -29,13 +33,21 @@ const Header = (props) => {
 
             <div className="position-relative d-flex align-items-center" style={{ fontSize: "130%" }}>
 
+                <input
+                    type="file"
+                    multiple
+                    className="d-none"
+                    ref={input}
+                    onChange={changeFiles}
+                />
+
                 <span className="mx-2">
                     <Icon
                         name="upload"
                         title="Загрузить файлы"
                         fitted
-                        // link
-                        disabled
+                        link
+                        onClick={() => input.current && input.current.click()}
                     />
                 </span>
 

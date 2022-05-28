@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 
 const Photo = props => {
 
-    const folder = props.match?.params?.folder || "0";
+    const folder = typeof props.match.params == "object" ? String(props.match.params[0]) : "0";
 
     const { showImage } = useSelector(state => state.folder);
     const { setShowImage } = useActions();
