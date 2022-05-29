@@ -3,11 +3,16 @@ import { Dropdown } from "semantic-ui-react";
 
 const FileRowContextMenu = props => {
 
-    const { pageX, pageY, setShowMenu } = props;
+    const { file, pageX, pageY, setShowMenu, setSelect } = props;
     const dropdown = React.useRef();
     const [open, setOpen] = React.useState(false);
 
     const hide = React.useCallback(() => setShowMenu(false));
+
+    const select = React.useCallback(data => {
+        setSelect(data);
+        hide();
+    }, []);
 
     React.useEffect(() => {
 
@@ -54,7 +59,7 @@ const FileRowContextMenu = props => {
             <Dropdown.Item
                 icon="pencil"
                 content="Переименовать"
-                onClick={() => hide()}
+                onClick={() => select({ ...file, context: "rename" })}
             />
             <Dropdown.Divider className="my-0" />
             <Dropdown.Item

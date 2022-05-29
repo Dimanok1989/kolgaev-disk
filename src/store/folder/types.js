@@ -1,5 +1,6 @@
 export const SET_MAIN_FOLDER = "SET_MAIN_FOLDER";
 export const SET_FILES = "SET_FILES";
 export const SET_UPLOAD_FILES = "SET_UPLOAD_FILES";
+export const SET_UPDATE_FILE_ROW = "SET_UPDATE_FILE_ROW";
 export const SET_CREATE_FOLDER = "SET_CREATE_FOLDER";
 export const SET_SHOW_IMAGE = "SET_SHOW_IMAGE";

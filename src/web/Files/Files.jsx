@@ -7,6 +7,7 @@ import { axios } from "../../system";
 import FileRow from "./FileRow";
 import BreadCrumbs from "./BreadCrumbs";
 import FileRowContextMenu from "./FileRowContextMenu";
+import Rename from "./Rename";
 
 const Files = props => {
 
@@ -19,6 +20,9 @@ const Files = props => {
     const [page, setPage] = useState(1);
     const [breadCrumbs, setBreadCrumbs] = useState([]);
     const [showMenu, setShowMenu] = useState(false);
+    const [context, setContext] = useState({});
+
+    const closeContext = useCallback(() => setContext({}), []);
 
     const pushNewFile = useCallback(({ file, dir }) => {
 
@@ -86,9 +90,16 @@ const Files = props => {
 
     return <div className="body-content position-relative" id="files-content">
 
+        <Rename
+            show={context?.context === "rename"}
+            data={context}
+            close={closeContext}
+        />
+
         {showMenu && <FileRowContextMenu
-            setShowMenu={setShowMenu}
             {...showMenu}
+            setShowMenu={setShowMenu}
+            setSelect={setContext}
         />}
 
         <BreadCrumbs data={breadCrumbs} />

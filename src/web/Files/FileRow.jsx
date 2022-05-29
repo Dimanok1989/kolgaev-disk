@@ -2,7 +2,6 @@ import React from "react";
 import { Icon, Image } from "semantic-ui-react";
 import { useActions } from "../../hooks/useActions";
 import icons from "../../Icons";
-import FileRowContextMenu from "./FileRowContextMenu"
 
 const FileRow = props => {
 

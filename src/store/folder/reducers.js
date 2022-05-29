@@ -10,6 +10,8 @@ const defaultState = {
 
 export const folderReducer = (state = defaultState, action) => {
 
+    let list;
+
     switch (action.type) {
 
         case TYPES.SET_MAIN_FOLDER:
@@ -17,6 +19,18 @@ export const folderReducer = (state = defaultState, action) => {
 
         case TYPES.SET_FILES:
             return { ...state, files: action.payload }
+
+        case TYPES.SET_UPDATE_FILE_ROW:
+
+            list = [...state.files];
+
+            list.forEach((row, i) => {
+                if (row.id === action.payload.id) {
+                    list[i] = { ...row, ...action.payload }
+                }
+            });
+
+            return { ...state, files: list }
 
         case TYPES.SET_UPLOAD_FILES:
             return { ...state, uploads: action.payload }
