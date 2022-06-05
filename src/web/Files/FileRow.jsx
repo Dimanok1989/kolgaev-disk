@@ -52,8 +52,8 @@ const FileRow = props => {
         const data = {
             id: row.id,
             file: row,
-            pageX: e.pageX,
-            pageY: e.pageY,
+            pageX: e.clientX,
+            pageY: e.clientY,
         }
 
         setShowMenu(data)

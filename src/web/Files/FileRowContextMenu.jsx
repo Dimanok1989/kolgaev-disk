@@ -34,10 +34,14 @@ const FileRowContextMenu = props => {
         dropdown.current.ref.current.style.left = (pageX - correctX) + "px";
         setOpen(true);
 
-        setTimeout(() => document.addEventListener('click', hide), 50);
+        setTimeout(() => {
+            document.addEventListener('click', hide);
+            document.addEventListener('scroll', hide);
+        }, 50);
 
         return () => {
             document.removeEventListener('click', hide);
+            document.removeEventListener('scroll', hide);
         }
 
     }, [pageX, pageY]);
