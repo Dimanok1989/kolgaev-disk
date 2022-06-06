@@ -1,7 +1,7 @@
 import React from "react";
 import { Icon, Image } from "semantic-ui-react";
 import { useActions } from "../../hooks/useActions";
-import icons from "../../Icons";
+import useFileIcon from "./useFileIcon";
 
 const FileRow = props => {
 
@@ -13,24 +13,7 @@ const FileRow = props => {
     const { showMenu, setShowMenu } = props;
     const { setShowImage } = useActions();
 
-    let icon = null,
-        type = null;
-
-    if (row.thumb_litle_url) {
-
-        type = row.is_video ? "video" : null;
-
-        icon = <Image
-            src={row.thumb_litle_url}
-            style={{
-                maxWidth: 74,
-                maxHeight: 74
-            }}
-            rounded
-        />
-    } else {
-        icon = <Image src={icons[row.icon] || icons.file} />
-    }
+    const { icon, type } = useFileIcon(row);
 
     if (row.is_dir || row.is_image)
         className.push("cursor-pointer");
@@ -49,6 +32,8 @@ const FileRow = props => {
 
         e.preventDefault();
 
+        if (row.deleted_at) return;
+
         const data = {
             id: row.id,
             file: row,
@@ -65,6 +50,7 @@ const FileRow = props => {
         onClick={onClick}
         onContextMenu={onContextMenu}
         id={`file-row-${row.id}`}
+        style={{ opacity: row.deleted_at ? "0.5" : "1" }}
     >
 
         <div className="file-row-icon">
@@ -82,7 +68,7 @@ const FileRow = props => {
         </div>
 
         <div className="file-row-name" title={row.name}>
-            <span>{row.name}</span>
+            <span style={{ textDecoration: row.deleted_at ? "line-through" : "none" }}>{row.name}</span>
         </div>
 
     </div>

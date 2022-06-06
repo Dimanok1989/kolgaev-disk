@@ -8,6 +8,7 @@ import FileRow from "./FileRow";
 import BreadCrumbs from "./BreadCrumbs";
 import FileRowContextMenu from "./FileRowContextMenu";
 import Rename from "./Rename";
+import DeleteFile from "./DeleteFile";
 
 const Files = props => {
 
@@ -92,6 +93,12 @@ const Files = props => {
 
         <Rename
             show={context?.context === "rename"}
+            data={context}
+            close={closeContext}
+        />
+
+        <DeleteFile
+            show={context?.context === "delete"}
             data={context}
             close={closeContext}
         />

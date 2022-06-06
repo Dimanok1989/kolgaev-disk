@@ -69,7 +69,7 @@ const FileRowContextMenu = props => {
             <Dropdown.Item
                 icon="trash"
                 content="Удалить"
-                onClick={() => hide()}
+                onClick={() => select({ ...file, context: "delete" })}
             />
         </Dropdown.Menu>
     </Dropdown>
