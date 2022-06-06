@@ -1,5 +1,5 @@
 import React from "react";
-import { Icon, Image } from "semantic-ui-react";
+import { Icon } from "semantic-ui-react";
 import { useActions } from "../../hooks/useActions";
 import useFileIcon from "./useFileIcon";
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal } from "semantic-ui-react";
-import axios from "../../system/axios";
+import { axios } from "../../system";
 import useFileIcon from "./useFileIcon";
 import { useActions } from "../../hooks/useActions";
 import { useSelector } from "react-redux";
@@ -36,6 +36,7 @@ const DeleteFile = props => {
                 }
             });
             setFiles(files);
+            close();
         }).catch(e => {
             setError(axios.getError(e));
         }).then(() => {

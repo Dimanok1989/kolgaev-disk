@@ -1,5 +1,11 @@
 import axios, { AxiosRequestConfig, AxiosInstance, AxiosError } from "axios";
 
+declare global {
+    interface Window {
+        Echo?: any
+    }
+}
+
 interface Axios extends AxiosInstance {
     getError?: any
     setError?: any
@@ -44,7 +50,8 @@ instance.interceptors.request.use((config: AxiosRequestConfig) => {
 
     config.headers = {
         ...config.headers,
-        Authorization: `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
+        'X-Socket-ID': window.Echo && window.Echo.socketId(),
     }
 
     return config;
