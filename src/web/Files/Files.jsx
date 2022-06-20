@@ -128,9 +128,12 @@ const Files = props => {
                     key={file.id}
                     {...props}
                     row={file}
-                    showMenu={showMenu}
+                    showMenu={showMenu?.id === file.id ? showMenu : false}
                     selected={showMenu?.id === file.id}
                     setShowMenu={setShowMenu}
+                    contextMenu={context?.id === file.id && context}
+                    closeContext={closeContext}
+                    loading={(context?.context === "download" && context?.id === file.id)}
                 />)}
 
                 {Array.from({ length: 20 }, (v, k) => k).map((e, i) => <div key={`empty_${i}`} className="file-row-empty" />)}

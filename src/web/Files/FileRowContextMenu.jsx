@@ -58,7 +58,7 @@ const FileRowContextMenu = props => {
             <Dropdown.Item
                 icon="download"
                 content="Скачать"
-                onClick={() => hide()}
+                onClick={() => select({ ...file, context: "download" })}
             />
             <Dropdown.Item
                 icon="pencil"

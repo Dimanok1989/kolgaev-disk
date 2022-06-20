@@ -2,6 +2,7 @@ import React from "react";
 import { Icon } from "semantic-ui-react";
 import { useActions } from "../../hooks/useActions";
 import useFileIcon from "./useFileIcon";
+import Download from "./Download";
 
 const FileRow = props => {
 
@@ -10,7 +11,7 @@ const FileRow = props => {
     const className = ["file-row position-relative"];
 
     const { row, selected } = props;
-    const { showMenu, setShowMenu } = props;
+    const { contextMenu, closeContext, setShowMenu, loading } = props;
     const { setShowImage } = useActions();
 
     const { icon, type } = useFileIcon(row);
@@ -52,6 +53,11 @@ const FileRow = props => {
         id={`file-row-${row.id}`}
         style={{ opacity: row.deleted_at ? "0.5" : "1" }}
     >
+
+        {contextMenu?.context === "download" && <Download
+            data={contextMenu}
+            close={closeContext}
+        />}
 
         <div className="file-row-icon">
 
