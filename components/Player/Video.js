@@ -1,4 +1,5 @@
 import useFetch from "@/hooks/useFetch";
+import { useResize } from "@/hooks/useResize";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -56,11 +57,11 @@ const Video = props => {
     }, [video]);
 
     const sendTimeView = useCallback((time, viewed, cb) => {
-        postJson(`disk/video/${id}/set-time`, { time, viewed }, cb)
+        id && postJson(`disk/video/${id}/set-time`, { time, viewed }, cb)
     }, []);
 
     useEffect(() => {
-        if (seconds === 20 && !toSent) {
+        if (seconds === 20 && !toSent && id) {
             setToSent(true);
             sendTimeView(currentTime, false, () => setToSent(false));
             router.replace(`/video/${id}?t=${Math.round(currentTime)}`);
@@ -125,6 +126,13 @@ const Video = props => {
             !paused && pause();
         }
     }, [video, paused]);
+
+    useEffect(() => {
+        if (paused) {
+            if (control.current) control.current.style.opacity = 1;
+            setShow(true);
+        }
+    }, [paused]);
 
     const blockMouseMove = e => {
         control.current.style.opacity = 1;
@@ -215,12 +223,20 @@ const Video = props => {
         }
     }, [volume, video]);
 
+    const windowWidth = useResize();
+    const [height, setHeight] = useState('auto');
 
+    useEffect(() => {
+        if (player.current?.offsetWidth) {
+            setHeight(player.current.offsetWidth * (9/16));
+        }
+    }, [windowWidth]);
 
     return <div
         className={`relative bg-black rounded-lg overflow-hidden ${fullScreen ? 'flex items-center' : ''}`}
         onMouseMove={blockMouseMove}
         ref={player}
+        style={{ height }}
     >
 
         <div className={`absolute inset-0 text-white flex items-center justify-center`}>
@@ -233,6 +249,10 @@ const Video = props => {
             controls={false}
             width="100%"
             height={fullScreen ? "100%" : null}
+            style={{
+                maxWidth: "100%",
+                maxHeight: "100%",
+            }}
             crossOrigin="anonymous"
             onCanPlay={(e) => {
                 var promise = e.target.play();

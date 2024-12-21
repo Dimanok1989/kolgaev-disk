@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getCookie } from "./useCookies";
 
 export const baseUrl = process.env.NEXT_PUBLIC_API_SERVER;
 
@@ -33,7 +34,7 @@ const options = (method, body) => {
         'X-Application-Id': process.env.NEXT_PUBLIC_APP_KEY,
     };
 
-    let token = localStorage.getItem('token');
+    let token = getCookie('kolgaev_api_token') || localStorage.getItem('kolgaev_api_token');
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
     }
@@ -57,6 +58,62 @@ export const post = (path, body) => fetch(
     getUrl(path),
     options("POST", body)
 );
+
+/**
+* Обработка ошибок
+* 
+* @param {object} error Объект ошибки
+* @param {string} type Тип данных на вывод
+* @param {function|null} Отладочная функция
+* @returns
+*/
+export const getError = (error, type = "message", callback = null) => {
+
+    const response = {}
+
+    if (error.response) {
+
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+
+        response.message = error.response?.data?.message || error.response.statusText;
+        response.data = error.response.data;
+        response.status = error.response.status;
+        response.statusText = error.response.statusText;
+        response.headers = error.response.headers;
+
+        if (typeof callback == "function")
+            callback(error.response);
+
+    } else if (error.request) {
+
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the 
+        // browser and an instance of
+        // http.ClientRequest in node.js
+
+        response.message = error.request?.data?.message || "Неизвестная ошибка";
+
+        if (typeof callback == "function")
+            callback(error.request);
+
+    } else {
+
+        // Something happened in setting up the request that triggered an Error
+
+        response.message = error.message;
+
+        if (typeof callback == "function")
+            callback('Error ' + error.message);
+
+    }
+
+    if (typeof callback == "function")
+        callback(error.config);
+
+    return response[type] || null;
+
+}
 
 export default function useFetch(props = {}) {
 
@@ -125,5 +182,6 @@ export default function useFetch(props = {}) {
         post,
         postJson,
         getJson,
+        getError,
     }
 }

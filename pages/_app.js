@@ -3,8 +3,12 @@ import "@/styles/tailwind.css";
 import "semantic-ui-css/semantic.min.css";
 import "@/styles/globals.css";
 import "@/styles/player.css";
+import 'primeicons/primeicons.css';
+import "primereact/resources/themes/lara-light-cyan/theme.css";
 import { AppConsumer, AppProvider } from "@/contexts/appContext";
 import { Loader } from "semantic-ui-react";
+// import { Provider } from "react-redux";
+// import { store } from "@/store";
 
 // export async function getServerSideProps() {
 //   // Здесь можно выполнить запрос к бэкэнд серверу для получения данных аутентифицированного пользователя

@@ -5,6 +5,12 @@ import Echo from 'laravel-echo';
 
 const HANDLERS = {
     INITIALIZE: 'INITIALIZE',
+    SET_FILES: 'SET_FILES',
+    PREPEND_FILE: 'PREPEND_FILE',
+    UPLOAD_FILES: 'UPLOAD_FILES',
+    SET_GALLERY_IMAGES: 'SET_GALLERY_IMAGES',
+    SET_GALLERY_ACTIVE_INDEX: 'SET_GALLERY_ACTIVE_INDEX',
+    SET_WATCH_IMAGE: 'SET_WATCH_IMAGE',
 };
 
 const initialState = {
@@ -12,6 +18,10 @@ const initialState = {
     user: null,
     menu: [],
     error: null,
+    files: [],
+    galleryImages: {},
+    galleryActiveIndex: 0,
+    watchImages: {},
 };
 
 const handlers = {
@@ -22,6 +32,40 @@ const handlers = {
             ...action.payload,
         };
     },
+
+    [HANDLERS.SET_FILES]: (state, action) => {
+        return {
+            ...state,
+            files: action.payload,
+        };
+    },
+
+    [HANDLERS.PREPEND_FILE]: (state, action) => {
+        return {
+            ...state,
+            files: [action.payload, ...state.files],
+        };
+    },
+
+    [HANDLERS.SET_GALLERY_IMAGES]: (state, action) => ({
+        ...state,
+        galleryImages: {
+            ...state.galleryImages,
+            [action.payload.folder]: action.payload?.images || []
+        }
+    }),
+
+    [HANDLERS.SET_GALLERY_ACTIVE_INDEX]: (state, action) => ({
+        ...state, galleryActiveIndex: action.payload,
+    }),
+
+    [HANDLERS.SET_WATCH_IMAGE]: (state, action) => ({
+        ...state,
+        watchImages: {
+            ...state.watchImages,
+            [action.payload?.id]: action.payload?.image || null
+        }
+    }),
 };
 
 const reducer = (state, action) => (
@@ -50,6 +94,7 @@ export const AppProvider = (props) => {
     const { children } = props;
     const [state, dispatch] = useReducer(reducer, initialState);
     const initialized = useRef(false);
+    const galleria = useRef(null);
     const { get } = useFetch();
 
     const initialize = async () => {
@@ -98,6 +143,31 @@ export const AppProvider = (props) => {
         });
     };
 
+    const setFiles = (files) => dispatch({
+        type: HANDLERS.SET_FILES,
+        payload: files
+    });
+
+    const prependFile = (file) => dispatch({
+        type: HANDLERS.PREPEND_FILE,
+        payload: file
+    });
+
+    const setGalleryImages = (folder, images) => dispatch({
+        type: HANDLERS.SET_GALLERY_IMAGES,
+        payload: { folder, images }
+    });
+
+    const setGalleryActiveIndex = (index) => dispatch({
+        type: HANDLERS.SET_GALLERY_ACTIVE_INDEX,
+        payload: index
+    });
+
+    const setWatchImages = (id, image) => dispatch({
+        type: HANDLERS.SET_WATCH_IMAGE,
+        payload: { id, image }
+    });
+
     useEffect(() => {
         initialize();
     }, []);
@@ -105,7 +175,13 @@ export const AppProvider = (props) => {
     return <AppContext.Provider value={{
         ...state,
         initialize,
-        login
+        login,
+        setFiles,
+        prependFile,
+        galleria,
+        setGalleryImages,
+        setGalleryActiveIndex,
+        setWatchImages,
     }}>
         {children}
     </AppContext.Provider>;

@@ -10,9 +10,12 @@
   },
   "dependencies": {
     "axios": "^1.6.7",
+    "js-cookie": "^3.0.5",
     "laravel-echo": "^1.16.1",
     "moment-js": "^1.1.15",
     "next": "14.1.0",
+    "primeicons": "^7.0.0",
+    "primereact": "^10.8.4",
     "react": "^18",
     "react-dom": "^18",
     "react-intersection-observer": "^9.8.1",
@@ -24,6 +27,7 @@
   },
   "devDependencies": {
     "@types/react": "^18.3.11",
+    "@types/semantic-ui": "^2.2.9",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.1.0",

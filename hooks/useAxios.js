@@ -1,4 +1,5 @@
 import Axios from "axios";
+import { getCookie } from "./useCookies";
 
 export default function useAxios() {
 
@@ -15,7 +16,7 @@ export default function useAxios() {
 
     axios.interceptors.request.use((config) => {
 
-        const token = localStorage.getItem('kolgaev_api_token');
+        const token = getCookie('kolgaev_api_token') || localStorage.getItem('kolgaev_api_token');
     
         config.headers = {
             ...config.headers,
