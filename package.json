@@ -1,11 +1,11 @@
 {
-  "name": "kolgaev-admin",
+  "name": "kolgaev-disk",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "PORT=3005 next start",
+    "start": "PORT=3006 next start",
     "lint": "next lint"
   },
   "dependencies": {
