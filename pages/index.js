@@ -1,4 +1,4 @@
-import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
+import Breadcrumbs, { MAIN_PAGE_FOLDER_NAME } from "@/components/Breadcrumbs/Breadcrumbs";
 import File from "@/components/Files/File";
 import CreateFolder from "@/components/Actions/CreateFolder";
 import { useApp } from "@/hooks/useApp";
@@ -12,6 +12,8 @@ import { UploadProvider } from "@/contexts/uploadContext";
 import { ContextMenu } from "primereact/contextmenu";
 import FolderGallery from "@/components/Gallery/Gallery";
 import Watch from "@/components/Player/Watch";
+import Head from "next/head";
+import { APP_NAME } from "./_app";
 
 const Home = () => {
 
@@ -81,7 +83,10 @@ const Home = () => {
   }, [selectedFile]);
 
   return <UploadProvider>
-    <div className="max-w-screen-lg mx-auto">
+    <Head>
+      <title>{breadcrumbs.at(-1)?.name || MAIN_PAGE_FOLDER_NAME} | {APP_NAME}</title>
+    </Head>
+    <div className="max-w-screen-xl mx-auto">
       <div className="flex items-center justify-between my-6 px-3">
         <Breadcrumbs items={breadcrumbs} />
         <div className="flex items-center gap-3">

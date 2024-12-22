@@ -7,7 +7,7 @@ function Header() {
 
     return <>
         <div className="bg-white py-4 px-5 sticky top-0 z-20 bg-opacity-90 cursor-default">
-            <div className="w-full max-w-screen-lg mx-auto flex justify-between">
+            <div className="w-full max-w-screen-xl mx-auto flex justify-between">
                 <div className="text-xl flex gap-3 items-center">
                     <Link href="/" className="flex gap-1 items-center text-black hover:text-blue-900">
                         <img

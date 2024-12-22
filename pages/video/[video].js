@@ -1,17 +1,28 @@
 import Video from "@/components/Player/Video";
 import useFetch from "@/hooks/useFetch";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { STATUS_DONE } from ".";
 import VideoProgress from "@/components/Player/VideoProgress";
 import Head from "next/head";
 import { APP_NAME } from "../_app";
+import { useResize } from "@/hooks/useResize";
 
 const YoutTube = () => {
 
     const { video } = useParams();
     const { getJson } = useFetch();
     const [data, setData] = useState(null);
+
+    const player = useRef();
+    const windowWidth = useResize();
+    const [height, setHeight] = useState("56.25%");
+
+    useEffect(() => {
+        if (player.current?.offsetWidth) {
+            setHeight(player.current.offsetWidth * (9 / 16));
+        }
+    }, [windowWidth]);
 
     useEffect(() => {
         if (video) {
@@ -21,31 +32,41 @@ const YoutTube = () => {
         }
     }, [video]);
 
-    return <div className="w-full max-w-screen-xl h-[56.25%] mx-auto">
+    const title = Boolean(data?.title) ? data.title : "Подготовка видео";
+
+    return <>
 
         <Head>
-            <title>{data?.title} | {APP_NAME}</title>
+            <title>{title} | {APP_NAME}</title>
         </Head>
 
-        {(data && data?.status === STATUS_DONE) && <Video
-            id={data.uuid}
-            videoUrl={data.video_url}
-            videoType={data.video_mime_type}
-            length={data.length}
-            title={data.title}
-        />}
+        <div className="w-full bg-black">
 
-        {(data && data?.status !== STATUS_DONE) && <VideoProgress
-            data={data}
-            setData={setData}
-        />}
+            <div className="w-full max-w-screen-xl mx-auto bg-green-900" ref={player} style={{ height }}>
 
-        <div className="mt-4">
-            <h1 className="text-[20px]">{data?.title}</h1>
+                {(data && data?.status === STATUS_DONE) && <Video
+                    id={data.uuid}
+                    videoUrl={data.video_url}
+                    videoType={data.video_mime_type}
+                    length={data.length}
+                    title={data.title}
+                />}
+
+                {(data && data?.status !== STATUS_DONE) && <VideoProgress
+                    data={data}
+                    setData={setData}
+                />}
+
+            </div>
+
+        </div>
+
+        <div className="mt-4 px-2 sm:px-0 max-w-screen-xl mx-auto">
+            <h1 className="text-[18px]">{data?.title}</h1>
             {/* <p dangerouslySetInnerHTML={{ __html: data?.description }} /> */}
         </div>
 
-    </div>
+    </>
 }
 
 export default YoutTube;

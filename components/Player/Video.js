@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Icon } from "semantic-ui-react";
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 export function toTime(sec = 0) {
     let date = new Date(1970, 0, 0, 0, 0, +sec || 0);
@@ -19,7 +20,7 @@ let timeOutPlay = null;
 
 const Video = props => {
 
-    const { id, videoUrl, videoType, length, title } = props;
+    const { id, videoUrl, videoType, title } = props;
 
     const player = useRef();
     const video = useRef();
@@ -34,6 +35,8 @@ const Video = props => {
     const [paused, setPaused] = useState(true);
     const [currentTime, setCurrentTime] = useState(0);
     const [loaded, setLoaded] = useState(false);
+    const [length, setLength] = useState(props.length || 0);
+    const [loadingVideo, setLoadingVideo] = useState(true);
 
     const [hover, setHover] = useState(false);
 
@@ -81,6 +84,13 @@ const Video = props => {
         });
         video.current && video.current.addEventListener("timeupdate", (event) => {
             typeof event?.target?.currentTime == "number" && setCurrentTimeCallback(event.target.currentTime);
+        });
+
+        video.current && video.current.addEventListener("loadeddata", (event) => {
+            if (typeof video?.current?.duration == "number") {
+                setLength(video.current.duration);
+                setLoadingVideo(false);
+            }
         });
 
         if (t > 0) {
@@ -228,12 +238,12 @@ const Video = props => {
 
     useEffect(() => {
         if (player.current?.offsetWidth) {
-            setHeight(player.current.offsetWidth * (9/16));
+            setHeight(player.current.offsetWidth * (9 / 16));
         }
     }, [windowWidth]);
 
     return <div
-        className={`relative bg-black rounded-lg overflow-hidden ${fullScreen ? 'flex items-center' : ''}`}
+        className={`relative bg-black flex items-center overflow-hidden ${fullScreen ? 'flex items-center' : ''}`}
         onMouseMove={blockMouseMove}
         ref={player}
         style={{ height }}
@@ -287,6 +297,10 @@ const Video = props => {
                 type={videoType}
             />
         </video>
+
+        {loadingVideo && <div className="absolute flex justify-center w-full">
+            <ProgressSpinner />
+        </div>}
 
         <div
             className="absolute inset-0 flex items-center justify-center"

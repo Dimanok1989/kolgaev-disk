@@ -50,7 +50,7 @@ const StartView = () => {
         <div className="w-full mt-1">
             {error
                 ? <strong className='text-red-600'>{error}</strong>
-                : <span className="opacity-50">YouTube, VK, RuTube, Дзен</span>
+                : <span className="opacity-50">Поддерживается только YouTube</span>
             }
         </div>
     </div>
