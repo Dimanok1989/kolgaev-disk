@@ -2,10 +2,13 @@ import { useEffect } from "react";
 import Echo from 'laravel-echo';
 import Navbar from "@/components/Navbar";
 import Header from "./Header/Header";
+import { getCookie } from "@/hooks/useCookies";
 
 export const IO = require('socket.io-client');
 
 const echoConnect = async () => {
+
+    const token = getCookie('kolgaev_api_token') || localStorage.getItem('kolgaev_api_token');
 
     window.Echo = new Echo({
         broadcaster: 'socket.io',
@@ -13,7 +16,7 @@ const echoConnect = async () => {
         path: process.env.NEXT_PUBLIC_WS_PATH ? "/" + process.env.NEXT_PUBLIC_WS_PATH : "",
         auth: {
             headers: {
-                Authorization: "Bearer " + localStorage.getItem('kolgaev_api_token')
+                Authorization: "Bearer " + token
             }
         },
     });

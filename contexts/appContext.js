@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useReducer, useRef } from 'react'
 import PropTypes from 'prop-types';
 import useFetch from '@/hooks/useFetch';
 import Echo from 'laravel-echo';
+import { getCookie } from '@/hooks/useCookies';
 
 const HANDLERS = {
     INITIALIZE: 'INITIALIZE',
@@ -75,6 +76,7 @@ const reducer = (state, action) => (
 export const AppContext = createContext({ undefined });
 
 const connectWs = async () => {
+    const token = getCookie('kolgaev_api_token') || localStorage.getItem('kolgaev_api_token');
     window.io = require('socket.io-client');
     window.Echo = new Echo({
         broadcaster: 'socket.io',
@@ -82,7 +84,7 @@ const connectWs = async () => {
         path: process.env.NEXT_PUBLIC_WS_PATH,
         auth: {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Authorization': `Bearer ${token}`,
                 'X-Application-Id': process.env.NEXT_PUBLIC_APP_KEY,
             }
         }

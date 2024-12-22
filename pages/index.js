@@ -2,35 +2,76 @@ import Breadcrumbs, { MAIN_PAGE_FOLDER_NAME } from "@/components/Breadcrumbs/Bre
 import File from "@/components/Files/File";
 import CreateFolder from "@/components/Actions/CreateFolder";
 import { useApp } from "@/hooks/useApp";
-import useFetch from "@/hooks/useFetch";
+import useFetch, { getError } from "@/hooks/useFetch";
 import { useParams } from "next/navigation";
-import { createRef, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { Loader } from "semantic-ui-react";
 import Upload from "@/components/Actions/Upload";
 import { UploadProvider } from "@/contexts/uploadContext";
 import { ContextMenu } from "primereact/contextmenu";
+import { Toast } from 'primereact/toast';
 import FolderGallery from "@/components/Gallery/Gallery";
 import Watch from "@/components/Player/Watch";
 import Head from "next/head";
 import { APP_NAME } from "./_app";
+import useAxios from "@/hooks/useAxios";
 
 const Home = () => {
 
   const { folder } = useParams();
   const { isLoading, getJson } = useFetch();
-  const { files, setFiles } = useApp();
+  const { user, files, setFiles } = useApp();
   const [meta, setMeta] = useState({});
   const [breadcrumbs, setBreadcrumbs] = useState([]);
   const [currentPage, setCurrentPage] = useState(meta?.current_page || 1);
 
-  const cm = createRef();
+  const cm = useRef();
   const [selectedFile, setSelectedFile] = useState();
   const [contextItems, setContextItems] = useState([]);
+
+  const toast = useRef();
+
+  const { axios } = useAxios();
 
   const { ref, inView } = useInView({
     threshold: 0.3,
   });
+
+  useEffect(() => {
+    setTimeout(() => {
+      window.Echo && window.Echo.private(`disk.files.${user.id}`)
+        .listen('Disk\\CreateZipFolderDone', (data) => {
+
+          toast.current && toast.current.clear();
+
+          if (data.type === "successful") {
+            toast.current && toast.current.show({
+              severity: 'success',
+              summary: `Архив готов`,
+              detail: `Сейчас начнется автоматическое скачивание файла: ${data.file_name}`,
+              life: 10000,
+            });
+            const link = document.createElement('a');
+            link.href = data.url;
+            link.target = "_blank";
+            link.setAttribute('download', data.file_name);
+            document.body.appendChild(link);
+            link.click();
+          } else if (data.type === "failed") {
+            toast.current && toast.current.show({
+              severity: 'error',
+              summary: `Ошибка подготовки`,
+              detail: `Не удалось создать архив для каталога: ${data.dirName}`,
+              life: 10000,
+            });
+          }
+        });
+    }, 500);
+    return () => {
+      window.Echo && window.Echo.leave(`disk.files.${user.id}`);
+    }
+  }, [folder]);
 
   const fetchFiles = async (params) => {
     await getJson('disk/files', params, response => {
@@ -56,6 +97,50 @@ const Home = () => {
     (inView && !isLoading) && fetchFiles(folder ? { folder, page: currentPage } : { page: currentPage });
   }, [currentPage, inView]);
 
+  /**
+   * Запрос на скачивание файла
+   * @param {object} file
+   * @return {void}
+   */
+  const downloadFile = useCallback((file) => {
+
+    axios.get(`disk/download/${file.link}`)
+      .then(({ data }) => {
+
+        if (!data?.url) {
+          toast.current && toast.current.show(
+            getToastPrepareFile(file)
+          );
+        }
+
+        if (data?.url) {
+
+          setTimeout(() => {
+
+            let file_name = data?.file_name
+              ? data.file_name
+              : `${file.name}${file.extension ? `.${file.extension}` : ``}`;
+
+            const link = document.createElement('a');
+            link.href = data.url;
+            link.target = "_blank";
+            link.setAttribute('download', file_name);
+            document.body.appendChild(link);
+            link.click();
+
+          }, 500);
+        }
+      })
+      .catch(e => {
+        toast.current && toast.current.show({
+          severity: 'error',
+          summary: `Ошибка подготовки`,
+          detail: getError(e),
+          life: 10000,
+        });
+      });
+  }, []);
+
   const onContextMenu = (event, file) => {
     if (cm.current) {
       setSelectedFile(file);
@@ -68,15 +153,18 @@ const Home = () => {
     selectedFile?.is_rename && items.push({
       label: 'Переименовать',
       icon: 'pi pi-file-edit',
+      template: ItemContextMenuTemplate,
     });
     items.push({
       label: 'Скачать',
       icon: 'pi pi-download',
-      // onClick: () => downloadFile(selectedFile),
+      template: ItemContextMenuTemplate,
+      onClick: () => downloadFile(selectedFile),
     });
     selectedFile?.is_delete && items.push({
       label: 'Удалить',
       icon: 'pi pi-trash',
+      template: ItemContextMenuTemplate,
     });
     setContextItems(items);
     // eslint-disable-next-line
@@ -104,12 +192,13 @@ const Home = () => {
           isActive={selectedFile?.id === a.id}
         />)}
         {(Array.from({ length: 11 }, (_, i) => i).map(i => <div key={`_e-${i}`} className={`w-[100px]`} />))}
+        <Toast ref={toast} className="z-40" />
         <ContextMenu
           model={contextItems}
           ref={cm}
           breakpoint="767px"
           className="py-1"
-          style={{ boxShadow: "4px 4px 30px 4px rgba(34, 60, 80, 0.43)" }}
+          style={{ boxShadow: "4px 4px 30px 4px rgba(0, 0, 0, 0.43)" }}
           onHide={() => setSelectedFile(null)}
         />
         {files.length === 0 && <div className="flex items-center justify-center opacity-40 w-full my-6">
@@ -124,6 +213,24 @@ const Home = () => {
       <div ref={ref} className="h-1" />
     </div>
   </UploadProvider>
-};
+}
+
+const ItemContextMenuTemplate = (item, options) => {
+  return <span
+    className="d-flex cursor-pointer px-3 pt-2 pb-1 flex items-center gap-2"
+    onClick={() => typeof item.onClick == "function" && item.onClick()}
+  >
+    {item.icon && <span><i className={item.icon} /></span>}
+    <span>{item.label}</span>
+  </span>
+}
+
+const getToastPrepareFile = file => ({
+  id: `file-${file.id}`,
+  severity: 'info',
+  summary: `Подготовка ${file.is_dir ? 'каталога' : 'файла'}`,
+  detail: `После подготовки загрузка начнется автоматически`,
+  sticky: true,
+});
 
 export default Home;

@@ -74,55 +74,6 @@ const File = props => {
         }
     }
 
-    const downloadFile = file => {
-
-        let key = Buffer.from(JSON.stringify(file)).toString("base64");
-
-        message.loading({
-            content: <span>Проверка файла <strong>{file.name}</strong></span>,
-            duration: 120,
-            key: key,
-        });
-
-        axios.get(`disk/download/${file.link}`)
-            .then(response => {
-
-                notification.success({
-                    message: file.name,
-                    description: response.data.message,
-                    duration: 25,
-                });
-
-                if (response.data?.url) {
-
-                    setTimeout(() => {
-
-                        let file_name = response.data?.file_name
-                            ? response.data.file_name
-                            : `${file.name}${file.extension ? `.${file.extension}` : ``}`;
-
-                        const link = document.createElement('a');
-                        link.href = response.data.url;
-                        link.target = "_blank";
-                        link.setAttribute('download', file_name);
-                        document.body.appendChild(link);
-                        link.click();
-
-                    }, 500);
-                }
-            })
-            .catch(e => {
-                notification.error({
-                    message: "Ошибка загрузки",
-                    description: getError(e),
-                    duration: 6,
-                });
-            })
-            .then(() => {
-                message.destroy(key);
-            });
-    }
-
     return <>
         <div
             className={`w-[100px] h-[140px] rounded hover:bg-gray-100 ${isActive ? `bg-gray-100` : ``} cursor-pointer px-2 py-1 flex flex-col gap-2`}
