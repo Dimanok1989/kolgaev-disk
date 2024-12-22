@@ -32,7 +32,7 @@ const YoutTube = () => {
         }
     }, [video]);
 
-    const title = Boolean(data?.title) ? data.title : "Подготовка видео";
+    const title = Boolean(data?.title) ? data.title : "Подготовка видео...";
 
     return <>
 
@@ -50,6 +50,7 @@ const YoutTube = () => {
                     videoType={data.video_mime_type}
                     length={data.length}
                     title={data.title}
+                    sources={data.source}
                 />}
 
                 {(data && data?.status !== STATUS_DONE) && <VideoProgress

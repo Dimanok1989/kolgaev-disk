@@ -1,9 +1,10 @@
 import StartView from "@/components/Tube/StartView";
 import VideoCard from "@/components/Tube/VideoCard";
 import useFetch from "@/hooks/useFetch";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { Loader, Message } from "semantic-ui-react";
+import { Loader } from "semantic-ui-react";
+import { Messages } from 'primereact/messages';
 import { APP_NAME } from "../_app";
 import Head from "next/head";
 
@@ -15,6 +16,7 @@ const Tube = () => {
     const [videos, setVideos] = useState([]);
     const [meta, setMeta] = useState({});
     const [currentPage, setCurrentPage] = useState(meta?.current_page || 1);
+    const msgs = useRef();
 
     const { ref, inView } = useInView({
         threshold: 0.3,
@@ -25,8 +27,20 @@ const Tube = () => {
             setVideos(p => [...p, ...response.data]);
             setMeta(response.meta);
             setCurrentPage((response?.meta?.current_page || 0) + 1);
+        }, e => {
+
         });
     }
+
+    useEffect(() => {
+        (error && msgs.current) && msgs.current.show([{
+            sticky: true,
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: error,
+            closable: false
+        }]);
+    }, [error]);
 
     useEffect(() => {
         if (meta?.current_page && meta?.current_page >= meta?.last_page) {
@@ -43,10 +57,13 @@ const Tube = () => {
         </Head>
 
         <div className="max-w-screen-xl mx-auto">
-            {isError && <div className="flex justify-center">
-                <Message color="red" content={error} />
+
+            <StartView />
+
+            {isError && <div className="flex justify-center mt-10">
+                <Messages ref={msgs} className="w-full max-w-screen-md"/>
             </div>}
-            {!isError && <StartView />}
+
             <div className={`p-5 flex flex-wrap items justify-center gap-4`}>
                 {videos.map((a, k) => <VideoCard key={k} data={a} />)}
                 <div className="w-[256px]"></div>

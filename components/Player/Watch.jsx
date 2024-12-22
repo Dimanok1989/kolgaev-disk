@@ -28,7 +28,7 @@ const Watch = () => {
 
     useEffect(() => {
         if (preview.current?.offsetWidth) {
-            setHeight(preview.current.offsetWidth * (9/16));
+            setHeight(preview.current.offsetWidth * (9 / 16));
         }
     }, [windowWidth]);
 
@@ -44,7 +44,7 @@ const Watch = () => {
         }
 
         if (preview.current?.offsetWidth) {
-            setHeight(preview.current.offsetWidth * (9/16));
+            setHeight(preview.current.offsetWidth * (9 / 16));
         }
 
         axios.get(`disk/video/${watch}`)
@@ -67,21 +67,23 @@ const Watch = () => {
         return;
     }
 
-    return <div className="fixed flex-col inset-0 z-50 bg-black/90 flex justify-start items-center px-5">
+    return <div className="fixed flex-col inset-0 z-50 bg-black/90 flex justify-center items-center px-0 sm:px-5">
 
-        <i
-            className="pi pi-times absolute top-3 right-3 opacity-60 hover:opacity-100 cursor-pointer text-white z-10"
-            style={{ fontSize: '1.5rem' }}
+        <div
+            className="w-[56px] h-[56px] flex justify-center items-center absolute top-0 right-0 hover:opacity-100 opacity-60 cursor-pointer text-white z-10"
             onClick={() => router.replace(`/${folder ? folder : ""}`, null, { scroll: false })}
-        />
+        >
+            <i className="pi pi-times" style={{ fontSize: '2rem' }} />
+        </div>
 
-        <div className="mt-10 w-full max-w-7xl">
+        <div className="w-full max-w-screen-xl">
 
             {!Boolean(data?.url) && <div className="bg-black/70 w-full rounded-xl flex items-center justify-center" ref={preview} style={{ height }}>
                 {watchImages[watch] && <img src={watchImages[watch]} className="rounded-xl blur max-h-full" />}
                 {loading && <ProgressSpinner className="z-10 absolute" />}
                 {error && <Message severity="error" text={error} className="absolute" />}
             </div>}
+            
             {data?.url && <Video
                 videoUrl={data.url}
                 videoType={data.mime_type}
@@ -89,7 +91,7 @@ const Watch = () => {
                 title={data.name}
             />}
 
-            <div className="mt-3">
+            <div className="mt-3 px-3 sm:px-0">
                 <h3 className="text-white">{data.name}</h3>
             </div>
         </div>
