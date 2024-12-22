@@ -1,0 +1,33 @@
+name: Disk-Master
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on:
+      - self-hosted
+      - kolgaev-disk
+    defaults:
+      run:
+        working-directory: /var/www/kolgaev-disk
+    steps:
+      - name: Deployment
+        run: |
+          git checkout master
+          git pull origin master
+      - name: NPM Install
+        run: npm ci
+      - name: NPM build
+        run: npm run build
+      - name: build in releases/${{ github.sha }}
+        run: |
+          npm run build
+          mkdir -p .releases/${{ github.sha }}
+          mv .next/* .releases/${{ github.sha }}
+          rm -fr .releases/.next.old
+          mv .releases/.next .releases/.next.old
+          mv .releases/${{ github.sha }} .releases/.next
+      - name: PM2 restart
+        run: pm2 restart kolgaev-disk

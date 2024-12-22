@@ -3,9 +3,7 @@ module.exports = {
         {
             name: 'kolgaev-disk',
             script: 'node_modules/next/dist/bin/next',
-            args: '-p 3006',
-            exec_mode: 'cluster',
-            instances: 'max'
+            args: '-p 3006'
         },
     ],
 };
