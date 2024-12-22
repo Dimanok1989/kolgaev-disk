@@ -21,13 +21,15 @@ jobs:
         run: npm ci
       - name: NPM build
         run: npm run build
-      - name: build in releases/${{ github.sha }}
+      - name: Move files
         run: |
-          npm run build
           mkdir -p .releases/${{ github.sha }}
-          mv .next/* .releases/${{ github.sha }}
+          cp -rf .next/* .releases/${{ github.sha }}
           rm -fr .releases/.next.old
+          mkdir -p .releases/.next
           mv .releases/.next .releases/.next.old
           mv .releases/${{ github.sha }} .releases/.next
       - name: PM2 restart
         run: pm2 restart kolgaev-disk
+      - name: Release log
+        run: touch .releases/releases.log | echo "$(date) - ${{ github.sha }}" >> .releases/releases.log

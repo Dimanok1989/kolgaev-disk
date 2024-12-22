@@ -38,4 +38,5 @@ yarn-error.log*
 next-env.d.ts
 
 # Релизы
-.relises
+.releases
+.release_log
