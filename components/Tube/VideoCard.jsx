@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { Icon } from "semantic-ui-react";
 import { toTime } from "../Player/Video";
-import { STATUS_DONE } from "@/pages/video";
+import { STATUS_DONE, STATUS_FAIL } from "@/pages/video";
 
 const VideoCard = ({ data }) => {
 
@@ -19,11 +19,13 @@ const VideoCard = ({ data }) => {
         ? Math.round((data.time * 100) / data.length)
         : 0;
 
+    const thumbnailUrl = data.thumbnail_url || data?.data?.thumbnail_url;
+
     return <div className="flex flex-col w-[256px]" title={data.title}>
         <div
-            className="bg-gray-500/50 rounded-xl hover:rounded cursor-pointer flex items-center justify-center relative overflow-hidden"
+            className={`bg-gray-300 rounded-xl hover:rounded cursor-pointer flex items-center justify-center relative overflow-hidden`}
             style={{
-                backgroundImage: `url(${data.thumbnail_url})`,
+                backgroundImage: `url(${thumbnailUrl})`,
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'cover',
@@ -32,16 +34,26 @@ const VideoCard = ({ data }) => {
             }}
             onClick={push}
         >
+            {(data.status === STATUS_FAIL && thumbnailUrl) && <div className="blur-sm absolute inset-0" style={{
+                backgroundImage: `url(${thumbnailUrl})`,
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'cover',
+            }}/>}
+
             {data.status === STATUS_DONE && false && <div
                 className="bg-white px-5 py-2 rounded-xl opacity-60 cursor-pointer hover:opacity-100 shadow"
                 onClick={push}
             >
                 <Icon name="play" fitted size="big" color="red" />
             </div>}
-            {data.status !== STATUS_DONE && <div className="opacity-40 absolute">
+            {(data.status !== STATUS_DONE && data.status !== STATUS_FAIL) && <div className="opacity-40 absolute z-30">
                 <Icon name="clock" fitted size="big" />
             </div>}
-            <div className="bg-black/50 w-full h-full hover:bg-black/0 hover:z-20"></div>
+            {data.status === STATUS_FAIL && <div className="absolute z-30">
+                <Icon name="warning sign" fitted size="huge" color="red" />
+            </div>}
+            <div className="bg-black/20 w-full h-full hover:bg-black/0 z-20 hover:z-40"></div>
             <div className="bg-black/50 text-white absolute right-2 bottom-2 text-sm px-1 rounded">
                 {toTime(data.length)}
             </div>
@@ -56,7 +68,7 @@ const VideoCard = ({ data }) => {
             </div>}
         </div>
         <div className="truncate mt-2 cursor-pointer" onClick={push}>
-            {data.title}
+            {data.title || <i className="opacity-50">Загрузка видео...</i>}
         </div>
     </div>
 }

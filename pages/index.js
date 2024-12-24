@@ -10,6 +10,7 @@ import { Loader } from "semantic-ui-react";
 import Upload from "@/components/Actions/Upload";
 import { UploadProvider } from "@/contexts/uploadContext";
 import { ContextMenu } from "primereact/contextmenu";
+import { Message } from 'primereact/message';
 import { Toast } from 'primereact/toast';
 import FolderGallery from "@/components/Gallery/Gallery";
 import Watch from "@/components/Player/Watch";
@@ -20,7 +21,7 @@ import useAxios from "@/hooks/useAxios";
 const Home = () => {
 
   const { folder } = useParams();
-  const { isLoading, getJson } = useFetch();
+  const { error, isLoading, getJson } = useFetch();
   const { user, files, setFiles } = useApp();
   const [meta, setMeta] = useState({});
   const [breadcrumbs, setBreadcrumbs] = useState([]);
@@ -184,7 +185,7 @@ const Home = () => {
       </div>
       <FolderGallery />
       <Watch />
-      <div className={`p-5 flex flex-wrap justify-center gap-3 bg-white rounded-2xl`}>
+      <div className={`relative p-5 flex flex-wrap justify-center gap-3 bg-white rounded-2xl min-h-[185px]`}>
         {files.map(a => <File
           key={a.id}
           file={a}
@@ -201,8 +202,9 @@ const Home = () => {
           style={{ boxShadow: "4px 4px 30px 4px rgba(0, 0, 0, 0.43)" }}
           onHide={() => setSelectedFile(null)}
         />
-        {files.length === 0 && <div className="flex items-center justify-center opacity-40 w-full my-6">
-          <strong>{isLoading ? <Loader active inline /> : 'Файлов ещё нет'}</strong>
+        {files.length === 0 && <div className="absolute flex items-center justify-center w-full my-6 inset-0">
+          {!error && <strong className="opacity-40">{isLoading ? <Loader active inline /> : 'Файлов ещё нет'}</strong>}
+          {error && <Message severity="error" text={error} />}
         </div>}
       </div>
       <div className="w-full h-[32px] relative my-3">

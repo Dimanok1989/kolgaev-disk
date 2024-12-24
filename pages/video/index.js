@@ -9,6 +9,7 @@ import { APP_NAME } from "../_app";
 import Head from "next/head";
 
 export const STATUS_DONE = 5;
+export const STATUS_FAIL = 6;
 
 const Tube = () => {
 

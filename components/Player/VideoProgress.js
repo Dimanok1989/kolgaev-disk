@@ -1,5 +1,5 @@
 import { APP_NAME } from "@/pages/_app";
-import { STATUS_DONE } from "@/pages/video";
+import { STATUS_DONE, STATUS_FAIL } from "@/pages/video";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { Icon, Progress } from "semantic-ui-react";
@@ -18,7 +18,7 @@ const VideoProgress = (props) => {
                 .listen('Tube\\DownloadProgressEvent', ({ data }) => {
                     console.log(data);
                     setProcess(data.steps || process);
-                    setCurrentData(data.processData);
+                    setCurrentData(data.processData || data.fullData || {});
                     if (data.fullData) {
                         setData(data.fullData);
                     }
@@ -33,10 +33,15 @@ const VideoProgress = (props) => {
     return <>
 
         <Head>
-            <title>{currentData.title || "Подготовка видео..."} | {APP_NAME}</title>
+            <title>{currentData?.title || "Подготовка видео..."} | {APP_NAME}</title>
         </Head>
 
         <div className={`relative overflow-hidden w-full pt-[56.25%] text-white/50`}>
+
+            {(data.thumbnail_url || data?.data?.thumbnail_url) && <div className="absolute inset-0 w-full h-full blur-lg">
+                <img src={data.thumbnail_url || data?.data?.thumbnail_url} className="w-full h-full" />
+                <div className="absolute inset-0 w-full h-full bg-black/70" />
+            </div>}
 
             <div className="absolute top-10 left-10 right-10">
 
@@ -53,13 +58,23 @@ const VideoProgress = (props) => {
                             <code className={`${item.active ? 'text-white' : ''}`}>{item.name}</code>
                         </div>
 
-                        {Boolean(item.completed) && <div className="relative flex items-center justify-center">
+                        {Boolean(item.completed) && data.status !== STATUS_FAIL && <div className="relative flex items-center justify-center">
                             <span><Icon name="check circle" fitted color="green" /></span>
                         </div>}
 
-                        <div class="flex-grow"></div>
+                        {(
+                            (item.active && data.status === STATUS_FAIL)
+                            || (item.step === "video" && data.download_process_error?.errorCode === 1)
+                            || (item.step === "audio" && data.download_process_error?.errorCode === 2)
+                            || (item.step === "video" && data.download_process_error?.errorCode === 3)
+                        ) && <div className="relative flex items-center justify-center">
+                                <span><Icon name="remove circle" fitted color="red" /></span>
+                            </div>
+                        }
 
-                        {item.active && !Boolean(item.percent) && <div className="!w-full !max-w-[100px] !mb-0">
+                        <div className="flex-grow"></div>
+
+                        {item.active && !Boolean(item.percent) && data.status !== STATUS_FAIL && <div className="!w-full !max-w-[100px] !mb-0">
                             <ProgressBar
                                 mode="indeterminate"
                                 className="w-full"
@@ -79,13 +94,21 @@ const VideoProgress = (props) => {
                             className="!w-full !max-w-[100px] !mb-0"
                         />}
                     </div>)}
+
+                    {data.download_process_error?.error && <div className="flex mt-2">
+                        <div className="text-red-500">
+                            {Boolean(data.download_process_error?.errorCode) && <strong className="pe-3">ERR:{data.download_process_error?.errorCode}</strong>}
+                            {data.download_process_error?.error}
+                        </div>
+                        <div className="flex-grow" />
+                    </div>}
                 </div>
             </div>
 
         </div>
 
         {!data?.title && currentData.title && <div className="mt-4 px-2 sm:px-0 max-w-screen-xl mx-auto">
-            <h1>{currentData.title}</h1>
+            <h1 className="text-[18px]">{currentData.title}</h1>
         </div>}
 
     </>

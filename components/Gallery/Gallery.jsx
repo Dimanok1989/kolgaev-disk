@@ -35,7 +35,7 @@ const FolderGallery = () => {
                 setImages(data);
             })
             .catch(e => {
-                toast.current.show({
+                toast.current && toast.current.show({
                     severity: 'error',
                     summary: 'Ошибка галереи',
                     detail: getError(e),

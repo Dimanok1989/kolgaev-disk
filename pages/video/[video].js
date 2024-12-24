@@ -42,7 +42,7 @@ const YoutTube = () => {
 
         <div className="w-full bg-black">
 
-            <div className="w-full max-w-screen-xl mx-auto bg-green-900" ref={player} style={{ height }}>
+            <div className="w-full max-w-screen-xl mx-auto bg-gray-900" ref={player} style={{ height }}>
 
                 {(data && data?.status === STATUS_DONE) && <Video
                     id={data.uuid}
