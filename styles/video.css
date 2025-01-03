@@ -1,0 +1,23 @@
+.bar::after {
+  content: "";
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  border-radius: 0.28571429rem;
+  animation: progress-active 2s ease infinite;
+}
+
+@keyframes progress-active {
+  0% {
+    opacity: 0.3;
+    width: 0;
+  }
+  100% {
+    opacity: 0;
+    width: 100%;
+  }
+}

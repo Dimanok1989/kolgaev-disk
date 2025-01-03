@@ -20,10 +20,11 @@ let timeOutPlay = null;
 
 const Video = props => {
 
-    const { id, videoUrl, videoType, title } = props;
+    const { id, files, title } = props;
 
     const player = useRef();
     const video = useRef();
+    const source = useRef();
     const control = useRef();
     const canvasBuffered = useRef();
     const { postJson } = useFetch();
@@ -54,17 +55,16 @@ const Video = props => {
 
     const progress = length > 0 ? (currentTime * 100 / length) : 0;
 
-    const setCurrentTimeCallback = useCallback((time) => {
-        setSeconds(Math.round(time % 20));
-        setCurrentTime(time);
-    }, [video]);
-
-    const sendTimeView = useCallback((time, viewed, cb) => {
-        id && postJson(`disk/video/${id}/set-time`, { time, viewed }, cb)
+    useEffect(() => {
+        if (files.length > 0) {
+            source.current.src = files[0].url;
+            source.current.type = files[0].mimeType;
+            video.current.load();
+        }
     }, []);
 
     useEffect(() => {
-        if (seconds === 20 && !toSent && id) {
+        if (seconds === 5 && !toSent && id) {
             setToSent(true);
             sendTimeView(currentTime, false, () => setToSent(false));
             router.replace(`/video/${id}?t=${Math.round(currentTime)}`);
@@ -119,6 +119,22 @@ const Video = props => {
         // }
     }, [video]);
 
+    useEffect(() => {
+        if (paused) {
+            if (control.current) control.current.style.opacity = 1;
+            setShow(true);
+        }
+    }, [paused]);
+
+    const setCurrentTimeCallback = useCallback((time) => {
+        setSeconds(Math.round(time % 5));
+        setCurrentTime(time);
+    }, [video]);
+
+    const sendTimeView = useCallback((time, viewed, cb) => {
+        id && postJson(`disk/video/${id}/set-time`, { time, viewed }, cb)
+    }, []);
+
     const play = useCallback(() => {
         video.current && setPaused(false);
         video.current && video.current.play();
@@ -136,13 +152,6 @@ const Video = props => {
             !paused && pause();
         }
     }, [video, paused]);
-
-    useEffect(() => {
-        if (paused) {
-            if (control.current) control.current.style.opacity = 1;
-            setShow(true);
-        }
-    }, [paused]);
 
     const blockMouseMove = e => {
         control.current.style.opacity = 1;
@@ -292,10 +301,7 @@ const Video = props => {
             }}
             ref={video}
         >
-            <source
-                src={videoUrl}
-                type={videoType}
-            />
+            <source ref={source} /*src={videoUrl} type={videoType}*/ />
         </video>
 
         {loadingVideo && <div className="absolute flex justify-center w-full">
@@ -349,13 +355,14 @@ const Video = props => {
                         <Icon
                             name={paused ? "play" : "pause"}
                             fitted
-                            link
+                            link={!loadingVideo}
                             size="large"
                             onClick={handlePlay}
+                            disabled={loadingVideo}
                         />
                     </span>
-                    <span>
-                        {toTime(length)} / {toTime(currentTime)}
+                    <span className="cursor-default font-mono">
+                    {toTime(currentTime)} / {toTime(length)} 
                     </span>
                 </div>
                 <div className="flex gap-6 items-center">
@@ -367,6 +374,9 @@ const Video = props => {
                             step={0.01}
                             className="slider-volume"
                             value={volume}
+                            onClick={e => {
+                                e.preventDefault();
+                            }}
                             onChange={e => {
                                 setVolume(e.currentTarget.value);
                                 setAfterMudet(e.currentTarget.value);
@@ -385,9 +395,10 @@ const Video = props => {
                         <Icon
                             name={fullScreen ? "compress" : "expand"}
                             fitted
-                            link
+                            link={!loadingVideo}
                             size="large"
                             onClick={toggleFullScreen}
+                            disabled={loadingVideo}
                         />
                     </span>
                 </div>

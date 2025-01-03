@@ -9,7 +9,7 @@ const VideoProgress = (props) => {
 
     const { data, setData } = props;
     const [currentData, setCurrentData] = useState(data || {});
-    const [process, setProcess] = useState(data?.download_process || []);
+    const [process, setProcess] = useState(data?.process || []);
 
     useEffect(() => {
 
@@ -17,11 +17,9 @@ const VideoProgress = (props) => {
             window.Echo && window.Echo.channel(`disk.video.${data.uuid}`)
                 .listen('Tube\\DownloadProgressEvent', ({ data }) => {
                     console.log(data);
-                    setProcess(data.steps || process);
-                    setCurrentData(data.processData || data.fullData || {});
-                    if (data.fullData) {
-                        setData(data.fullData);
-                    }
+                    Boolean(data.process) && setProcess(data.process);
+                    Boolean(data.fullData) && setCurrentData(p => ({ ...p, ...data.fullData }));
+                    Boolean(data.fullData) && setData(data.fullData);
                 });
         }
 
@@ -47,12 +45,57 @@ const VideoProgress = (props) => {
 
                 <div className="mb-3 flex items-center gap-2 text-white">
                     <span><Icon name="clock" fitted /></span>
-                    <strong>Видео ещё не готово :-(</strong>
+                    <strong>Подготовка видео...</strong>
                 </div>
 
                 <div className="flex flex-col gap-2 max-w-xl">
 
-                    {process.map(item => <div key={item.step} className="relative flex items-center gap-3">
+                    {process.map(item => <div key={item.video} className="relative flex items-center gap-3">
+
+                        <div className={`${item.active ? 'text-white' : ''}`}>
+                            Загрузка <code>{item.format}</code>
+                        </div>
+
+                        {Boolean(item.completed) && !Boolean(item.error) && <div className="relative flex items-center justify-center">
+                            <span><Icon name="check circle" fitted color="green" /></span>
+                        </div>}
+
+                        {Boolean(item.error) && <div className="relative flex items-center justify-center">
+                            <span title={item.error}><Icon name="remove circle" fitted color="red" /></span>
+                        </div>}
+
+                        <div className="flex-grow flex items-center justify-end gap-3">
+                            {item.active && Boolean(item.speed) && !Boolean(item.completed) &&
+                                <code>{item.speed}</code>
+                            }
+                            {item.active && item.percent > 0 && !Boolean(item.completed) &&
+                                <code>{item.percent}%</code>
+                            }
+                        </div>
+
+                        {item.active && !Boolean(item.percent) && !Boolean(item.completed) && <div className="!w-full !max-w-[100px] !mb-0">
+                            <ProgressBar
+                                mode="indeterminate"
+                                className="w-full"
+                                color="#888"
+                                style={{
+                                    height: '6px',
+                                    background: "rgba(255,255,255,.08)"
+                                }}
+                            />
+                        </div>}
+
+                        {item.percent && !Boolean(item.completed) && <Progress
+                            inverted
+                            active
+                            percent={item.percent || 0}
+                            size='tiny'
+                            className="!w-full !max-w-[100px] !mb-0"
+                        />}
+
+                    </div>)}
+
+                    {[].map(item => <div key={item.step} className="relative flex items-center gap-3">
 
                         <div>
                             <code className={`${item.active ? 'text-white' : ''}`}>{item.name}</code>
