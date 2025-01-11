@@ -429,14 +429,18 @@ const Video = props => {
                     </span>
                     <span className="relative">
                         <Dropdown
-                            icon={<span>
+                            icon={<span className="opacity-80 hover:opacity-100 cursor-pointer" style={{ transition: "opacity .1s ease"}}>
                                 <Icon
                                     name="setting"
                                     fitted
                                     link
                                     size="large"
                                 />
-                                {currentFile?.isHd && <strong className="absolute -top-1 -right-2 bg-blue-600 px-1 rounded text-white cursor-default" style={{ fontSize: "8px", lineHeight: "12px" }}>HD</strong>}
+                                {currentFile && <strong className={`absolute -top-1 -right-2 bg-blue-600 px-1 rounded text-white cursor-default ${String(currentFile.format).indexOf("1080p") >= 0 ? 'bg-red-600' : ''} ${String(currentFile.format).indexOf("480p") >= 0 ? 'bg-yellow-600' : ''}`} style={{ fontSize: "8px", lineHeight: "12px" }}>
+                                    {String(currentFile.format).indexOf("1080p") >= 0 && `HD`}
+                                    {String(currentFile.format).indexOf("720p") >= 0 && `HD`}
+                                    {String(currentFile.format).indexOf("480p") >= 0 && `SD`}
+                                </strong>}
                             </span>}
                             inline
                             upward

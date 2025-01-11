@@ -7,6 +7,8 @@ import VideoProgress from "@/components/Player/VideoProgress";
 import Head from "next/head";
 import { APP_NAME } from "../_app";
 import { useResize } from "@/hooks/useResize";
+import Extractor from "@/components/Tube/Extractor";
+import moment from "moment-js";
 
 const YoutTube = () => {
 
@@ -61,8 +63,15 @@ const YoutTube = () => {
         </div>
 
         <div className="mt-4 px-2 sm:px-0 max-w-screen-xl mx-auto">
-            <h1 className="text-[18px]">{data?.title}</h1>
-            {/* <p dangerouslySetInnerHTML={{ __html: data?.description }} /> */}
+            <h1 className="text-[18px] mb-0">{data?.title}</h1>
+            {data?.channel_url && <a href={data.channel_url} target="_blank">
+                <strong>{data?.channel || data.channel_url}</strong>
+            </a>}
+            <div className="mt-2"><Extractor {...data} /></div>
+            {data?.description && <div className="bg-white rounded-lg px-3 py-4 cursor-default">
+                {data?.publish_date && <div className="mb-3" title="Дата публикации"><strong>{moment(data.publish_date).format("DD.MM.YYYY HH:mm")}</strong></div>}
+                <p dangerouslySetInnerHTML={{ __html: data?.description }} />
+            </div>}
         </div>
 
     </>

@@ -33,6 +33,19 @@ const Tube = () => {
         });
     }
 
+    // useEffect(() => {
+
+    //     window.Echo && window.Echo.channel(`disk.videos`)
+    //         .listen('Tube\\DownloadProgressEvent', ({ data }) => {
+    //             console.log(data);
+    //         });
+
+    //     return () => {
+    //         window.Echo && window.Echo.leaveChannel(`disk.videos`);
+    //     }
+
+    // }, []);
+
     useEffect(() => {
         (error && msgs.current) && msgs.current.show([{
             sticky: true,

@@ -34,7 +34,7 @@ const VideoCard = ({ data }) => {
             }}
             onClick={push}
         >
-            {(data.status === STATUS_FAIL && thumbnailUrl) && <div className="blur-sm absolute inset-0" style={{
+            {(data.status !== STATUS_DONE && thumbnailUrl) && <div className="blur-sm absolute inset-0" style={{
                 backgroundImage: `url(${thumbnailUrl})`,
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
@@ -47,8 +47,8 @@ const VideoCard = ({ data }) => {
             >
                 <Icon name="play" fitted size="big" color="red" />
             </div>}
-            {(data.status !== STATUS_DONE && data.status !== STATUS_FAIL) && <div className="opacity-40 absolute z-30">
-                <Icon name="clock" fitted size="big" />
+            {(data.status !== STATUS_DONE && data.status !== STATUS_FAIL) && <div className="opacity-90 absolute z-60">
+                <Icon name="clock" fitted size="big" className="!text-white" />
             </div>}
             {data.status === STATUS_FAIL && <div className="absolute z-30">
                 <Icon name="warning sign" fitted size="huge" color="red" />
