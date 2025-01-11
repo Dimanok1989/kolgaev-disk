@@ -8,7 +8,16 @@ import Head from "next/head";
 import { APP_NAME } from "../_app";
 import { useResize } from "@/hooks/useResize";
 import Extractor from "@/components/Tube/Extractor";
-import moment from "moment-js";
+
+export function getDateTime(str = null) {
+    const date = new Date(str);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hour = String(date.getHours() + 1).padStart(2, '0');
+    const minut = String(date.getMinutes() + 1).padStart(2, '0');
+    return `${day}.${month}.${year} ${hour}:${minut}`;
+}
 
 const YoutTube = () => {
 
@@ -69,7 +78,9 @@ const YoutTube = () => {
             </a>}
             <div className="mt-2"><Extractor extractor={data?.extractor} /></div>
             {data?.description && <div className="bg-white rounded-lg px-3 py-4 cursor-default">
-                {data?.publish_date && <div className="mb-3" title="Дата публикации"><strong>{moment(data.publish_date).format("DD.MM.YYYY HH:mm")}</strong></div>}
+                {data?.publish_date && <div className="mb-3" title="Дата публикации">
+                    <strong>{getDateTime(data.publish_date)}</strong>
+                </div>}
                 <p dangerouslySetInnerHTML={{ __html: data?.description }} />
             </div>}
         </div>
