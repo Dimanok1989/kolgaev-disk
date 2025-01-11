@@ -104,7 +104,7 @@ const VideoProgress = (props) => {
                                 value={number === 2 ? (item.percent || 0) : 0}
                                 showValue={false}
                                 className="w-full"
-                                color="#52a3f7"
+                                color="#216bba"
                                 style={{
                                     height: '6px',
                                     background: "#2ecc40"

@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Dropdown, DropdownItem, DropdownMenu, Icon } from "semantic-ui-react";
 import { ProgressSpinner } from 'primereact/progressspinner';
-import { TieredMenu } from 'primereact/tieredmenu';
 
 export function toTime(sec = 0) {
     let date = new Date(1970, 0, 0, 0, 0, +sec || 0);
@@ -21,7 +20,7 @@ let timeOutPlay = null;
 
 const Video = props => {
 
-    const { id, files, title } = props;
+    const { id, title } = props;
 
     const player = useRef();
     const video = useRef();
@@ -29,6 +28,7 @@ const Video = props => {
     const control = useRef();
     const canvasBuffered = useRef();
     const { postJson } = useFetch();
+    const [files, setFiles] = useState(props.files);
 
     const params = useSearchParams();
     const t = +params.get('t');
@@ -99,7 +99,7 @@ const Video = props => {
         if (seconds === 5 && !toSent && id) {
             setToSent(true);
             sendTimeView(currentTime, false, () => setToSent(false));
-            router.replace(`/video/${id}?t=${Math.round(currentTime)}`);
+            router.replace(`/video/${id}?t=${Math.round(currentTime)}`, null, { scroll: false });
         }
     }, [seconds]);
 
@@ -287,6 +287,18 @@ const Video = props => {
         }
     }, [windowWidth]);
 
+    useEffect(() => {
+
+        (id && window.Echo) && window.Echo.channel(`disk.video.${id}`)
+            .listen('Tube\\DownloadProgressEvent', ({ data }) => {
+                Boolean(data?.fullData?.files) && setFiles(data?.fullData?.files);
+            });
+
+        return () => {
+            (id && window.Echo) && window.Echo.leaveChannel(`disk.video.${id}`);
+        }
+    }, [id]);
+
     return <div
         className={`relative bg-black flex items-center overflow-hidden ${fullScreen ? 'flex items-center' : ''}`}
         onMouseMove={blockMouseMove}
@@ -429,7 +441,7 @@ const Video = props => {
                     </span>
                     <span className="relative">
                         <Dropdown
-                            icon={<span className="opacity-80 hover:opacity-100 cursor-pointer" style={{ transition: "opacity .1s ease"}}>
+                            icon={<span className="opacity-80 hover:opacity-100 cursor-pointer" style={{ transition: "opacity .1s ease" }}>
                                 <Icon
                                     name="setting"
                                     fitted

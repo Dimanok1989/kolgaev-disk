@@ -71,19 +71,23 @@ const YoutTube = () => {
 
         </div>
 
-        <div className="mt-4 px-2 sm:px-0 max-w-screen-xl mx-auto">
-            <h1 className="text-[18px] mb-0">{data?.title}</h1>
-            {data?.channel_url && <a href={data.channel_url} target="_blank">
-                <strong>{data?.channel || data.channel_url}</strong>
-            </a>}
-            <div className="mt-2"><Extractor extractor={data?.extractor} /></div>
+        {data?.title && <div className="mt-4 px-2 sm:px-0 max-w-screen-xl mx-auto">
+            <div className="px-3">
+                <h1 className="text-[18px] mb-0">{data?.title}</h1>
+                {data?.channel_url && <a href={data.channel_url} target="_blank">
+                    <strong>{data?.channel || data.channel_url}</strong>
+                </a>}
+                <div className="mt-2">
+                    <Extractor extractor={data?.extractor} />
+                </div>
+            </div>
             {data?.description && <div className="bg-white rounded-lg px-3 py-4 cursor-default">
-                {data?.publish_date && <div className="mb-3" title="Дата публикации">
+                {data?.publish_date && <div className="mb-5" title="Дата публикации">
                     <strong>{getDateTime(data.publish_date)}</strong>
                 </div>}
                 <p dangerouslySetInnerHTML={{ __html: data?.description }} />
             </div>}
-        </div>
+        </div>}
 
     </>
 }
