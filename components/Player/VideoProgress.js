@@ -2,14 +2,17 @@ import { APP_NAME } from "@/pages/_app";
 import { STATUS_DONE, STATUS_FAIL } from "@/pages/video";
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import { Icon, Progress } from "semantic-ui-react";
+import { Icon } from "semantic-ui-react";
 import { ProgressBar } from 'primereact/progressbar';
+import { Skeleton } from 'primereact/skeleton';
 
 const VideoProgress = (props) => {
 
     const { data, setData } = props;
     const [currentData, setCurrentData] = useState(data || {});
     const [process, setProcess] = useState(data?.process || []);
+    const [number, setNumber] = useState(null);
+    const [thumbnail, setThumbnail] = useState(null);
 
     useEffect(() => {
 
@@ -18,8 +21,10 @@ const VideoProgress = (props) => {
                 .listen('Tube\\DownloadProgressEvent', ({ data }) => {
                     console.log(data);
                     Boolean(data.process) && setProcess(data.process);
+                    Boolean(data.thumbnail) && setThumbnail(data.thumbnail);
                     Boolean(data.fullData) && setCurrentData(p => ({ ...p, ...data.fullData }));
                     Boolean(data.fullData) && setData(data.fullData);
+                    setNumber(data?.count || null);
                 });
         }
 
@@ -36,8 +41,8 @@ const VideoProgress = (props) => {
 
         <div className={`relative overflow-hidden w-full pt-[56.25%] text-white/50`}>
 
-            {(data.thumbnail_url || data?.data?.thumbnail_url) && <div className="absolute inset-0 w-full h-full blur-lg">
-                <img src={data.thumbnail_url || data?.data?.thumbnail_url} className="w-full h-full" />
+            {(data.thumbnail_url || data?.data?.thumbnail_url || thumbnail?.lg) && <div className="absolute inset-0 w-full h-full blur-lg">
+                <img src={data.thumbnail_url || data?.data?.thumbnail_url || thumbnail?.lg} className="w-full h-full" />
                 <div className="absolute inset-0 w-full h-full bg-black/70" />
             </div>}
 
@@ -50,7 +55,13 @@ const VideoProgress = (props) => {
 
                 <div className="flex flex-col gap-2 max-w-xl">
 
-                    {process.map(item => <div key={item.video} className="relative flex items-center gap-3">
+                    {process.length === 0 && <>
+                        <Skeleton width="10rem" className="bg-gray-800 mb-2" />
+                        <Skeleton width="9rem" className="bg-gray-800 mb-2" />
+                        <Skeleton width="10rem" className="bg-gray-800 mb-2" />
+                    </>}
+
+                    {process.map(item => <div key={item.video} className="relative flex items-center gap-3 h-[22px]">
 
                         <div className={`${item.active ? 'text-white' : ''}`}>
                             Загрузка <code>{item.format}</code>
@@ -64,15 +75,6 @@ const VideoProgress = (props) => {
                             <span title={item.error}><Icon name="remove circle" fitted color="red" /></span>
                         </div>}
 
-                        <div className="flex-grow flex items-center justify-end gap-3">
-                            {item.active && Boolean(item.speed) && !Boolean(item.completed) &&
-                                <code>{item.speed}</code>
-                            }
-                            {item.active && item.percent > 0 && !Boolean(item.completed) &&
-                                <code>{item.percent}%</code>
-                            }
-                        </div>
-
                         {item.active && !Boolean(item.percent) && !Boolean(item.completed) && <div className="!w-full !max-w-[100px] !mb-0">
                             <ProgressBar
                                 mode="indeterminate"
@@ -85,57 +87,40 @@ const VideoProgress = (props) => {
                             />
                         </div>}
 
-                        {item.percent && !Boolean(item.completed) && <Progress
-                            inverted
-                            active
-                            percent={item.percent || 0}
-                            size='tiny'
-                            className="!w-full !max-w-[100px] !mb-0"
-                        />}
-
-                    </div>)}
-
-                    {[].map(item => <div key={item.step} className="relative flex items-center gap-3">
-
-                        <div>
-                            <code className={`${item.active ? 'text-white' : ''}`}>{item.name}</code>
-                        </div>
-
-                        {Boolean(item.completed) && data.status !== STATUS_FAIL && <div className="relative flex items-center justify-center">
-                            <span><Icon name="check circle" fitted color="green" /></span>
-                        </div>}
-
-                        {(
-                            (item.active && data.status === STATUS_FAIL)
-                            || (item.step === "video" && data.download_process_error?.errorCode === 1)
-                            || (item.step === "audio" && data.download_process_error?.errorCode === 2)
-                            || (item.step === "video" && data.download_process_error?.errorCode === 3)
-                        ) && <div className="relative flex items-center justify-center">
-                                <span><Icon name="remove circle" fitted color="red" /></span>
-                            </div>
-                        }
-
-                        <div className="flex-grow"></div>
-
-                        {item.active && !Boolean(item.percent) && data.status !== STATUS_FAIL && <div className="!w-full !max-w-[100px] !mb-0">
-                            <ProgressBar
-                                mode="indeterminate"
+                        {item.percent && !Boolean(item.completed) && <div className="relative !w-full !max-w-[100px] !mb-0">
+                            {number !== 2 && <ProgressBar
+                                mode={item.percent >= 100 ? "indeterminate" : "determinate"}
+                                value={number !== 2 ? (item.percent || 0) : 0}
+                                showValue={false}
                                 className="w-full"
-                                color="#888"
+                                color="#2ecc40"
                                 style={{
                                     height: '6px',
                                     background: "rgba(255,255,255,.08)"
                                 }}
-                            />
+                            />}
+                            {number === 2 && <ProgressBar
+                                mode={item.percent >= 100 ? "indeterminate" : "determinate"}
+                                value={number === 2 ? (item.percent || 0) : 0}
+                                showValue={false}
+                                className="w-full"
+                                color="#52a3f7"
+                                style={{
+                                    height: '6px',
+                                    background: "#2ecc40"
+                                }}
+                            />}
                         </div>}
 
-                        {item.percent && <Progress
-                            inverted
-                            active
-                            percent={item.percent || 0}
-                            size='tiny'
-                            className="!w-full !max-w-[100px] !mb-0"
-                        />}
+                        <div className="flex-grow flex items-center justify-start gap-3">
+                            {item.active && item.percent > 0 && !Boolean(item.completed) &&
+                                <code>{item.percent}%</code>
+                            }
+                            {item.active && item.percent < 100 && Boolean(item.speed) && !Boolean(item.completed) &&
+                                <code>{item.speed}</code>
+                            }
+                        </div>
+
                     </div>)}
 
                     {data.download_process_error?.error && <div className="flex mt-2">

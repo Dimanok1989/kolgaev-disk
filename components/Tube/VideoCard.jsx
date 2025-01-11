@@ -19,7 +19,7 @@ const VideoCard = ({ data }) => {
         ? Math.round((data.time * 100) / data.duration)
         : 0;
 
-    const thumbnailUrl = data.thumbnail_url || data?.data?.thumbnail_url;
+    const thumbnailUrl = data.thumbnail?.sm;
 
     return <div className="flex flex-col w-[256px]" title={data.title}>
         <div

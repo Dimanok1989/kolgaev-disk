@@ -3,8 +3,9 @@ import { useResize } from "@/hooks/useResize";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Icon } from "semantic-ui-react";
+import { Dropdown, DropdownItem, DropdownMenu, Icon } from "semantic-ui-react";
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { TieredMenu } from 'primereact/tieredmenu';
 
 export function toTime(sec = 0) {
     let date = new Date(1970, 0, 0, 0, 0, +sec || 0);
@@ -55,13 +56,44 @@ const Video = props => {
 
     const progress = length > 0 ? (currentTime * 100 / length) : 0;
 
+    const [format, setFormat] = useState(localStorage.getItem('video-format'));
+    const [currentFile, setCurrentFile] = useState({});
+
     useEffect(() => {
         if (files.length > 0) {
-            source.current.src = files[0].url;
-            source.current.type = files[0].mimeType;
+
+            let file = files.find(e => e.format === format);
+
+            if (!file) {
+                let general = String(String(format).split("p")[0]) + "p";
+                setFormat(general);
+                file = files.find(e => e.format === general);
+            }
+
+            if (!file) {
+                file = files[files.length - 1];
+            }
+
+            source.current.src = file?.url;
+            source.current.type = file?.mimeType;
             video.current.load();
+
+            setCurrentFile(file);
         }
     }, []);
+
+    const changeFormat = useCallback((key, file) => {
+
+        localStorage.setItem('video-format', file.format);
+        setFormat(file.format);
+        setCurrentFile(file);
+
+        let time = video.current.currentTime;
+        source.current.src = files[key].url;
+        source.current.type = files[key].mimeType;
+        video.current.load();
+        video.current.currentTime = time;
+    }, [video, files]);
 
     useEffect(() => {
         if (seconds === 5 && !toSent && id) {
@@ -96,6 +128,10 @@ const Video = props => {
         if (t > 0) {
             video.current.currentTime = t;
         }
+
+        video.current && video.current.addEventListener("onerror", (event) => {
+            console.log(event);
+        });
 
         // player.onerror = e => {
 
@@ -362,7 +398,7 @@ const Video = props => {
                         />
                     </span>
                     <span className="cursor-default font-mono">
-                    {toTime(currentTime)} / {toTime(length)} 
+                        {toTime(currentTime)} / {toTime(length)}
                     </span>
                 </div>
                 <div className="flex gap-6 items-center">
@@ -390,6 +426,38 @@ const Video = props => {
                             link
                             size="large"
                         />
+                    </span>
+                    <span className="relative">
+                        <Dropdown
+                            icon={<span>
+                                <Icon
+                                    name="setting"
+                                    fitted
+                                    link
+                                    size="large"
+                                />
+                                {currentFile?.isHd && <strong className="absolute -top-1 -right-2 bg-blue-600 px-1 rounded text-white cursor-default" style={{ fontSize: "8px", lineHeight: "12px" }}>HD</strong>}
+                            </span>}
+                            inline
+                            upward
+                            floating
+                            direction="left"
+                        >
+                            <DropdownMenu>
+                                {files.map((file, key) => <DropdownItem
+                                    key={key}
+                                    text={file.format}
+                                    selected={file.format === format}
+                                    onClick={() => changeFormat(key, file)}
+                                    description={file.isHd ? 'HD' : null}
+                                    icon={<Icon
+                                        name='circle'
+                                        color={file.format === format ? 'green' : 'grey'}
+                                        disabled={file.format !== format}
+                                    />}
+                                />)}
+                            </DropdownMenu>
+                        </Dropdown>
                     </span>
                     <span>
                         <Icon
