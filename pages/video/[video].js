@@ -67,7 +67,7 @@ const YoutTube = () => {
             {data?.channel_url && <a href={data.channel_url} target="_blank">
                 <strong>{data?.channel || data.channel_url}</strong>
             </a>}
-            <div className="mt-2"><Extractor {...data} /></div>
+            <div className="mt-2"><Extractor extractor={data?.extractor} /></div>
             {data?.description && <div className="bg-white rounded-lg px-3 py-4 cursor-default">
                 {data?.publish_date && <div className="mb-3" title="Дата публикации"><strong>{moment(data.publish_date).format("DD.MM.YYYY HH:mm")}</strong></div>}
                 <p dangerouslySetInnerHTML={{ __html: data?.description }} />
