@@ -11,7 +11,7 @@ import { useResize } from "@/hooks/useResize";
 const YoutTube = () => {
 
     const { video } = useParams();
-    const { getJson } = useFetch();
+    const { isLoading, getJson } = useFetch();
     const [data, setData] = useState(null);
 
     const player = useRef();
@@ -46,11 +46,9 @@ const YoutTube = () => {
 
                 {(data && data?.status === STATUS_DONE) && <Video
                     id={data.uuid}
-                    videoUrl={data.video_url}
-                    videoType={data.video_mime_type}
-                    length={data.length}
+                    length={data.duration}
                     title={data.title}
-                    sources={data.source}
+                    files={data.files}
                 />}
 
                 {(data && data?.status !== STATUS_DONE) && <VideoProgress

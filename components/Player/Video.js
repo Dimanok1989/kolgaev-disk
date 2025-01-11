@@ -3,8 +3,9 @@ import { useResize } from "@/hooks/useResize";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Icon } from "semantic-ui-react";
+import { Dropdown, DropdownItem, DropdownMenu, Icon } from "semantic-ui-react";
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { TieredMenu } from 'primereact/tieredmenu';
 
 export function toTime(sec = 0) {
     let date = new Date(1970, 0, 0, 0, 0, +sec || 0);
@@ -20,10 +21,11 @@ let timeOutPlay = null;
 
 const Video = props => {
 
-    const { id, videoUrl, videoType, title } = props;
+    const { id, files, title } = props;
 
     const player = useRef();
     const video = useRef();
+    const source = useRef();
     const control = useRef();
     const canvasBuffered = useRef();
     const { postJson } = useFetch();
@@ -54,17 +56,47 @@ const Video = props => {
 
     const progress = length > 0 ? (currentTime * 100 / length) : 0;
 
-    const setCurrentTimeCallback = useCallback((time) => {
-        setSeconds(Math.round(time % 20));
-        setCurrentTime(time);
-    }, [video]);
-
-    const sendTimeView = useCallback((time, viewed, cb) => {
-        id && postJson(`disk/video/${id}/set-time`, { time, viewed }, cb)
-    }, []);
+    const [format, setFormat] = useState(localStorage.getItem('video-format'));
+    const [currentFile, setCurrentFile] = useState({});
 
     useEffect(() => {
-        if (seconds === 20 && !toSent && id) {
+        if (files.length > 0) {
+
+            let file = files.find(e => e.format === format);
+
+            if (!file) {
+                let general = String(String(format).split("p")[0]) + "p";
+                setFormat(general);
+                file = files.find(e => e.format === general);
+            }
+
+            if (!file) {
+                file = files[files.length - 1];
+            }
+
+            source.current.src = file?.url;
+            source.current.type = file?.mimeType;
+            video.current.load();
+
+            setCurrentFile(file);
+        }
+    }, []);
+
+    const changeFormat = useCallback((key, file) => {
+
+        localStorage.setItem('video-format', file.format);
+        setFormat(file.format);
+        setCurrentFile(file);
+
+        let time = video.current.currentTime;
+        source.current.src = files[key].url;
+        source.current.type = files[key].mimeType;
+        video.current.load();
+        video.current.currentTime = time;
+    }, [video, files]);
+
+    useEffect(() => {
+        if (seconds === 5 && !toSent && id) {
             setToSent(true);
             sendTimeView(currentTime, false, () => setToSent(false));
             router.replace(`/video/${id}?t=${Math.round(currentTime)}`);
@@ -97,6 +129,10 @@ const Video = props => {
             video.current.currentTime = t;
         }
 
+        video.current && video.current.addEventListener("onerror", (event) => {
+            console.log(event);
+        });
+
         // player.onerror = e => {
 
         //     let message = "";
@@ -119,6 +155,22 @@ const Video = props => {
         // }
     }, [video]);
 
+    useEffect(() => {
+        if (paused) {
+            if (control.current) control.current.style.opacity = 1;
+            setShow(true);
+        }
+    }, [paused]);
+
+    const setCurrentTimeCallback = useCallback((time) => {
+        setSeconds(Math.round(time % 5));
+        setCurrentTime(time);
+    }, [video]);
+
+    const sendTimeView = useCallback((time, viewed, cb) => {
+        id && postJson(`disk/video/${id}/set-time`, { time, viewed }, cb)
+    }, []);
+
     const play = useCallback(() => {
         video.current && setPaused(false);
         video.current && video.current.play();
@@ -136,13 +188,6 @@ const Video = props => {
             !paused && pause();
         }
     }, [video, paused]);
-
-    useEffect(() => {
-        if (paused) {
-            if (control.current) control.current.style.opacity = 1;
-            setShow(true);
-        }
-    }, [paused]);
 
     const blockMouseMove = e => {
         control.current.style.opacity = 1;
@@ -292,10 +337,7 @@ const Video = props => {
             }}
             ref={video}
         >
-            <source
-                src={videoUrl}
-                type={videoType}
-            />
+            <source ref={source} /*src={videoUrl} type={videoType}*/ />
         </video>
 
         {loadingVideo && <div className="absolute flex justify-center w-full">
@@ -349,13 +391,14 @@ const Video = props => {
                         <Icon
                             name={paused ? "play" : "pause"}
                             fitted
-                            link
+                            link={!loadingVideo}
                             size="large"
                             onClick={handlePlay}
+                            disabled={loadingVideo}
                         />
                     </span>
-                    <span>
-                        {toTime(length)} / {toTime(currentTime)}
+                    <span className="cursor-default font-mono">
+                        {toTime(currentTime)} / {toTime(length)}
                     </span>
                 </div>
                 <div className="flex gap-6 items-center">
@@ -367,6 +410,9 @@ const Video = props => {
                             step={0.01}
                             className="slider-volume"
                             value={volume}
+                            onClick={e => {
+                                e.preventDefault();
+                            }}
                             onChange={e => {
                                 setVolume(e.currentTarget.value);
                                 setAfterMudet(e.currentTarget.value);
@@ -381,13 +427,46 @@ const Video = props => {
                             size="large"
                         />
                     </span>
+                    <span className="relative">
+                        <Dropdown
+                            icon={<span>
+                                <Icon
+                                    name="setting"
+                                    fitted
+                                    link
+                                    size="large"
+                                />
+                                {currentFile?.isHd && <strong className="absolute -top-1 -right-2 bg-blue-600 px-1 rounded text-white cursor-default" style={{ fontSize: "8px", lineHeight: "12px" }}>HD</strong>}
+                            </span>}
+                            inline
+                            upward
+                            floating
+                            direction="left"
+                        >
+                            <DropdownMenu>
+                                {files.map((file, key) => <DropdownItem
+                                    key={key}
+                                    text={file.format}
+                                    selected={file.format === format}
+                                    onClick={() => changeFormat(key, file)}
+                                    description={file.isHd ? 'HD' : null}
+                                    icon={<Icon
+                                        name='circle'
+                                        color={file.format === format ? 'green' : 'grey'}
+                                        disabled={file.format !== format}
+                                    />}
+                                />)}
+                            </DropdownMenu>
+                        </Dropdown>
+                    </span>
                     <span>
                         <Icon
                             name={fullScreen ? "compress" : "expand"}
                             fitted
-                            link
+                            link={!loadingVideo}
                             size="large"
                             onClick={toggleFullScreen}
+                            disabled={loadingVideo}
                         />
                     </span>
                 </div>

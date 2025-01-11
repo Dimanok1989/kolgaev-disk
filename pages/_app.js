@@ -3,6 +3,7 @@ import "@/styles/tailwind.css";
 import "semantic-ui-css/semantic.min.css";
 import "@/styles/globals.css";
 import "@/styles/player.css";
+import "@/styles/video.css";
 import 'primeicons/primeicons.css';
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import { AppConsumer, AppProvider } from "@/contexts/appContext";

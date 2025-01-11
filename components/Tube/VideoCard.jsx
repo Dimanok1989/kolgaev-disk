@@ -15,11 +15,11 @@ const VideoCard = ({ data }) => {
         router.push(url);
     }
 
-    const percent = (data.time > 0 && data.length > 0)
-        ? Math.round((data.time * 100) / data.length)
+    const percent = (data.time > 0 && data.duration > 0)
+        ? Math.round((data.time * 100) / data.duration)
         : 0;
 
-    const thumbnailUrl = data.thumbnail_url || data?.data?.thumbnail_url;
+    const thumbnailUrl = data.thumbnail?.sm;
 
     return <div className="flex flex-col w-[256px]" title={data.title}>
         <div
@@ -55,7 +55,7 @@ const VideoCard = ({ data }) => {
             </div>}
             <div className="bg-black/20 w-full h-full hover:bg-black/0 z-20 hover:z-40"></div>
             <div className="bg-black/50 text-white absolute right-2 bottom-2 text-sm px-1 rounded">
-                {toTime(data.length)}
+                {toTime(data.duration)}
             </div>
             {(percent > 0) && <div className="absolute bottom-0 h-[5px] w-full z-30">
                 <div

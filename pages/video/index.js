@@ -8,8 +8,8 @@ import { Messages } from 'primereact/messages';
 import { APP_NAME } from "../_app";
 import Head from "next/head";
 
-export const STATUS_DONE = 5;
-export const STATUS_FAIL = 6;
+export const STATUS_DONE = 7;
+export const STATUS_FAIL = 8;
 
 const Tube = () => {
 
@@ -37,7 +37,6 @@ const Tube = () => {
         (error && msgs.current) && msgs.current.show([{
             sticky: true,
             severity: 'error',
-            summary: 'Ошибка',
             detail: error,
             closable: false
         }]);
@@ -59,10 +58,12 @@ const Tube = () => {
 
         <div className="max-w-screen-xl mx-auto">
 
-            <StartView />
+            <div className="mt-12">
+                <StartView />
+            </div>
 
             {isError && <div className="flex justify-center mt-10">
-                <Messages ref={msgs} className="w-full max-w-screen-md"/>
+                <Messages ref={msgs} className="w-full max-w-screen-md" />
             </div>}
 
             <div className={`p-5 flex flex-wrap items justify-center gap-4`}>
