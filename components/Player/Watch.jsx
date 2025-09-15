@@ -89,6 +89,7 @@ const Watch = () => {
                 videoType={data.mime_type}
                 length={data.duration}
                 title={data.name}
+                files={[data.file]}
             />}
 
             <div className="mt-3 px-3 sm:px-0">

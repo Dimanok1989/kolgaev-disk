@@ -31,7 +31,7 @@ const Video = props => {
     const control = useRef();
     const canvasBuffered = useRef();
     const { postJson } = useFetch();
-    const [files, setFiles] = useState(props.files);
+    const [files, setFiles] = useState(props?.files || []);
 
     const params = useSearchParams();
     const t = +params.get('t');
@@ -444,42 +444,44 @@ const Video = props => {
                             size="large"
                         />
                     </span>
-                    <span className="relative">
-                        <Dropdown
-                            icon={<span className="opacity-80 hover:opacity-100 cursor-pointer" style={{ transition: "opacity .1s ease" }}>
-                                <Icon
-                                    name="setting"
-                                    fitted
-                                    link
-                                    size="large"
-                                />
-                                {currentFile && <strong className={`absolute -top-1 -right-2 bg-blue-600 px-1 rounded text-white cursor-default ${String(currentFile.format).indexOf("1080p") >= 0 ? 'bg-red-600' : ''} ${String(currentFile.format).indexOf("480p") >= 0 ? 'bg-yellow-600' : ''}`} style={{ fontSize: "8px", lineHeight: "12px" }}>
-                                    {String(currentFile.format).indexOf("1080p") >= 0 && `HD`}
-                                    {String(currentFile.format).indexOf("720p") >= 0 && `HD`}
-                                    {String(currentFile.format).indexOf("480p") >= 0 && `SD`}
-                                </strong>}
-                            </span>}
-                            inline
-                            upward
-                            floating
-                            direction="left"
-                        >
-                            <DropdownMenu>
-                                {files.map((file, key) => <DropdownItem
-                                    key={key}
-                                    text={file.format}
-                                    selected={file.format === format}
-                                    onClick={() => changeFormat(key, file)}
-                                    description={file.isHd ? 'HD' : null}
-                                    icon={<Icon
-                                        name='circle'
-                                        color={file.format === format ? 'green' : 'grey'}
-                                        disabled={file.format !== format}
-                                    />}
-                                />)}
-                            </DropdownMenu>
-                        </Dropdown>
-                    </span>
+                    {files.length > 1 &&
+                        <span className="relative">
+                            <Dropdown
+                                icon={<span className="opacity-80 hover:opacity-100 cursor-pointer" style={{ transition: "opacity .1s ease" }}>
+                                    <Icon
+                                        name="setting"
+                                        fitted
+                                        link
+                                        size="large"
+                                    />
+                                    {currentFile && <strong className={`absolute -top-1 -right-2 bg-blue-600 px-1 rounded text-white cursor-default ${String(currentFile.format).indexOf("1080p") >= 0 ? 'bg-red-600' : ''} ${String(currentFile.format).indexOf("480p") >= 0 ? 'bg-yellow-600' : ''}`} style={{ fontSize: "8px", lineHeight: "12px" }}>
+                                        {String(currentFile.format).indexOf("1080p") >= 0 && `HD`}
+                                        {String(currentFile.format).indexOf("720p") >= 0 && `HD`}
+                                        {String(currentFile.format).indexOf("480p") >= 0 && `SD`}
+                                    </strong>}
+                                </span>}
+                                inline
+                                upward
+                                floating
+                                direction="left"
+                            >
+                                <DropdownMenu>
+                                    {files.map((file, key) => <DropdownItem
+                                        key={key}
+                                        text={file.format}
+                                        selected={file.format === format}
+                                        onClick={() => changeFormat(key, file)}
+                                        description={file.isHd ? 'HD' : null}
+                                        icon={<Icon
+                                            name='circle'
+                                            color={file.format === format ? 'green' : 'grey'}
+                                            disabled={file.format !== format}
+                                        />}
+                                    />)}
+                                </DropdownMenu>
+                            </Dropdown>
+                        </span>
+                    }
                     <span>
                         <Icon
                             name={fullScreen ? "compress" : "expand"}
