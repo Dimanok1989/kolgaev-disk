@@ -89,3 +89,7 @@
   color: white !important;
   opacity: 100%;
 }
+
+.file-context-menu .p-menuitem-separator {
+  border-top: 1px solid #e5e7eb !important;
+}

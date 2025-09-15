@@ -17,6 +17,8 @@ import Watch from "@/components/Player/Watch";
 import Head from "next/head";
 import { APP_NAME } from "./_app";
 import useAxios from "@/hooks/useAxios";
+import { classNames } from "primereact/utils";
+import useFileShare from "@/hooks/useFileShare";
 
 const Home = () => {
 
@@ -30,6 +32,7 @@ const Home = () => {
   const cm = useRef();
   const [selectedFile, setSelectedFile] = useState();
   const [contextItems, setContextItems] = useState([]);
+  const { selectShareFile, FileShare } = useFileShare();
 
   const toast = useRef();
 
@@ -150,24 +153,40 @@ const Home = () => {
   }
 
   useEffect(() => {
+
     const items = [];
-    selectedFile?.is_rename && items.push({
+
+    if (selectedFile?.isShare) {
+      items.push({
+        label: 'Общий доступ',
+        icon: 'pi pi-users',
+        template: ItemContextMenuTemplate,
+        onClick: () => selectShareFile(selectedFile),
+      });
+      items.push({ separator: true, classNames: "border !important" });
+    }
+
+    selectedFile?.isRename && items.push({
       label: 'Переименовать',
       icon: 'pi pi-file-edit',
       template: ItemContextMenuTemplate,
     });
+
     items.push({
       label: 'Скачать',
       icon: 'pi pi-download',
       template: ItemContextMenuTemplate,
       onClick: () => downloadFile(selectedFile),
     });
-    selectedFile?.is_delete && items.push({
+
+    selectedFile?.isDelete && items.push({
       label: 'Удалить',
       icon: 'pi pi-trash',
       template: ItemContextMenuTemplate,
     });
+
     setContextItems(items);
+
     // eslint-disable-next-line
   }, [selectedFile]);
 
@@ -176,6 +195,7 @@ const Home = () => {
       <title>{breadcrumbs.at(-1)?.name || MAIN_PAGE_FOLDER_NAME} | {APP_NAME}</title>
     </Head>
     <div className="max-w-screen-xl mx-auto">
+      {FileShare}
       <div className="flex items-center justify-between my-6 px-3">
         <Breadcrumbs items={breadcrumbs} />
         <div className="flex items-center gap-3">
@@ -198,7 +218,7 @@ const Home = () => {
           model={contextItems}
           ref={cm}
           breakpoint="767px"
-          className="py-1"
+          className="py-1 file-context-menu"
           style={{ boxShadow: "4px 4px 30px 4px rgba(0, 0, 0, 0.43)" }}
           onHide={() => setSelectedFile(null)}
         />

@@ -81,11 +81,11 @@ const YoutTube = () => {
                     <Extractor extractor={data?.extractor} />
                 </div>
             </div>
-            {data?.description && <div className="bg-white rounded-lg px-3 py-4 cursor-default">
+            {(data?.description || data?.publish_date) && <div className="bg-white rounded-lg px-3 py-4 cursor-default">
                 {data?.publish_date && <div className="mb-5" title="Дата публикации">
                     <strong>{getDateTime(data.publish_date)}</strong>
                 </div>}
-                <p dangerouslySetInnerHTML={{ __html: data?.description }} />
+                {data?.description && <p dangerouslySetInnerHTML={{ __html: data?.description }} />}
             </div>}
         </div>}
 

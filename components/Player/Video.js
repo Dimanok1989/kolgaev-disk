@@ -6,11 +6,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Dropdown, DropdownItem, DropdownMenu, Icon } from "semantic-ui-react";
 import { ProgressSpinner } from 'primereact/progressspinner';
 
-export function toTime(sec = 0) {
+export function toTime(sec = 0, toArray = false) {
     let date = new Date(1970, 0, 0, 0, 0, +sec || 0);
     let time = date.toLocaleTimeString('ru');
     if (sec < 3600) {
         return time.split(":").splice(1).join(":");
+    }
+    if (toArray) {
+        return time.split(":");
     }
     return time;
 }
@@ -409,8 +412,10 @@ const Video = props => {
                             disabled={loadingVideo}
                         />
                     </span>
-                    <span className="cursor-default font-mono">
-                        {toTime(currentTime)} / {toTime(length)}
+                    <span className="cursor-default flex items-center gap-1 font-sans">
+                        <span className="font-sans">{toTime(currentTime)}</span>
+                        <span className="opacity-60 font-sans mb-[2px]">/</span>
+                        <span className="opacity-60 font-sans">{toTime(length)}</span>
                     </span>
                 </div>
                 <div className="flex gap-6 items-center">
