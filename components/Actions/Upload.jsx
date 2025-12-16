@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 // import { Icon } from "semantic-ui-react";
 import UploadProcess from "../Uploads/UploadProcess";
+import { Icon } from "semantic-ui-react";
 
 const Upload = () => {
 
@@ -36,11 +37,21 @@ const Upload = () => {
             onChange={onChange}
         />
 
-        <span
-            className={`pi pi-cloud-upload text-3xl opacity-50 ${files.length === 0 ? `hover:opacity-100 cursor-pointer` : ``}`}
+        <Icon
+            name="upload"
+            size="large"
+            fitted
+            link={files.length === 0}
             title="Загрузить файлы"
             onClick={() => (files.length === 0 && uploadRef?.current) && uploadRef.current.click()}
+            disabled={files.length > 0}
         />
+
+        {/* <span
+            className={`pi pi-upload text-2xl mb-1 opacity-80 ${files.length === 0 ? `hover:opacity-100 cursor-pointer` : ``}`}
+            title="Загрузить файлы"
+            onClick={() => (files.length === 0 && uploadRef?.current) && uploadRef.current.click()}
+        /> */}
 
         {/* <Icon
             name="upload"

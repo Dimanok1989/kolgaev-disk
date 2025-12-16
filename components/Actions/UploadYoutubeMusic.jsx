@@ -4,24 +4,24 @@ import { useParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { Button, Icon, IconGroup, Input, Modal } from 'semantic-ui-react';
 
-const CreateFolderModal = () => {
+const UploadYoutubeMusic = () => {
 
     const { folder } = useParams();
     const { isLoading, postJson } = useFetch();
     const { prependFile } = useApp();
     const [show, setShow] = useState(false);
-    const [name, setName] = useState(null);
+    const [url, setUrl] = useState(null);
 
     const create = useCallback(() => {
-        postJson('disk/folder', { name, folder }, (data) => {
+        postJson('disk/download/autio', { url, folder }, (data) => {
             prependFile(data);
             setShow(false);
         })
-    }, [name, folder]);
+    }, [url, folder]);
 
     useEffect(() => {
         if (!show) {
-            setName(null);
+            setUrl(null);
         }
     }, [show]);
 
@@ -30,21 +30,21 @@ const CreateFolderModal = () => {
             onClose={() => setShow(false)}
             onOpen={() => setShow(true)}
             open={show}
-            trigger={<Icon name="folder" link size="large" fitted />}
+            trigger={<Icon name="music" link size="large" fitted />}
             // trigger={<span
-            //     className={`pi pi-folder-plus text-3xl opacity-80 hover:opacity-100 cursor-pointer`}
+            //     className={`pi pi-youtube text-3xl opacity-50 hover:opacity-100 cursor-pointer text-red-600 relative`}
             //     title="Создать каталог"
             // />}
-            header='Новый каталог'
+            header='Музыка из видео'
             size='tiny'
             centered={false}
             closeIcon
             content={<div className='content'>
                 <div className='mb-6'>
                     <Input
-                        placeholder="Введите имя каталога"
-                        value={name || ""}
-                        onChange={(e, { value }) => setName(value)}
+                        placeholder="Введите ссылку на YouTube"
+                        value={url || ""}
+                        onChange={(e, { value }) => setUrl(value)}
                         fluid
                         required
                         loading={isLoading}
@@ -54,7 +54,7 @@ const CreateFolderModal = () => {
                     <Button
                         color="green"
                         icon="plus"
-                        content="Создать"
+                        content="Загрузить"
                         onClick={() => create()}
                         disabled={isLoading}
                     />
@@ -64,4 +64,4 @@ const CreateFolderModal = () => {
     </div>
 }
 
-export default CreateFolderModal;
+export default UploadYoutubeMusic;

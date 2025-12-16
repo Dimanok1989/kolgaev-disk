@@ -19,6 +19,7 @@ import { APP_NAME } from "./_app";
 import useAxios from "@/hooks/useAxios";
 import { classNames } from "primereact/utils";
 import useFileShare from "@/hooks/useFileShare";
+import UploadYoutubeMusic from "@/components/Actions/UploadYoutubeMusic";
 
 const Home = () => {
 
@@ -199,6 +200,7 @@ const Home = () => {
       <div className="flex items-center justify-between my-6 px-3">
         <Breadcrumbs items={breadcrumbs} />
         <div className="flex items-center gap-3">
+          <UploadYoutubeMusic />
           <Upload />
           <CreateFolder />
         </div>

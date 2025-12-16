@@ -1,6 +1,11 @@
 import useFetch from "@/hooks/useFetch";
 import Head from "next/head";
-import { Button, Form, FormField, Input } from "semantic-ui-react";
+import {
+  // Button,
+  Form,
+  // FormField,
+  // Input
+} from "semantic-ui-react";
 import { APP_NAME } from "../_app";
 import { useApp } from "@/hooks/useApp";
 import Cookies from "js-cookie";
@@ -44,7 +49,7 @@ const Login = () => {
 
         <Form onSubmit={onSubmit} loading={isLoading} error={isError}>
 
-          <FormField error={Boolean(errors.login)}>
+          {/* <FormField error={Boolean(errors.login)}>
             <label>Логин</label>
             <Input
               fluid
@@ -52,9 +57,9 @@ const Login = () => {
               name="login"
               error={Boolean(errors.login)}
             />
-          </FormField>
+          </FormField> */}
 
-          <FormField error={Boolean(errors.password)}>
+          {/* <FormField error={Boolean(errors.password)}>
             <label>Пароль</label>
             <Input
               fluid
@@ -63,14 +68,16 @@ const Login = () => {
               name="password"
               error={Boolean(errors.password)}
             />
-          </FormField>
+          </FormField> */}
 
           <div className="mb-8" />
           {error && <div className="mb-5">
             <strong className="text-red-600">{error}</strong>
           </div>}
 
-          <Button fluid type="submit" color="blue">Войти</Button>
+          {/* <Button fluid type="submit" color="blue">Войти</Button> */}
+
+          <strong className="text-red-600 text-center mx-auto w-full block">Временно не работает</strong>
 
         </Form>
       </div>
